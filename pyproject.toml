@@ -1,0 +1,39 @@
+[project]
+name = "ppp-2026"
+version = "0.1.0"
+description = "Programming and Problem Solving with Python, DHBW Mannheim 2026"
+readme = "README.md"
+requires-python = ">=3.14"
+# Libraries needed for later exercises (matplotlib, pandas, ...) are added here
+# in the week they are introduced; `uv sync` then installs them.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.14",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+# A plain `uv run pytest` only runs the setup check in tests/.
+# Run your own exercise with `uv run pytest students/<github-login>/ex01`.
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# Deliberately small beginner set (pyflakes + syntax-level pycodestyle errors), pinned so CI
+# does not change when ruff's defaults change. Keep B006 (mutable default argument) off: it
+# would give away a planted bug in the week-6 AI PR review exercise.
+select = [
+    "E4", "E7", "E9", "F",
+    "E722",  # bare `except:`
+    "S110",  # `except: pass` / `except Exception: pass` silently swallows errors
+    "S112",  # the same with `continue`
+    "T100",  # leftover `breakpoint()` / pdb call
+    "W605",  # invalid escape sequence like "\d" in a normal string
+]
