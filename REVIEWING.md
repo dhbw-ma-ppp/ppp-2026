@@ -1,8 +1,9 @@
 # How to review a pull request
 
 You will be assigned one pull request (PR) to review each week. Reviews are due on
-**Tuesday**, but start early: on Friday, any PR may be picked for a live review in class, and
-then you, as its reviewer, ask your question in front of everyone.
+**Tuesday, 18:00**, and authors answer by the **Wednesday session**. But start early: on
+Friday, any PR may be picked for a live review in class, and then you, as its reviewer, ask
+your question in front of everyone.
 
 CI (the automatic checks on the PR) already runs the tests and ruff. Your review is about
 what CI cannot check: correctness in cases nobody tested, design and readability.
@@ -16,7 +17,7 @@ what CI cannot check: correctness in cases nobody tested, design and readability
    the answer to, e.g. "Why did you use a dict here rather than a list?". Not "Why didn't
    you add comments?".
 3. **An answer from the author.** A review without an exchange does not count. Authors:
-   reply in the PR thread.
+   reply in the PR thread before the Wednesday session.
 
 ## Template
 
