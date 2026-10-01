@@ -1,7 +1,7 @@
 # How to review a pull request
 
 You will be assigned one pull request (PR) to review each week. Reviews are due on
-**Tuesday, 18:00**, and authors answer by the **Wednesday session**. But start early: on
+**Tuesday, 17:00**, and authors answer by the **Wednesday session**. But start early: on
 Friday, any PR may be picked for a live review in class, and then you, as its reviewer, ask
 your question in front of everyone.
 
