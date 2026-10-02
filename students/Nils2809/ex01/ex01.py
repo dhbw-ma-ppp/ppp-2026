@@ -9,22 +9,22 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    pass  # replace this line with your code
+    return (a//b , a%b)
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    pass  # replace this line with your code
+    fahrenheit = (celsius * 1.8) + 32
+    return round(fahrenheit, 2)
 
 
 def first_three(text):
     """Return the first three characters of text."""
-    pass  # replace this line with your code
-
+    return text[0:3]
 
 def last_four(text):
     """Return the last four characters of text."""
-    pass  # replace this line with your code
+    return text[-1:-4]
 
 
 def backwards(text):
