@@ -22,7 +22,10 @@ jobs:
       - name: Check folder, ruff and tests
         run: uv run python .github/scripts/check_pr.py
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          # CI checks out the merge of the PR into the current main; its first parent is that
+          # main. Not github.event.pull_request.base.sha: that is main as it was when the PR
+          # was opened, so once main moves on, the diff contains other people's changes.
+          BASE_SHA: HEAD^1
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           # GitHub logins allowed to change files outside students/ (space-separated)
           INSTRUCTORS: atrejut
