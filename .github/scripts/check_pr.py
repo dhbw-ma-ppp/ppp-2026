@@ -23,7 +23,9 @@ PYTEST_NO_TESTS_COLLECTED = 5
 def git_changed_files(base: str, *, include_deleted: bool) -> list[str]:
     diff_filter = [] if include_deleted else ["--diff-filter=d"]
     result = subprocess.run(
-        ["git", "diff", "--name-only", *diff_filter, f"{base}...HEAD"],
+        # --no-renames: a moved file counts as deleted + added; otherwise only the new path
+        # is listed, and moving a file out of exercises/ goes unnoticed
+        ["git", "diff", "--name-only", "--no-renames", *diff_filter, f"{base}...HEAD"],
         capture_output=True,
         text=True,
         check=True,
