@@ -19,9 +19,10 @@ def quotient_and_remainder(a, b):
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
 
-    fahrenheit = round(celsius*(9/5) + 32, 0)
+    fahrenheit = round(celsius * (9 / 5) + 32, 0)
 
     return fahrenheit
+
 
 def first_three(text):
 
@@ -51,7 +52,7 @@ def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
     plus = instructions.count("(")
     minus = instructions.count(")")
-    diff = plus - minus 
+    diff = plus - minus
     return diff
 
 
@@ -68,12 +69,12 @@ def floor_after(instructions, steps):
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    return instructions.replace("(","a").replace(")","b").replace("a",")").replace("b","(")
+    return instructions.replace("(", "a").replace(")", "b").replace("a", ")").replace("b", "(")
 
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    return set(first) & set(second) 
+    return set(first) & set(second)
 
 
 def count_letter(words, letter):
@@ -83,6 +84,7 @@ def count_letter(words, letter):
         counter += word.count(letter)
 
     return counter
+
 
 # ---------------------------------------------------------------- Answers
 

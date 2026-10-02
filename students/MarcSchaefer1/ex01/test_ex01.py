@@ -81,18 +81,22 @@ def test_common_elements():
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
 
+
 def test_count_letter1():
-    assert count_letter(["abcabccccbaabcssbab", ""," ","bc"], "a") == 5
+    assert count_letter(["abcabccccbaabcssbab", "", " ", "bc"], "a") == 5
+
 
 def test_mirrored1():
     assert mirrored("()))()") == ")((()("
+
 
 def test_mirrored2():
     assert mirrored("") == ""
 
 
 def test_common_elements1():
-    assert common_elements([],[1,2,3]) == set()
+    assert common_elements([], [1, 2, 3]) == set()
+
 
 def test_floor_after1():
     assert floor_after("((())", 0) == 0

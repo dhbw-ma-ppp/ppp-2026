@@ -4,7 +4,7 @@ pos = 0
 counter = 0
 
 for char in INSTRUCTIONS:
-    counter +=1
+    counter += 1
 
     if char == "(":
         pos += 1
@@ -14,4 +14,3 @@ for char in INSTRUCTIONS:
     if pos == -1:
         print(counter)
         break
-
