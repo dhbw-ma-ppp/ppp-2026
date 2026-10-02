@@ -1,4 +1,3 @@
-a = "Emanuel"
 def greet(name):
-    print("Hello, "+name)
-greet(a)
+    """Return a greeting for name, e.g. greet("Ada") returns "Hello, Ada!"."""
+    return f"Hello, {name}!"
