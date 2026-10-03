@@ -72,6 +72,19 @@ def count_letter(words, letter):
     #Klammern und Komma sind keine Letter deswegen muss man sie net filtern
     return str(words).count(letter)
 
+def first_time_on_floor(instructions,floor): #Bonusaufgabe
+    #weg mit hoch und runter initialisieren 
+    weg={'(':1, ')':-1}
+    current_floor=0
+    #Die Instructions einzeln durchgehen 'c' ist die Klammer 'i' ist die Iteration
+    for i,c in enumerate(instructions):
+        #Testet ob er im floor ist bei floor 0 ist Santa ja schon
+        if current_floor==floor:
+            return i
+        current_floor+=weg[c]
+         
+        
+
 
 # ---------------------------------------------------------------- Answers
 
@@ -98,3 +111,4 @@ if __name__ == "__main__":
     print("8:", len(first_list), len(second_list))
     print("9:", common_elements(first_list, second_list))
     print("10:", count_letter(first_list, "a"), count_letter(second_list, "a"))
+    print("10:", first_time_on_floor('(()))()',-1))
