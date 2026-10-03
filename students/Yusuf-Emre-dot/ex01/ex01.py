@@ -9,12 +9,12 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return a//b , a%b
+    return a // b, a % b
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    return (celsius*9/5) + 32
+    return (celsius * 9 / 5) + 32
 
 
 def first_three(text):
@@ -34,12 +34,12 @@ def backwards(text):
 
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
-    return text.replace('Science','Analytics')
+    return text.replace("Science", "Analytics")
 
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    return instructions.count('(') - instructions.count(')')
+    return instructions.count("(") - instructions.count(")")
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -55,10 +55,10 @@ def floor_after(instructions, steps):
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    #Der erste Schritt verhindert dass beim ersten Schritt instructions nur ) enthält und damit unumkehrbar wird
-    instructions=instructions.replace('(','*')
-    instructions=instructions.replace(')','(')
-    return instructions.replace('*',')')
+    # Der erste Schritt verhindert dass beim ersten Schritt instructions nur ) enthält und damit unumkehrbar wird
+    instructions = instructions.replace("(", "*")
+    instructions = instructions.replace(")", "(")
+    return instructions.replace("*", ")")
 
 
 def common_elements(first, second):
@@ -68,22 +68,21 @@ def common_elements(first, second):
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
-    #macht die liste in str und zählt dann wie oft letter kommt
-    #Klammern und Komma sind keine Letter deswegen muss man sie net filtern
+    # macht die liste in str und zählt dann wie oft letter kommt
+    # Klammern und Komma sind keine Letter deswegen muss man sie net filtern
     return str(words).count(letter)
 
-def first_time_on_floor(instructions,floor): #Bonusaufgabe
-    #weg mit hoch und runter initialisieren 
-    weg={'(':1, ')':-1}
-    current_floor=0
-    #Die Instructions einzeln durchgehen 'c' ist die Klammer 'i' ist die Iteration
-    for i,c in enumerate(instructions):
-        #Testet ob er im floor ist bei floor 0 ist Santa ja schon
-        if current_floor==floor:
+
+def first_time_on_floor(instructions, floor):  # Bonusaufgabe
+    # weg mit hoch und runter initialisieren
+    weg = {"(": 1, ")": -1}
+    current_floor = 0
+    # Die Instructions einzeln durchgehen 'c' ist die Klammer 'i' ist die Iteration
+    for i, c in enumerate(instructions):
+        # Testet ob er im floor ist bei floor 0 ist Santa ja schon
+        if current_floor == floor:
             return i
-        current_floor+=weg[c]
-         
-        
+        current_floor += weg[c]
 
 
 # ---------------------------------------------------------------- Answers
@@ -111,4 +110,4 @@ if __name__ == "__main__":
     print("8:", len(first_list), len(second_list))
     print("9:", common_elements(first_list, second_list))
     print("10:", count_letter(first_list, "a"), count_letter(second_list, "a"))
-    print("10:", first_time_on_floor('(()))()',-1))
+    print("10:", first_time_on_floor("(()))()", -1))
