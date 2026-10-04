@@ -10,6 +10,7 @@ from ex01 import (
     mirrored,
     quotient_and_remainder,
     science_to_analytics,
+    bonus,
 )
 
 # ---------------------------------------------------------------- Part 1
@@ -80,3 +81,16 @@ def test_common_elements():
 
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
+
+
+def test_floor2():
+    assert floor("") == 0
+    assert floor("aaaaa(()))") == -1
+
+
+def test_common_elements2():
+    assert common_elements(["1", "5", "6"], ["3", "4", "5", "6"]) == {"5", "6"}
+
+
+def test_bonus():
+    assert bonus("(()))(") == (5, 0)
