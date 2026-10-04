@@ -81,12 +81,12 @@ def bonus(instructions):
         if char == "(":
             position += 1
             floor += 1
-            if floor == -1 and first_basement == None:
+            if floor == -1 and first_basement is None:
                 first_basement = position
         elif char == ")":
             position += 1
             floor -= 1
-            if floor == -1 and first_basement == None:
+            if floor == -1 and first_basement is None:
                 first_basement = position
         else:
             return "Santa hat keine klaren Anweisungen bekommen :/"
@@ -118,4 +118,4 @@ if __name__ == "__main__":
     print("8:", len(first_list), len(second_list))
     print("9:", common_elements(first_list, second_list))
     print("10:", count_letter(first_list, "a"), count_letter(second_list, "a"))
-    print("Bonus: ", bonus("aaaaa"))
+    print("Bonus: ", bonus("(()))("))
