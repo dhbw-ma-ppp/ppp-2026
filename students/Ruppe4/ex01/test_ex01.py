@@ -81,13 +81,10 @@ def test_common_elements():
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
 
+
 def test_mirrored2():
     assert mirrored("") == ""
 
 
 def test_count_letter2():
     assert count_letter(["esel", "ruppert"], "a") == 0
-
-
-
-
