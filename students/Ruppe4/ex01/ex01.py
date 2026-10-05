@@ -9,14 +9,14 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    quotient = a//b
+    quotient = a // b
     remainder = a % b
-    return quotient, remainder 
+    return quotient, remainder
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    fahrenheit = (celsius*1.8)+32
+    fahrenheit = (celsius * 1.8) + 32
     return fahrenheit
 
 
@@ -25,11 +25,9 @@ def first_three(text):
     return text[0:3]
 
 
-
 def last_four(text):
     """Return the last four characters of text."""
     return text[-4:]
-
 
 
 def backwards(text):
@@ -37,16 +35,16 @@ def backwards(text):
     return text[::-1]
 
 
-
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
     return text.replace("Science", "Analytics")
-   
+
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
     x = instructions.count("(") - instructions.count(")")
     return x
+
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
