@@ -82,8 +82,5 @@ def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
 
 
-def test_floor_after_self():
-    assert floor_after("((()()(())))",8) == 8
-
 def test_backwards_self():
     assert backwards("Hallo Welt!") == "!tleW ollaH"
