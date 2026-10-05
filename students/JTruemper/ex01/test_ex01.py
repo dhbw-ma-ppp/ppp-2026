@@ -74,6 +74,7 @@ def test_mirrored():
     assert mirrored("(()") == "))("
     assert mirrored(")))))(((((") == "((((()))))"
 
+
 def test_common_elements():
     assert common_elements(["a", "b", "c"], ["b", "c", "d"]) == {"b", "c"}
 

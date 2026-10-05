@@ -9,18 +9,17 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return (a//b, a%b)
+    return (a // b, a % b)
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
     return (celsius * 1.8) + 32
-    
 
 
 def first_three(text):
     """Return the first three characters of text."""
-    return(text[:3])
+    return text[:3]
 
 
 def last_four(text):
@@ -30,7 +29,7 @@ def last_four(text):
 
 def backwards(text):
     """Return text backwards."""
-    return(text[::-1])
+    return text[::-1]
 
 
 def science_to_analytics(text):
@@ -40,8 +39,7 @@ def science_to_analytics(text):
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    return (instructions.count("(") - instructions.count(")"))
-
+    return instructions.count("(") - instructions.count(")")
 
 
 # ---------------------------------------------------------------- Part 2 (at home) (Did not get to do Part 1 in class anyways)
@@ -57,17 +55,17 @@ def floor_after(instructions, steps):
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    return (instructions.replace("(", "x").replace(")", "y").replace("x", ")").replace("y", "(") )
+    return instructions.replace("(", "x").replace(")", "y").replace("x", ")").replace("y", "(")
 
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    return(set(first) & set(second))  
+    return set(first) & set(second)
 
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
-    return ("".join(words)).count(letter)   # replace this line with your code
+    return ("".join(words)).count(letter)  # replace this line with your code
 
 
 # ---------------------------------------------------------------- Answers
@@ -88,7 +86,6 @@ if __name__ == "__main__":
     print("3:", first_three("DataScience"), last_four("DataScience"))
     print("4:", backwards("DataScience"), science_to_analytics("DataScience"))
     print("5:", floor(INSTRUCTIONS))
-
     print("Part 2")
     print("6:", floor_after(INSTRUCTIONS, 1000))
     print("7:", floor(mirrored(INSTRUCTIONS)))
