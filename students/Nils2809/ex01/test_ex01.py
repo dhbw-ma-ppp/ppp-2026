@@ -80,3 +80,12 @@ def test_common_elements():
 
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
+    assert count_letter(["schnitzen", "flitzen", "blitzen", "ritzen"], "n") == 5
+
+
+def test_count_letter_none():
+    assert count_letter(["stuhl", "tisch", "schrank", "brett", "tür"], "x") == 0
+
+
+def test_mirrored_more():
+    assert mirrored("())+#)+(#(") == ")((+#(+)#)"

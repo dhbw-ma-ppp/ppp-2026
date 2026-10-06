@@ -59,9 +59,9 @@ def floor_after(instructions, steps):
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    instructions = instructions.replace("(", "+")
+    instructions = instructions.replace("(", "/")
     instructions = instructions.replace(")", "(")
-    instructions = instructions.replace("+", ")")
+    instructions = instructions.replace("/", ")")
     return instructions
 
 
