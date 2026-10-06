@@ -9,7 +9,7 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return divmod(a,b)
+    return divmod(a, b)
 
 
 def celsius_to_fahrenheit(celsius):
@@ -37,11 +37,11 @@ def science_to_analytics(text):
     return text.replace("Science", "Analytics")
 
 
-def floor(instructions, steps = 0):
+def floor(instructions, steps=0):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
     if steps == 0:
         steps = len(str(instructions))
-    
+
     floor = 0
     for char in str(instructions):
         if char == "(":
@@ -52,8 +52,6 @@ def floor(instructions, steps = 0):
         if steps == 0:
             break
     return floor
-
-    
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -80,11 +78,10 @@ def mirrored(instructions):
     return res
 
 
-
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
     res = []
-    
+
     for item in first:
         for it in second:
             if it == item:
