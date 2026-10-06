@@ -82,9 +82,9 @@ def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
 
 
-def test_floor_after():
+def test_floor_after2():
     assert floor_after("((", 0) == 0
 
 
-def test_common_elements():
+def test_common_elements2():
     assert common_elements(["a"], ["b"]) == set()
