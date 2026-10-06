@@ -8,17 +8,14 @@ from puzzle_input import INSTRUCTIONS
 
 
 def quotient_and_remainder(a, b):
-            quotient = a // b
-            remainder = a % b
-            return quotient, remainder
-
-
+    quotient = a // b
+    remainder = a % b
+    return quotient, remainder
 
 
 def celsius_to_fahrenheit(celsius):
     fahrenheit = celsius * 9 / 5 + 32
     return fahrenheit
-
 
 
 def first_three(text):
@@ -39,18 +36,15 @@ def science_to_analytics(text):
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    current_floor= 0
+    current_floor = 0
 
     for zeichen in instructions:
-            if zeichen == "(":
-                current_floor += 1
-            elif zeichen == ")":
-                current_floor -= 1
+        if zeichen == "(":
+            current_floor += 1
+        elif zeichen == ")":
+            current_floor -= 1
 
     return current_floor
-
-    
-    
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -71,7 +65,7 @@ def mirrored(instructions):
             result += "("
 
     return result
-            
+
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
@@ -83,7 +77,7 @@ def count_letter(words, letter):
     count = 0
 
     for word in words:
-         count += word.count(letter)
+        count += word.count(letter)
 
     return count
 
