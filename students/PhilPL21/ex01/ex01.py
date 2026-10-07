@@ -23,7 +23,7 @@ def first_three(text):
 
 
 def last_four(text):
-    return text[-4:]    
+    return text[-4:]
 
 
 def backwards(text):
