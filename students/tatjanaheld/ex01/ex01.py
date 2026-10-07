@@ -2,8 +2,7 @@
 # Each function below has its first line written for you. The text in triple quotes says
 # what the function should do. Replace the `pass` line with your code, ending with `return`.
 
-from students.tatjanaheld.ex01.puzzle_input import INSTRUCTIONS
-
+from puzzle_input import INSTRUCTIONS
 # ---------------------------------------------------------------- Part 1 (in class)
 
 
