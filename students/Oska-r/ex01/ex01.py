@@ -41,7 +41,7 @@ def first_three(text):
         raise TypeError("Text must be a string.")
 
     if len(text) < 3:
-        raise ValueError("Text be at least 3 characters long.")
+        raise ValueError("Text must be at least 3 characters long.")
 
     return text[:3]
 
@@ -53,7 +53,7 @@ def last_four(text):
         raise TypeError("Text must be a string.")
 
     if len(text) < 4:
-        raise ValueError("Text be at least 4 characters long.")
+        raise ValueError("Text must be at least 4 characters long.")
 
     return text[-4:]
 
@@ -145,8 +145,10 @@ def count_letter(words, letter):
     if type(letter) is not str:
         raise ValueError("Letter must be a string.")
 
-    if len(letter) != 1:
-        raise ValueError("Letter must be a single character.")
+    # This allows checking longer strings as letters.
+    # If the function specifically requires the letter to be a single character, the line below would chang to: if len(letter) != 1:
+    if len(letter) >= 1:
+        raise ValueError("Letter cannot be empty.")
 
     connected_string = "".join(words)
     return connected_string.count(letter)
