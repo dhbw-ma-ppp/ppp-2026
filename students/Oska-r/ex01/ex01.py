@@ -9,37 +9,78 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
+
+    if type(a) is not int:
+        raise TypeError("Dividend must be an integer.")
+    if type(b) is not int:
+        raise TypeError("Divisor must be an integer.")
+
+    if b == 0:
+        raise ValueError("Division with 0 is not permitted.")
+
     return divmod(a, b)
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
+
+    if type(celsius) is not int:
+        raise TypeError("Temperature in Celsius must be an integer.")
+
+    if celsius < -273:
+        raise ValueError("Temperature in celsius must be above -274 degrees.")
+
     fahrenheit = (celsius * 1.8) + 32
     return fahrenheit
 
 
 def first_three(text):
     """Return the first three characters of text."""
+
+    if type(text) is not str:
+        raise TypeError("Text must be a string.")
+
+    if len(text) < 3:
+        raise ValueError("Text be at least 3 characters long.")
+
     return text[:3]
 
 
 def last_four(text):
     """Return the last four characters of text."""
+
+    if type(text) is not str:
+        raise TypeError("Text must be a string.")
+
+    if len(text) < 4:
+        raise ValueError("Text be at least 4 characters long.")
+
     return text[-4:]
 
 
 def backwards(text):
     """Return text backwards."""
+
+    if type(text) is not str:
+        raise TypeError("Text must be a string.")
+
     return text[::-1]
 
 
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
+
+    if type(text) is not str:
+        raise TypeError("Text must be a string.")
+
     return text.replace("Science", "Analytics")
 
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
+
+    check_instructions(instructions)
+
     return instructions.count("(") - instructions.count(")")
 
 
@@ -51,26 +92,70 @@ def floor_after(instructions, steps):
 
     Use your function `floor` from Part 1.
     """
+
+    if type(steps) is not int:
+        raise TypeError("Steps must be an integer.")
+
+    if steps < 0:
+        raise ValueError("Steps must be greater or equal to 0.")
+
+    # This type check of instructions happens in floor again and is therefore redundant.
+    # However floor_after() needs this check to ensure len(instructions) is accessible and
+    # floor() needs this check independently to function as a global function.
+
+    if type(instructions) is not str:
+        raise TypeError("Instructions must be a string.")
+
+    if steps > len(instructions):
+        raise ValueError("Steps must be smaller or equal to the length of instructions.")
+
     return floor(instructions[:steps])
 
 
-def mirrored(instructions: str):
+def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
+
+    check_instructions(instructions)
+
     return instructions.replace("(", "a").replace(")", "(").replace("a", ")")
 
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
+
+    if type(first) is not list:
+        raise TypeError("The first argument must be a list.")
+
+    if type(second) is not list:
+        raise TypeError("The second argument must be a list.")
+
     return set(first) & set(second)
 
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
+
+    if type(words) is not list:
+        raise TypeError("Words must be a list.")
+
+    for word in words:
+        if type(word) is not str:
+            raise ValueError("All Elements of words must be a string.")
+
+    if type(letter) is not str:
+        raise ValueError("Letter must be a string.")
+
+    if len(letter) != 1:
+        raise ValueError("Letter must be a single character.")
+
     connected_string = "".join(words)
     return connected_string.count(letter)
 
 
 def bonus(instructions):
+
+    check_instructions(instructions)
+
     floor = 0
     for index, char in enumerate(instructions):
         if char == "(":
@@ -81,6 +166,14 @@ def bonus(instructions):
         if floor == -1:
             return index
     return -1
+
+
+def check_instructions(instructions):
+    if type(instructions) is not str:
+        raise TypeError("Instructions must be a string.")
+
+    if instructions.replace("(", "").replace(")", "") != "":
+        raise ValueError("Instructions can only contain '(' and ')'.")
 
 
 # ---------------------------------------------------------------- Answers

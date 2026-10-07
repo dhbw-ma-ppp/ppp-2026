@@ -71,14 +71,42 @@ def test_floor_after():
     assert floor_after("((())", 3) == 3
 
     assert floor_after("", 0) == 0
-    assert floor_after(")", 1) == -1
+
+    try:
+        floor_after(None, "abc")
+        assert False
+    except TypeError:
+        assert True
+
+    try:
+        floor_after("())a()", 5)
+        assert False
+    except ValueError:
+        assert True
+
+    try:
+        floor_after("(()))", -1)
+        assert False
+    except ValueError:
+        assert True
 
 
 def test_mirrored():
     assert mirrored("(()") == "))("
 
     assert mirrored("") == ""
-    assert mirrored("((") == "))"
+
+    try:
+        mirrored(-1)
+        assert False
+    except TypeError:
+        assert True
+
+    try:
+        mirrored("(()))))g")
+        assert False
+    except ValueError:
+        assert True
 
 
 def test_common_elements():
@@ -87,12 +115,23 @@ def test_common_elements():
     assert common_elements([1], [11]) == set()
     assert common_elements([True], [True, False]) == {True}
 
+    try:
+        common_elements({1, 2}, {2, 3})
+        assert False
+    except TypeError:
+        assert True
+
 
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
 
     assert count_letter(["tree", "stump"], "x") == 0
-    assert count_letter(["a", "a"], "a") == 2
+
+    try:
+        count_letter(None, None)
+        assert False
+    except TypeError:
+        assert True
 
 
 def test_bonus():
