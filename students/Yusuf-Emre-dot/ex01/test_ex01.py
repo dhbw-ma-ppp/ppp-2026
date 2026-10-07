@@ -10,6 +10,7 @@ from ex01 import (
     mirrored,
     quotient_and_remainder,
     science_to_analytics,
+    first_time_on_floor
 )
 
 # ---------------------------------------------------------------- Part 1
@@ -77,6 +78,14 @@ def test_mirrored():
 def test_common_elements():
     assert common_elements(["a", "b", "c"], ["b", "c", "d"]) == {"b", "c"}
 
+def test_common_elements_othertypes(): #selbstgemacht
+    assert common_elements(["1", "b", "c"], ["b", 1, "d"]) == {"b"} 
 
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
+
+def test_count_letter_emptyList(): #selbstgemacht
+    assert count_letter([], "a") == 0
+
+def test_BonusAufgabe():
+    assert first_time_on_floor('(()))()',-1)== 5
