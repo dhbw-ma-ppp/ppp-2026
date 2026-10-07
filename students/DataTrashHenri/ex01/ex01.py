@@ -48,17 +48,19 @@ def floor_after(instructions, steps):
 
 
 def mirrored(instructions):
-    #dont ask why (im a c dev)
-    x = ~0                                  #a bitield where 1s are assumed ")", so only we need to flip them incase of "("
+    # dont ask why (im a c dev)
+    x = ~0  # a bitield where 1s are assumed ")", so only we need to flip them incase of "("
     index_counter = 0
     for instruction in instructions:
         if instruction == "(":
-            x = x & ~(1 << index_counter)   #sets the bit at position index_counter of bitfield x to 0.
+            x = x & ~(
+                1 << index_counter
+            )  # sets the bit at position index_counter of bitfield x to 0.
         index_counter += 1
-    x = ~x                                  # unnecessary if you think about it but for understanding of algorithm :))
-    solution = ""                           #for reconstruction of new instructions
+    x = ~x  # unnecessary if you think about it but for understanding of algorithm :))
+    solution = ""  # for reconstruction of new instructions
     for i in range(0, index_counter):
-        if x & (1 << i):                    #bit set at position i of bitfield x
+        if x & (1 << i):  # bit set at position i of bitfield x
             solution += ")"
         else:
             solution += "("
