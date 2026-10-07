@@ -9,7 +9,7 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return (a // b, a % b)
+    return divmod(a, b)
 
 
 def celsius_to_fahrenheit(celsius):
