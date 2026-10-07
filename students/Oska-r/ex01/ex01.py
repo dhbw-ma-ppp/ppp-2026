@@ -146,7 +146,7 @@ def count_letter(words, letter):
         raise ValueError("Letter must be a string.")
 
     # This allows checking longer strings as letters.
-    # If the function specifically requires the letter to be a single character, the line below would chang to: if len(letter) != 1:
+    # If the function specifically requires the letter to be a single character, the line below would change to: if len(letter) != 1:
     if len(letter) >= 1:
         raise ValueError("Letter cannot be empty.")
 
