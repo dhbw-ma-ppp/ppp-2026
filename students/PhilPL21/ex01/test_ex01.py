@@ -68,15 +68,21 @@ def test_floor_up_and_down():
 
 def test_floor_after():
     assert floor_after("((())", 3) == 3
-
+    assert floor_after("(()(())", 1) == 1
+    assert floor_after("", 4) == 0
 
 def test_mirrored():
     assert mirrored("(()") == "))("
-
+    assert mirrored(")") == "("
+    assert mirrored("") == ""
 
 def test_common_elements():
     assert common_elements(["a", "b", "c"], ["b", "c", "d"]) == {"b", "c"}
+    assert common_elements(["a", "r", "f"], ["r", "s", "e"]) == {"r"}
+    assert common_elements([], []) == set()
 
 
 def test_count_letter():
     assert count_letter(["banana", "apple"], "a") == 4
+    assert count_letter(["havana", "dornen"], "n") == 3
+    assert count_letter([], "n") == 0
