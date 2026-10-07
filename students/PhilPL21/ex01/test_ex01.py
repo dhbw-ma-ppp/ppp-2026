@@ -71,10 +71,12 @@ def test_floor_after():
     assert floor_after("(()(())", 1) == 1
     assert floor_after("", 4) == 0
 
+
 def test_mirrored():
     assert mirrored("(()") == "))("
     assert mirrored(")") == "("
     assert mirrored("") == ""
+
 
 def test_common_elements():
     assert common_elements(["a", "b", "c"], ["b", "c", "d"]) == {"b", "c"}
