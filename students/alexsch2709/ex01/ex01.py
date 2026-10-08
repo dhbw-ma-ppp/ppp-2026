@@ -9,27 +9,28 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    quotient = a//b 
-    remainder = a%b
+    quotient = a // b
+    remainder = a % b
     return quotient, remainder
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    fahrenheit = celsius*9/5 + 32
+    fahrenheit = celsius * 9 / 5 + 32
     return fahrenheit
 
 
 def first_three(text):
     """Return the first three characters of text."""
-    result = text[0]+text[1]+text[2]
+    result = text[0] + text[1] + text[2]
     return result
 
 
 def last_four(text):
-    max=len(text)
-    final = text[max-4:]
+    max = len(text)
+    final = text[max - 4 :]
     return final
+
 
 def backwards(text):
     """Return text backwards."""
@@ -38,7 +39,7 @@ def backwards(text):
 
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
-    s = text.replace("Science","Analytics")
+    s = text.replace("Science", "Analytics")
     return s
 
 
@@ -47,8 +48,8 @@ def floor(instructions):
     floor = 0
     up = instructions.count("(")
     down = instructions.count(")")
-    floor+=up
-    floor-=down
+    floor += up
+    floor -= down
     return floor
 
 
@@ -63,20 +64,21 @@ def floor_after(instructions, steps):
     floor = 0
     up = 0
     down = 0
-    for i in range(0,steps):
-        if(instructions[i]=="("):
-            up+=1
-        elif(instructions[i]==")"):
-            down+=1
-    floor+=up
-    floor+=down
+    for i in range(0, steps):
+        if instructions[i] == "(":
+            up += 1
+        elif instructions[i] == ")":
+            down += 1
+    floor += up
+    floor += down
     return floor
+
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    placeholder = instructions.replace("(","x")
-    placeholder = placeholder.replace(")","(")
-    text = placeholder.replace("x",")")
+    placeholder = instructions.replace("(", "x")
+    placeholder = placeholder.replace(")", "(")
+    text = placeholder.replace("x", ")")
     return text
 
 
