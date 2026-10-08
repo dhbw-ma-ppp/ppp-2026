@@ -1,4 +1,4 @@
-from students.marvinm2005.ex01.ex01 import (
+from ex01 import (
     backwards,
     celsius_to_fahrenheit,
     common_elements,
