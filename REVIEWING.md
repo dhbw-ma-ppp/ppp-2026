@@ -5,6 +5,9 @@ You will be assigned one pull request (PR) to review each week. Reviews are due 
 Friday, any PR may be picked for a live review in class, and then you, as its reviewer, ask
 your question in front of everyone.
 
+Only students who submitted a PR get one to review. So submit late rather than never: a late
+PR still gets you a PR to review. No PR means nothing to review that week.
+
 CI (the automatic checks on the PR) already runs the tests and ruff. Your review is about
 what CI cannot check: correctness in cases nobody tested, design and readability.
 
@@ -16,8 +19,13 @@ what CI cannot check: correctness in cases nobody tested, design and readability
 2. **At least one genuine question about a design choice.** A real question you do not know
    the answer to, e.g. "Why did you use a dict here rather than a list?". Not "Why didn't
    you add comments?".
-3. **An answer from the author.** A review without an exchange does not count. Authors:
-   reply in the PR thread before the Wednesday session.
+
+## Answering a review of your PR
+
+Answer every review of your PR in the PR thread before the Wednesday session: add the
+suggested test or explain why it is unnecessary, and answer the question. This is part of
+your own PR: a PR whose review goes unanswered does not count. (Your reviewer's review counts
+either way.)
 
 ## Template
 
