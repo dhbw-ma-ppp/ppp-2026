@@ -24,14 +24,16 @@ def first_three(text):
     """Return the first three characters of text."""
     result = text[0] + text[1] + text[2]
     return result
-    #einfacher mit result = text[0:3]
+    # einfacher mit result = text[0:3]
 
 
 def last_four(text):
     max = len(text)
     final = text[max - 4 :]
     return final
-#einfacher mit final = text[:-4]
+
+
+# einfacher mit final = text[:-4]
 
 
 def backwards(text):
@@ -74,7 +76,7 @@ def floor_after(instructions, steps):
     floor += up
     floor -= down
     return floor
-    #einfacher mit return floor(instructions[0:steps])
+    # einfacher mit return floor(instructions[0:steps])
 
 
 def mirrored(instructions):
