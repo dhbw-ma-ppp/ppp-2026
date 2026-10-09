@@ -9,39 +9,96 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return divmod(a, b)
+
+    # check if a and b are integers
+    if (type(a) is not int) or (type(b) is not int):
+        raise TypeError("input paramenters should be of type integer.")
+
+    # calculate quotient and remainder
+    quotient = a // b
+    remainder = a % b
+
+    return (quotient, remainder)
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    return (celsius * 9 / 5) + 32
+
+    # check if celcius is an integer or a float
+    if (type(celsius) is not int) and (type(celsius) is not float):
+        raise TypeError("input paramenter should be of type integer or float.")
+
+    # calculate fahrenheit
+    fahrenheit = (celsius * 9 / 5) + 32
+
+    return fahrenheit
 
 
 def first_three(text):
     """Return the first three characters of text."""
-    return text[:3]
+
+    # check if text is a string
+    if type(text) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
+    # slice text into the desired substring
+    substring = text[:3]
+
+    return substring
 
 
 def last_four(text):
     """Return the last four characters of text."""
-    return text[-4:]
+
+    # check if text is a string
+    if type(text) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
+    # slice text into the desired stubstring
+    substring = text[-4:]
+
+    return substring
 
 
 def backwards(text):
     """Return text backwards."""
-    return text[::-1]
+
+    # check if text is a string
+    if type(text) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
+    # slice text into the desired string
+    reversed_string = text[::-1]
+
+    return reversed_string
 
 
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
-    return text.replace("Science", "Analytics")
+
+    # check if text is a string
+    if type(text) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
+    # replacing substring
+    new_text = text.replace("Science", "Analytics")
+
+    return new_text
 
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
+
+    # check if instructions is a string
+    if type(instructions) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
+    # calculate floor
     floors_up = instructions.count("(")
     floors_down = instructions.count(")")
-    return floors_up - floors_down
+    floor = floors_up - floors_down
+
+    return floor
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -52,23 +109,59 @@ def floor_after(instructions, steps):
 
     Use your function `floor` from Part 1.
     """
-    return floor(instructions[:steps])
+
+    # check if steps is an integer
+    if type(steps) is not int:
+        raise TypeError("second input parameter should be of type integer.")
+
+    # check if steps is non-negative
+    if steps < 0:
+        raise ValueError("second input parameter should be non-negative.")
+
+    # calculate floor
+    floor_after_steps = floor(instructions[:steps])
+
+    return floor_after_steps
 
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    return instructions.replace("(", "a").replace(")", "(").replace("a", ")")
+
+    if type(instructions) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
+    # mirror input string
+    mirrored_instructions = instructions.replace("(", "a").replace(")", "(").replace("a", ")")
+
+    return mirrored_instructions
 
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    return set(first) & set(second)
+
+    # calculate common elements
+    common_elements = set(first) & set(second)
+
+    return common_elements
 
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
+
+    # check if letter is a string
+    if type(letter) is not str:
+        raise TypeError("second input parameter should be of type string.")
+
+    # check if letter is not empty
+    if letter == "":
+        raise ValueError("second input parameter should not be empty.")
+
     count = 0
     for word in words:
+        # check if words only contains strings
+        if type(word) is not str:
+            raise TypeError("first input paramenter should only contain strings.")
+
         count += word.count(letter)
     return count
 
@@ -77,15 +170,27 @@ def count_letter(words, letter):
 
 
 def first_basement_enter(instructions):
+
+    # check if instructions is a string
+    if type(instructions) is not str:
+        raise TypeError("input paramenter should be of type string.")
+
     current_floor = 0
-    for step in range(len(instructions)):
-        if instructions[step] == "(":
+
+    # iterate through each instruction
+    for step, instruction in enumerate(instructions):
+        # calculate floor after instruction
+        if instruction == "(":
             current_floor += 1
-        elif instructions[step] == ")":
+        elif instruction == ")":
             current_floor -= 1
+
+        # check if the basement has been entered
         if current_floor < 0:
             return step + 1
-    return -1
+
+    # return None if the basement was not entered
+    return None
 
 
 # ---------------------------------------------------------------- Answers
