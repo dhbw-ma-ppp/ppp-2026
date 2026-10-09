@@ -127,11 +127,13 @@ def floor_after(instructions, steps):
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
 
+    # check if instructions is a string
     if type(instructions) is not str:
         raise TypeError("input paramenter should be of type string.")
 
-    # mirror input string
-    mirrored_instructions = instructions.replace("(", "a").replace(")", "(").replace("a", ")")
+    # mirror input string using maketrans() and translate()
+    mirror = instructions.maketrans("()", ")(")
+    mirrored_instructions = instructions.translate(mirror)
 
     return mirrored_instructions
 

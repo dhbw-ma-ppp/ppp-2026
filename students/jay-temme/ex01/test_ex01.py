@@ -87,6 +87,10 @@ def test_floor_after_long_step():
     assert floor_after("()()", 6) == 0
 
 
+def test_mirrored_unusual_input():
+    assert mirrored("((aa))") == "))aa(("
+
+
 def test_common_elements_empty_list():
     assert common_elements([1, 2, 3], []) == set()
 
