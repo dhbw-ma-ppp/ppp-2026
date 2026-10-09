@@ -52,17 +52,8 @@ def floor_after(instructions, steps):
 
     Use your function `floor` from Part 1.
     """
-    a = 0
-    level=0
-    while a < steps:
-        if len(instructions) == steps:
-            return level
-        if instructions[a] == "(":
-            level=level+1
-        else: 
-            level=level-1
-        a+= 1
-    return level
+    newInstructions = instructions[:steps]
+    return floor(newInstructions)
 
 
 def mirrored(instructions):
