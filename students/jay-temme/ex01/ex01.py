@@ -14,7 +14,7 @@ def quotient_and_remainder(a, b):
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    return (celsius * 9.0 / 5.0) + 32
+    return (celsius * 9 / 5) + 32
 
 
 def first_three(text):
@@ -39,7 +39,9 @@ def science_to_analytics(text):
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    return instructions.count("(") - instructions.count(")")
+    floors_up = instructions.count("(")
+    floors_down = instructions.count(")")
+    return floors_up - floors_down
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -60,20 +62,14 @@ def mirrored(instructions):
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    out = set()
-    for i in first:
-        if i in second:
-            out.add(i)
-    return out
+    return set(first) & set(second)
 
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
     count = 0
-    for i in words:
-        for j in i:
-            if j == letter:
-                count = count + 1
+    for word in words:
+        count += word.count(letter)
     return count
 
 
@@ -82,13 +78,13 @@ def count_letter(words, letter):
 
 def first_basement_enter(instructions):
     current_floor = 0
-    for i in range(len(instructions)):
-        if instructions[i] == "(":
-            current_floor = current_floor + 1
-        if instructions[i] == ")":
-            current_floor = current_floor - 1
+    for step in range(len(instructions)):
+        if instructions[step] == "(":
+            current_floor += 1
+        elif instructions[step] == ")":
+            current_floor -= 1
         if current_floor < 0:
-            return i + 1
+            return step + 1
     return -1
 
 
