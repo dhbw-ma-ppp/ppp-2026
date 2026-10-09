@@ -52,11 +52,17 @@ def test_run_with():
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
 
+
 """This Test should try, if it returns None if there is no combination of Noun and Verb for which the target result is met. Should return None"""
+
+
 def test_find_noun_verb1():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 10000) is None
 
+
 """This test is supposed to check what happens when nothing needs to be changed. It should retourn 0, 0 but may return something else when 
 the Code isn't implemented careful enough"""
+
+
 def test_find_noun_verb2():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 0) == (0, 0)
