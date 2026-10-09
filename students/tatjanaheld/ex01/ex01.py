@@ -13,7 +13,7 @@ def quotient_and_remainder(a, b):
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    return celsius * 9 / 5 + 32
+    return round(celsius * 9 / 5 + 32, 2)
 
 
 def first_three(text):
