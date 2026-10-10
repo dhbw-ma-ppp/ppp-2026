@@ -52,9 +52,9 @@ def run(memory):
     pos = 0
     while True:
         valStep = step(memory, pos)
-        if valStep != None:
+        if valStep is not None:
             pos = valStep
-        if valStep == None or valStep >= len(memory):
+        if valStep is None or valStep >= len(memory):
             return memory[0]
 
 
