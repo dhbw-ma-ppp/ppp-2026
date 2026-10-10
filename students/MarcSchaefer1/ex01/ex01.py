@@ -50,10 +50,7 @@ def science_to_analytics(text):
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    plus = instructions.count("(")
-    minus = instructions.count(")")
-    diff = plus - minus
-    return diff
+    return str(instructions).count("(")-str(instructions).count(")")
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
