@@ -9,7 +9,7 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return (divmod(a, b))
+    return divmod(a, b)
 
 
 def celsius_to_fahrenheit(celsius):
@@ -46,7 +46,7 @@ def science_to_analytics(text):
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    return str(instructions).count("(")-str(instructions).count(")")
+    return str(instructions).count("(") - str(instructions).count(")")
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
