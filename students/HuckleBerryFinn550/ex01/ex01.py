@@ -80,11 +80,7 @@ def mirrored(instructions):
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    thisset = set()
-    for i in first:
-        if i in second:
-            thisset.add(i)
-    return thisset
+    return set(first) & set(second)
 
 
 def count_letter(words, letter):
