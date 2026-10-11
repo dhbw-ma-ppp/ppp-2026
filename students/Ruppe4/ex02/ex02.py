@@ -39,13 +39,11 @@ def run(memory):
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
-
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
     program[1] = noun
     program[2] = verb
     return run(program)
-
 
 def find_noun_verb(program, target):
     """Return (noun, verb), each from 0 to 99, for which run_with gives target.
