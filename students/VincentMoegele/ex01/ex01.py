@@ -52,9 +52,7 @@ def floor_after(instructions, steps):
 
     Use your function `floor` from Part 1.
     """
-    up = instructions[:steps].count("(")
-    down = instructions[:steps].count(")")
-    return up - down
+    return floor(instructions[:steps])
 
 
 def mirrored(instructions):

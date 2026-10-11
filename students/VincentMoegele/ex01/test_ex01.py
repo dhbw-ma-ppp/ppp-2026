@@ -19,6 +19,10 @@ def test_quotient_and_remainder():
     assert quotient_and_remainder(17, 5) == (3, 2)
 
 
+def test_quotient_and_remainder_quotient_0():
+    assert quotient_and_remainder(15, 0) == (-1, -1)
+
+
 def test_quotient_and_remainder_no_remainder():
     assert quotient_and_remainder(10, 5) == (2, 0)
 
