@@ -44,6 +44,7 @@ def test_run_changes_its_own_program():
 # computes 100 * noun + verb
 HUNDRED_NOUN_PLUS_VERB = [1, 0, 0, 3, 2, 1, 13, 13, 1, 13, 2, 0, 99, 100] + [0] * 86
 
+
 def test_run_with():
     assert run_with(HUNDRED_NOUN_PLUS_VERB, 12, 34) == 1234
 
