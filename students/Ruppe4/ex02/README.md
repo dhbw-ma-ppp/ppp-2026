@@ -5,7 +5,7 @@
 | **AI level**   | **0**: no AI, and inline completion stays off                   |
 | **Part 1**     | in class, Fri Oct 9                                             |
 | **Part 2**     | at home                                                         |
-| **Due**        | Thu Oct 15, 17:00, as a pull request                            |
+| **Due**        | Thu Oct 15, 17:00, as a pull request 2                          |
 | **Review due** | Tue Oct 20, 17:00 (author answers before the Wednesday session) |
 
 ## Getting started
