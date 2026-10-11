@@ -52,10 +52,13 @@ def test_run_with():
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
 
+
+# Die 2 selbst erstellten Tests
+
+
 def test_empty_run():
     assert run([99]) == 99
 
+
 def test_find_noun_verb_typeerror():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, "00") == (0, 0)
-
-
