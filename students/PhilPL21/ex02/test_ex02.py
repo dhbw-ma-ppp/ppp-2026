@@ -47,7 +47,11 @@ HUNDRED_NOUN_PLUS_VERB = [1, 0, 0, 3, 2, 1, 13, 13, 1, 13, 2, 0, 99, 100] + [0] 
 
 def test_run_with():
     assert run_with(HUNDRED_NOUN_PLUS_VERB, 12, 34) == 1234
+    assert run_with(HUNDRED_NOUN_PLUS_VERB, 45, 67) == 4567
+    assert run_with(HUNDRED_NOUN_PLUS_VERB, 9, 99) == 999
 
 
 def test_find_noun_verb():
-    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) != (12, 34)
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 4567) == (45, 67)
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 999) == (9, 99)
