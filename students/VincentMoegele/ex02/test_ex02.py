@@ -9,6 +9,14 @@ def test_step_add():
     assert memory == [2, 0, 0, 0, 99]
 
 
+def test_step_no_opcode():
+    memory = [3, 0, 0, 0, 1, 0, 0, 0, 99]
+    assert step(memory, 0) == 4
+    assert memory == [3, 0, 0, 0, 1, 0, 0, 0, 99]
+    assert step(memory, 4) == 8
+    assert memory == [6, 0, 0, 0, 1, 0, 0, 0, 99]
+
+
 def test_step_multiply():
     memory = [2, 3, 0, 3, 99]
     assert step(memory, 0) == 4
@@ -49,5 +57,22 @@ def test_run_with():
     assert run_with(HUNDRED_NOUN_PLUS_VERB, 12, 34) == 1234
 
 
+def test_run_with_adds_values_at_noun_and_verb_positions():
+    """tests if the addition works"""
+    program = [1, 0, 0, 0, 99, 20, 22]
+    assert run_with(program, 5, 6) == 42
+
+
+def test_run_with_multiplication_values_at_noun_and_verb_positions():
+    """tests if the multiplication works"""
+    program = [2, 0, 0, 0, 99, 20, 22]
+    assert run_with(program, 5, 6) == 440
+
+
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
+
+
+def test_find_noun_verb_None():
+    """this test checks if the function returns None if target not found"""
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 100000) is None
