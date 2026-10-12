@@ -29,7 +29,7 @@ def run(memory):
     """
 
     runPosition = 0
-    while step(memory, runPosition) == 4:
+    while step(memory, runPosition) != None:
         runPosition = runPosition + 4
     return memory[0]
 
