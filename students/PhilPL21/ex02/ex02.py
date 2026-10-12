@@ -15,19 +15,19 @@ def step(memory, position):
     if memory[position] == 99:
         return None
 
-
     if memory[position] == 1:
-        a = memory[memory[position + 1]] 
-        b = memory[memory[position + 2]] 
-        memory[memory[position + 3]] = a + b 
-        return position + 4  
+        a = memory[memory[position + 1]]
+        b = memory[memory[position + 2]]
+        memory[memory[position + 3]] = a + b
+        return position + 4
     elif memory[position] == 2:
         a = memory[memory[position + 1]]
         b = memory[memory[position + 2]]
         memory[memory[position + 3]] = a * b
         return position + 4
-        
-def run(memory): 
+
+
+def run(memory):
     """Execute instructions, starting at position 0, until the program halts.
 
     Return the value at position 0 after the program has halted.
@@ -37,6 +37,8 @@ def run(memory):
         start = step(memory, start)
 
     return memory[0]
+
+
 # ---------------------------------------------------------------- Part 2 (at home)
 
 
@@ -54,7 +56,7 @@ def find_noun_verb(program, target):
     Return None if there is no such pair.
     """
     for noun in range(0, 100):
-        for verb in range(0, 100): 
+        for verb in range(0, 100):
             if run_with(program, noun, verb) == target:
                 return noun, verb
     return None
