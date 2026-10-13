@@ -52,8 +52,8 @@ def floor(instructions):
 def floor_after(instructions, steps):
     """Return the floor Santa is on after following only the first `steps` instructions.
     Use your function `floor` from Part 1."""
-    up = INSTRUCTIONS[0:steps].count("(")
-    down = INSTRUCTIONS[0:steps].count(")")
+    up = instructions[0:steps].count("(")
+    down = instructions[0:steps].count(")")
     return up - down
 
 
@@ -73,8 +73,8 @@ def common_elements(first, second):
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
     count = 0
-    for a in words:
-        count = count + a.count(letter)
+    for buchstabe in words:
+        count = count + buchstabe.count(letter)
     return count
 
 
