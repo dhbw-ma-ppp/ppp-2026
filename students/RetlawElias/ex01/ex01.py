@@ -9,17 +9,26 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    return divmod(a, b)
+    if isinstance(a, int) and isinstance(b, int):
+        return divmod(a, b)
+    else:
+        raise TypeError("Only Integers are accepted for this function!")
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    return (celsius * 1.8) + 32
+    if isinstance(celsius, int) or isinstance(celsius, float):
+        return (celsius * 1.8) + 32
+    else:
+        raise TypeError("Only Integers and Floats are accepted for this function!")
 
 
 def first_three(text):
     """Return the first three characters of text."""
-    return text[:3]
+    if isinstance(text, str):
+        return text[:3]
+    else:
+        raise TypeError("Only Strings are accepted for this function!")
 
 
 def last_four(text):
@@ -29,19 +38,34 @@ def last_four(text):
 
 def backwards(text):
     """Return text backwards."""
-    return text[::-1]
+    if isinstance(text, str):
+        return text[::-1]
+    else:
+        raise TypeError("Only Strings are accepted for this function!")
 
 
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
-    return text.replace("Science", "Analytics")
+    if isinstance(text, str):
+        return text.replace("Science", "Analytics")
+    else:
+        raise TypeError("Only Strings are accepted for this function!")
 
 
 def floor(instructions, steps=0):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
+
+    # TypeCheck
+    if not isinstance(instructions, str):
+        raise TypeError("Only a String are accepted as instructions!")
+    if not isinstance(steps, int):
+        raise TypeError("Only an Integer are accepted as steps!")
+
+    # Normalisation
     if steps == 0:
         steps = len(str(instructions))
 
+    # Logic
     floor = 0
     for char in str(instructions):
         if char == "(":
@@ -62,11 +86,25 @@ def floor_after(instructions, steps):
 
     Use your function `floor` from Part 1.
     """
+    # TypeCheck
+    if not isinstance(instructions, str):
+        raise TypeError("Only a String are accepted as instructions!")
+    if not isinstance(steps, int):
+        raise TypeError("Only an Integer are accepted as steps!")
+
+    # Normalisation
+    if steps < 0:
+        raise ValueError("Function only takes positive numbers")
+
     return floor(instructions, steps)
 
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
+
+    if not isinstance(instructions, str):
+        raise TypeError("Only a String are accepted as instructions!")
+
     res = ""
 
     for char in instructions:
@@ -80,18 +118,12 @@ def mirrored(instructions):
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    res = []
-
-    for item in first:
-        for it in second:
-            if it == item:
-                res.append(item)
-
-    return set(res)
+    return set(first) & set(second)
 
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
+
     res = 0
     for word in words:
         for char in word:

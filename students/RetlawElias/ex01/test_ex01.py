@@ -17,6 +17,14 @@ from ex01 import (
 
 def test_quotient_and_remainder():
     assert quotient_and_remainder(17, 5) == (3, 2)
+    try:
+        quotient_and_remainder(0.1, 0.01)
+    except TypeError:
+        pass
+    try:
+        quotient_and_remainder("test", "t")
+    except TypeError:
+        pass
 
 
 def test_quotient_and_remainder_no_remainder():
@@ -26,6 +34,14 @@ def test_quotient_and_remainder_no_remainder():
 def test_celsius_to_fahrenheit():
     assert celsius_to_fahrenheit(100) == 212
     assert celsius_to_fahrenheit(0) == 32
+    try:
+        celsius_to_fahrenheit("test")
+    except TypeError:
+        pass
+    try:
+        celsius_to_fahrenheit(False)
+    except TypeError:
+        pass
 
 
 def test_celsius_to_fahrenheit_same_value():
@@ -35,14 +51,34 @@ def test_celsius_to_fahrenheit_same_value():
 
 def test_first_three():
     assert first_three("Python") == "Pyt"
+    try:
+        first_three(2)
+    except TypeError:
+        pass
+    try:
+        first_three(2)
+    except TypeError:
+        pass
 
 
 def test_last_four():
     assert last_four("Python") == "thon"
+    try:
+        last_four(5)
+    except TypeError:
+        pass
+    try:
+        last_four()
+    except TypeError:
+        pass
 
 
 def test_backwards():
     assert backwards("Python") == "nohtyP"
+    try:
+        backwards(5.6)
+    except TypeError:
+        pass
 
 
 def test_science_to_analytics():
@@ -68,6 +104,10 @@ def test_floor_up_and_down():
 
 def test_floor_after():
     assert floor_after("((())", 3) == 3
+    try:
+        floor_after("((())", -2)
+    except ValueError:
+        pass
 
 
 def test_mirrored():
