@@ -12,6 +12,7 @@ from ex01 import (
     science_to_analytics,
     bonus,
 )
+import pytest
 
 # ---------------------------------------------------------------- Part 1
 
@@ -72,23 +73,14 @@ def test_floor_after():
 
     assert floor_after("", 0) == 0
 
-    try:
+    with pytest.raises(TypeError):
         floor_after(None, "abc")
-        assert False
-    except TypeError:
-        assert True
 
-    try:
+    with pytest.raises(ValueError):
         floor_after("())a()", 5)
-        assert False
-    except ValueError:
-        assert True
 
-    try:
+    with pytest.raises(ValueError):
         floor_after("(()))", -1)
-        assert False
-    except ValueError:
-        assert True
 
 
 def test_mirrored():
@@ -96,17 +88,11 @@ def test_mirrored():
 
     assert mirrored("") == ""
 
-    try:
+    with pytest.raises(TypeError):
         mirrored(-1)
-        assert False
-    except TypeError:
-        assert True
 
-    try:
+    with pytest.raises(ValueError):
         mirrored("(()))))g")
-        assert False
-    except ValueError:
-        assert True
 
 
 def test_common_elements():
@@ -115,11 +101,8 @@ def test_common_elements():
     assert common_elements([1], [11]) == set()
     assert common_elements([True], [True, False]) == {True}
 
-    try:
+    with pytest.raises(TypeError):
         common_elements({1, 2}, {2, 3})
-        assert False
-    except TypeError:
-        assert True
 
 
 def test_count_letter():
@@ -127,11 +110,11 @@ def test_count_letter():
 
     assert count_letter(["tree", "stump"], "x") == 0
 
-    try:
+    with pytest.raises(ValueError):
+        count_letter(["Python", "Programmierung"], "nP")
+
+    with pytest.raises(TypeError):
         count_letter(None, None)
-        assert False
-    except TypeError:
-        assert True
 
 
 def test_bonus():

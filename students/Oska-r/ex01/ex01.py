@@ -24,8 +24,8 @@ def quotient_and_remainder(a, b):
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
 
-    if type(celsius) is not int:
-        raise TypeError("Temperature in Celsius must be an integer.")
+    if type(celsius) not in (int, float):
+        raise TypeError("Temperature in Celsius must be a float or an integer.")
 
     if celsius < -273:
         raise ValueError("Temperature in celsius must be above -274 degrees.")
@@ -147,7 +147,7 @@ def count_letter(words, letter):
 
     # This allows checking longer strings as letters.
     # If the function specifically requires the letter to be a single character, the line below would change to: if len(letter) != 1:
-    if len(letter) < 1:
+    if len(letter) != 1:
         raise ValueError("Letter cannot be empty.")
 
     connected_string = "".join(words)
