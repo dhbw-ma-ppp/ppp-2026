@@ -38,6 +38,16 @@ def test_run_changes_its_own_program():
     assert run([1, 9, 10, 4, 1, 0, 0, 0, 99, 50, 49]) == 1
 
 
+# input: memory = [3], position = 0
+# expected output: function raises a ValueError
+# case: memory contains a not implemented opcode
+def test_step_unknown_opcode():
+    try:
+        step([3], 0)
+    except ValueError:
+        assert True
+
+
 # ---------------------------------------------------------------- Part 2
 # Add at least two tests of your own below, for the Part 2 functions.
 
@@ -51,3 +61,20 @@ def test_run_with():
 
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
+
+
+# input: memory = [1, 0, 0], position = 0
+# expected output: function raises a ValueError
+# case: memory does not have enough indecies to properly execute an opcode
+def test_step_wrong_memory_length():
+    try:
+        step([1, 0, 0], 0)
+    except ValueError:
+        assert True
+
+
+# input: program = [1, 0, 0, 4, 0, 3, 0, 0, 99]
+# expected output: 4
+# case: the program writes the opcode it's going to execute next
+def test_run_writes_opcode():
+    assert run([1, 0, 0, 4, 0, 3, 0, 0, 99]) == 4

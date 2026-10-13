@@ -11,11 +11,32 @@ def step(memory, position):
 
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
+    Raises a ValueError when encountering an unknown opcode.
     """
+    # check if position is an integer
+    if type(position) is not int:
+        raise TypeError("second input parameter should be an integer")
+
+    # check if memory is an iterable
+    if type(memory) is not list:
+        raise TypeError("first input parameter should be a list")
+
+    # check if memory is empty
+    if len(memory) == 0:
+        raise ValueError("first input parameter should not be empty")
+
+    # check if position is an index in memory
+    if position < 0 or len(memory) <= position:
+        raise ValueError("second input parameter must be a valid index if first input parameter")
+
     # easily expandable opcode listing
     match memory[position]:
         # opcode 1: addition
         case 1:
+            # check if enough following indecies exist
+            if len(memory) < position + 5:
+                raise ValueError("memory is not large enough or contains wrong opcode")
+
             # find indecies of values to add and write into
             input_1_index = memory[position + 1]
             input_2_index = memory[position + 2]
@@ -28,6 +49,10 @@ def step(memory, position):
             return position + 4
         # opcode 2: multiplication
         case 2:
+            # check if enough following indecies exist
+            if len(memory) < position + 5:
+                raise ValueError("memory is not large enough or contains wrong opcode")
+
             # find indecies of values to multiply and write into
             input_1_index = memory[position + 1]
             input_2_index = memory[position + 2]
@@ -52,16 +77,19 @@ def run(memory):
     Return the value at position 0 after the program has halted.
     """
 
+    # use a copy of the input parameter to avoid changing the original
+    memory_copy = memory.copy()
+
     # check if memory is a list
-    if type(memory) is not list:
+    if type(memory_copy) is not list:
         raise TypeError("input parameter should be a list of integers")
 
     # check if memory is not empty
-    if len(memory) == 0:
+    if len(memory_copy) == 0:
         raise ValueError("input parameter should contain at least one element")
 
     # check if memory only contains integers
-    for i in memory:
+    for i in memory_copy:
         if type(i) is not int:
             raise TypeError("input parameter should only contain integers")
 
@@ -73,10 +101,10 @@ def run(memory):
     while position is not None:
         # since step returns the position of the next opcode, set position to that value
         # executes instruction at position position in memory
-        position = step(memory, position)
+        position = step(memory_copy, position)
 
     # returns the value at position 0
-    return memory[0]
+    return memory_copy[0]
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -107,11 +135,6 @@ def run_with(program, noun, verb):
     program[1] = noun
     program[2] = verb
 
-    # check if every input
-    for i in program:
-        if type(i) is not int:
-            raise TypeError("input parameter 1 should contain integers at all indecies")
-
     # runs the program
     return run(program)
 
@@ -122,6 +145,13 @@ def find_noun_verb(program, target):
     Return None if there is no such pair.
     """
 
+    # brute force, check all posible noun and verb to see if one gives target
+    for i in range(100):
+        for j in range(100):
+            if run_with(program, i, j) == target:
+                return i, j
+
+    # if no noun and verb are found, return None
     return None
 
 
