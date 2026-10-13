@@ -94,3 +94,13 @@ def test_mirrored2():
 
 def test_mirrored3():
     assert mirrored("") == ""
+
+
+def text_first_three2():
+    with pytest.raises(TypeError, match="Der Text ist zu kurz"):
+        first_three(None)
+
+
+def text_last_four1():
+    with pytest.raises(TypeError, match="Der Text ist zu kurz"):
+        last_four(None)
