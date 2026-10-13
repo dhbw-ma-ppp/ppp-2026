@@ -19,7 +19,7 @@ from ex01 import (
 def test_quotient_and_remainder():
     assert quotient_and_remainder(17, 5) == (3, 2)
     with pytest.raises(ZeroDivisionError):
-        1 / 0
+        quotient_and_remainder(2, 0)
 
 
 def test_quotient_and_remainder_no_remainder():
