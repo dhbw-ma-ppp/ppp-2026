@@ -31,7 +31,7 @@ def run(memory):
     Return the value at position 0 after the program has halted.
     """
     Position = 0
-    while Position != None:
+    while Position is not None:
         Position = step(memory, Position)
     return memory[0]
 
