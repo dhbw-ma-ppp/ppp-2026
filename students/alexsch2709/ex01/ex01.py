@@ -28,9 +28,7 @@ def first_three(text):
 
 
 def last_four(text):
-    max = len(text)
-    final = text[max - 4 :]
-    return final
+    return text[-4:]
 
 
 # einfacher mit final = text[:-4]

@@ -88,3 +88,6 @@ def test_mirrored_self():
 
 def test_backwards_self():
     assert backwards("Hallo Welt!") == "!tleW ollaH"
+
+def test_last_four_self():
+    assert last_four("abc") == "abc"
