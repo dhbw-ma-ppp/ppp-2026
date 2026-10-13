@@ -85,9 +85,23 @@ def test_count_letter():
 # ----------------------------------------------------------------
 
 
+<<<<<<< Updated upstream
 def own_test_mirrored():
     assert mirrored(mirrored("Test")) == "Test"
 
 
 def own_test_common_elements():
     assert common_elements([1, 2, 3], ["b", "c", "d"]) == []
+=======
+def test_mirrored_own():
+    assert mirrored(mirrored("Test")) == "Test"
+
+
+def test_common_elements_own():
+    assert common_elements([1, 2, 3], ["b", "c", "d"]) == set()
+
+
+# Added suggested test case
+def test_floor_own():
+    assert floor("(()(a(b)(") == 3
+>>>>>>> Stashed changes

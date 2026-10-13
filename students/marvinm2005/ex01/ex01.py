@@ -9,9 +9,13 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
+<<<<<<< Updated upstream
     x = a // b
     y = a % b
     return (x, y)
+=======
+    return divmod(a, b)
+>>>>>>> Stashed changes
 
 
 def celsius_to_fahrenheit(celsius):
@@ -47,7 +51,11 @@ def floor(instructions):
     for i in instructions:
         if i == "(":
             steps += 1
+<<<<<<< Updated upstream
         else:
+=======
+        elif i == ")":
+>>>>>>> Stashed changes
             steps -= 1
     return steps
 
@@ -60,6 +68,7 @@ def floor_after(instructions, steps):
 
     Use your function `floor` from Part 1.
     """
+<<<<<<< Updated upstream
     anzahl = 0
     for i in instructions[:steps]:
         if i == "(":
@@ -67,6 +76,9 @@ def floor_after(instructions, steps):
         else:
             anzahl -= 1
     return anzahl
+=======
+    return floor(instructions[:steps])
+>>>>>>> Stashed changes
 
 
 def mirrored(instructions):
