@@ -67,7 +67,7 @@ def test_step_error():
 
 
 def test_find_noun_verb_Impossible():
-    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1919191) == None
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1919191) is None
 
 
 """ Input:          step([1,0,0,3,2,1], 22)
