@@ -73,7 +73,6 @@ def test_floor_after():
     assert floor_after("(()", 100) == 1
 
 
-
 def test_mirrored():
     assert mirrored("(()") == "))("
     assert mirrored(")") == "("
