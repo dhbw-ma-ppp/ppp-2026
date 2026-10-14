@@ -70,6 +70,8 @@ def test_floor_after():
     assert floor_after("((())", 3) == 3
     assert floor_after("(()(())", 1) == 1
     assert floor_after("", 4) == 0
+    assert floor_after("(()", 100) == 1
+
 
 
 def test_mirrored():
