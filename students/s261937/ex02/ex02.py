@@ -29,6 +29,8 @@ def step(memory, position):
     destination = memory[position + 3]
     memory[destination] = result
 
+    return position + 4
+
 
 def run(memory):
     """Execute instructions, starting at position 0, until the program halts.
