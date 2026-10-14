@@ -36,7 +36,7 @@ def run(memory):
 
     while True:
         position = step(memory, position)
-        if position == None:
+        if position is None:
             return memory[0]
 
 
