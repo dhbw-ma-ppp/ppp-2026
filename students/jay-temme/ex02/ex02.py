@@ -15,19 +15,19 @@ def step(memory, position):
     """
     # check if position is an integer
     if type(position) is not int:
-        raise TypeError("second input parameter should be an integer")
+        raise TypeError("position must be of type integer")
 
     # check if memory is an iterable
     if type(memory) is not list:
-        raise TypeError("first input parameter should be a list")
+        raise TypeError("memory must be of type list")
 
     # check if memory is empty
     if len(memory) == 0:
-        raise ValueError("first input parameter should not be empty")
+        raise ValueError("memory must be of at least length 1")
 
     # check if position is an index in memory
     if position < 0 or len(memory) <= position:
-        raise ValueError("second input parameter must be a valid index if first input parameter")
+        raise ValueError("position must be a valid index of memory")
 
     # easily expandable opcode listing
     match memory[position]:
@@ -82,16 +82,16 @@ def run(memory):
 
     # check if memory is a list
     if type(memory_copy) is not list:
-        raise TypeError("input parameter should be a list of integers")
+        raise TypeError("memory must be of type list")
 
     # check if memory is not empty
     if len(memory_copy) == 0:
-        raise ValueError("input parameter should contain at least one element")
+        raise ValueError("memory must be of at least length 1")
 
     # check if memory only contains integers
     for i in memory_copy:
         if type(i) is not int:
-            raise TypeError("input parameter should only contain integers")
+            raise TypeError("memory must only contain integers")
 
     # starting position is 0
     position = 0
@@ -115,15 +115,15 @@ def run_with(program, noun, verb):
 
     # check if program is a list
     if type(program) is not list:
-        raise TypeError("input parameter 1 should be a list")
+        raise TypeError("program must be of type list")
 
     # check if program is not empty
     if len(program) == 0:
-        raise ValueError("input parameter 1 must be of at least length 1")
+        raise ValueError("program must be of at least length 1")
 
     # check if noun and verb are integers
     if type(noun) is not int or type(verb) is not int:
-        raise TypeError("input parameters 2 and 3 should be of type integer.")
+        raise TypeError("nound and verb must be of type integer")
 
     # set length of program to 3 if it's less than 3
     if len(program) == 1:
@@ -144,6 +144,10 @@ def find_noun_verb(program, target):
 
     Return None if there is no such pair.
     """
+
+    # check if target is an integer
+    if type(target) is not int:
+        raise TypeError("target must be of type integer")
 
     # brute force, check all posible noun and verb to see if one gives target
     for i in range(100):
