@@ -51,3 +51,11 @@ def test_run_with():
 
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
+
+def test_step_self():
+    memory = [1,2,1,0,99]
+    assert step(memory,0) == 4
+    assert memory == [3,2,1,0,99]
+
+def test_run_with_self():
+    assert run_with(HUNDRED_NOUN_PLUS_VERB, 22,33) == 2233
