@@ -26,7 +26,7 @@ def step(memory, position):
         memory[memory[position + 3]] = b
         return position + 4
     else:
-        return -1
+        raise ValueError
 
 
 def run(memory):
