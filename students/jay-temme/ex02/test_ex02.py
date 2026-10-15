@@ -38,14 +38,31 @@ def test_run_changes_its_own_program():
     assert run([1, 9, 10, 4, 1, 0, 0, 0, 99, 50, 49]) == 1
 
 
-# input: memory = [3], position = 0
-# expected output: function raises a ValueError
-# case: memory contains a not implemented opcode
+# input:            memory = [1, 0, 0], position = 0
+# expected output:  function raises a ValueError
+# case:             memory does not have enough indecies to properly execute an opcode
+def test_step_wrong_memory_length():
+    try:
+        step([1, 0, 0], 0)
+    except IndexError:
+        assert True
+
+
+# input:            memory = [3], position = 0
+# expected output:  function raises a ValueError
+# case:             memory contains a not implemented opcode
 def test_step_unknown_opcode():
     try:
         step([3], 0)
     except ValueError:
         assert True
+
+
+# input:            program = [1, 0, 0, 4, 0, 3, 0, 0, 99]
+# expected output:  4
+# case:             the program writes the opcode it's going to execute next
+def test_run_writes_opcode():
+    assert run([1, 0, 0, 4, 0, 3, 0, 0, 99]) == 4
 
 
 # ---------------------------------------------------------------- Part 2
@@ -63,18 +80,25 @@ def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
 
 
-# input: memory = [1, 0, 0], position = 0
-# expected output: function raises a ValueError
-# case: memory does not have enough indecies to properly execute an opcode
-def test_step_wrong_memory_length():
+# input:            program = [99, 0, 0], noun = "test", verb = 0
+# expected output:  function raises a TypeError
+# case:             noun or verb are not integers
+def test_run_with_noun_is_not_int():
     try:
-        step([1, 0, 0], 0)
-    except ValueError:
+        run_with([99, 0, 0], "test", 0)
+    except TypeError:
         assert True
 
 
-# input: program = [1, 0, 0, 4, 0, 3, 0, 0, 99]
-# expected output: 4
-# case: the program writes the opcode it's going to execute next
-def test_run_writes_opcode():
-    assert run([1, 0, 0, 4, 0, 3, 0, 0, 99]) == 4
+# input:            program = [99], noun = 0, verb = 0
+# expected output:  None
+# case:             program is not long enough to simply insert noun and verb
+def test_run_with_program_length_is_1():
+    assert run_with([99], 0, 0) == 99
+
+
+# input:            program = [1, 0, 0, 3, 99] + [0] * 95, target = 0
+# expected output:  None
+# case:             no noun and verb can cause program to return target
+def test_find_noun_verb_impossible():
+    assert find_noun_verb([1, 0, 0, 3, 99] + [0] * 95, 0) is None

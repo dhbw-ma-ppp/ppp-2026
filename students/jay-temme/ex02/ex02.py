@@ -35,7 +35,7 @@ def step(memory, position):
         case 1:
             # check if enough following indecies exist
             if len(memory) < position + 5:
-                raise ValueError("memory is not large enough or contains wrong opcode")
+                raise IndexError("memory is not large enough or contains wrong opcode")
 
             # find indecies of values to add and write into
             input_1_index = memory[position + 1]
@@ -51,7 +51,7 @@ def step(memory, position):
         case 2:
             # check if enough following indecies exist
             if len(memory) < position + 5:
-                raise ValueError("memory is not large enough or contains wrong opcode")
+                raise IndexError("memory is not large enough or contains wrong opcode")
 
             # find indecies of values to multiply and write into
             input_1_index = memory[position + 1]
@@ -123,7 +123,7 @@ def run_with(program, noun, verb):
 
     # check if noun and verb are integers
     if type(noun) is not int or type(verb) is not int:
-        raise TypeError("nound and verb must be of type integer")
+        raise TypeError("noun and verb must be of type integer")
 
     # set length of program to 3 if it's less than 3
     if len(program) == 1:
