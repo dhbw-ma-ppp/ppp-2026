@@ -13,13 +13,12 @@ def step(memory, position):
     Return the position of the next instruction, or None if the opcode is 99.
     """
     if memory[position] == 1:
-        memory[memory[position+3]] = memory[memory[position+1]] + memory[memory[position+2]]
+        memory[memory[position + 3]] = memory[memory[position + 1]] + memory[memory[position + 2]]
     elif memory[position] == 2:
-        memory[memory[position+3]] = memory[memory[position+1]] * memory[memory[position+2]]
+        memory[memory[position + 3]] = memory[memory[position + 1]] * memory[memory[position + 2]]
     elif memory[position] == 99:
         return None
     return position + 4
-       
 
 
 def run(memory):
@@ -33,7 +32,6 @@ def run(memory):
         runPosition = runPosition + 4
     return memory[0]
 
-    
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
