@@ -11,6 +11,7 @@ def step(memory, position):
 
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
+    Raises a value error if the opcode is none of the above.
     """
     if memory[position] == 1:
         memory[memory[position + 3]] = memory[memory[position + 1]] + memory[memory[position + 2]]
