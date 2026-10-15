@@ -44,6 +44,7 @@ def test_run_changes_its_own_program():
     # the first instruction writes 99 to position 4
     assert run([1, 9, 10, 4, 1, 0, 0, 0, 99, 50, 49]) == 1
 
+
 def test_run_invalid_input():
     memory = [1, 5, 6, 0, 98, 20, 22]
     with pytest.raises(ValueError):
