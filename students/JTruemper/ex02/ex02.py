@@ -18,6 +18,8 @@ def step(memory, position):
         memory[memory[position + 3]] = memory[memory[position + 1]] * memory[memory[position + 2]]
     elif memory[position] == 99:
         return None
+    else:
+        raise ValueError
     return position + 4
 
 

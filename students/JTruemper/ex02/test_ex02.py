@@ -1,3 +1,4 @@
+import pytest
 from ex02 import find_noun_verb, run, run_with, step
 
 # ---------------------------------------------------------------- Part 1
@@ -23,6 +24,12 @@ def test_step_at_a_later_position():
 
 def test_step_halt():
     assert step([99], 0) is None
+
+
+def test_step_invalid_input():
+    memory = [2, 4, 6, 8]
+    with pytest.raises(ValueError):
+        step(memory, 1)
 
 
 def test_run():
