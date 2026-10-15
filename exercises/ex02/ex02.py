@@ -12,13 +12,7 @@ def step(memory, position):
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
     """
-    if memory[position] == 1:
-        memory[memory[position+3]] = memory[memory[position+1]] + memory[memory[position+2]]
-    elif memory[position] == 2:
-        memory[memory[position+3]] = memory[memory[position+1]] * memory[memory[position+2]]
-    elif memory[position] == 99:
-        return None
-    return position + 4  # replace this line with your code
+    pass  # replace this line with your code
 
 
 def run(memory):
@@ -26,10 +20,7 @@ def run(memory):
 
     Return the value at position 0 after the program has halted.
     """
-    runPosition = 0
-    while step(memory, runPosition) != None:
-        runPosition = runPosition + 4
-    return memory[0]  # replace this line with your code
+    pass  # replace this line with your code
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -37,10 +28,7 @@ def run(memory):
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
-    program = program.copy()
-    program[1] = noun
-    program[2] = verb
-    return run(program)
+    pass  # replace this line with your code
 
 
 def find_noun_verb(program, target):
