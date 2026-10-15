@@ -25,7 +25,7 @@ def step(memory, position):
     elif befehl == 99:
         return None
     else:
-        raise ValueError('Der Befehl ist nicht 1,2 oder 99')
+        raise ValueError("Der Befehl ist nicht 1,2 oder 99")
 
 
 def run(memory):
