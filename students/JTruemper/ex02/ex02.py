@@ -38,7 +38,7 @@ def run(memory):
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
-    newProgram = program
+    newProgram = list(program)
     newProgram[1] = noun
     newProgram[2] = verb
     run(newProgram)
@@ -50,7 +50,12 @@ def find_noun_verb(program, target):
 
     Return None if there is no such pair.
     """
-    pass  # replace this line with your code
+    for noun in range(100):
+        for verb in range(100):
+            if run_with(program, noun, verb) == target:
+                return (noun, verb)
+    return None
+    # replace this line with your code
 
 
 # ---------------------------------------------------------------- Answers
