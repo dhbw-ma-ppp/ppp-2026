@@ -11,7 +11,7 @@ def step(memory, position):
 
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
-    Es führt den Befehl nicht aus.
+    Es gibt eine Fehlermeldung aus
     """
     befehl = memory[position]
     new_position = position + 4
@@ -24,6 +24,8 @@ def step(memory, position):
         return new_position
     elif befehl == 99:
         return None
+    else:
+        raise ValueError('Der Befehl ist nicht 1,2 oder 99')
 
 
 def run(memory):

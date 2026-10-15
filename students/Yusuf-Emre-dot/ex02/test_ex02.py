@@ -53,9 +53,12 @@ def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
 
 
-def test_find_noun_verb_zero():
+def test_find_noun_verb_zero(): #selbst gemacht
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 9999999) is None
 
 
-def test_find_noun_verb_wrongtype():
+def test_find_noun_verb_wrongtype(): #selbstgemacht
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, "00") == (0, 0)
+
+def test_command_error(): #selbst gemacht
+    assert step([999,999,999,999],0) 
