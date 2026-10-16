@@ -38,7 +38,7 @@ def parse_transcript(lines):
     current_path = ""
     ReturnList = []
 
-    ints = ["0","1","2","3","4","5","6","7","8","9"]
+    ints = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
     for element in lines:
         if element[0] == "$":
@@ -57,10 +57,10 @@ def parse_transcript(lines):
 
             elif element[2:4] == "ls":
                 pass
-            
+
         elif element[0:3] == "dir":
             pass
-        
+
         else:
             pos = 0
             size = ""
@@ -73,12 +73,12 @@ def parse_transcript(lines):
                     break
 
             size = int(size)
-            name = element[pos+1:]
+            name = element[pos + 1 :]
 
-            ReturnList.append((current_path + name,size))
+            ReturnList.append((current_path + name, size))
 
     return ReturnList
-        
+
 
 def directory_sizes(entries):
     """Return a dict mapping every directory path to the total size of all files under it.
@@ -87,7 +87,7 @@ def directory_sizes(entries):
     size includes every file anywhere below it, however deep. The root directory is "/".
     """
 
-    returnDict = {"/":0}
+    returnDict = {"/": 0}
 
     for obj in entries:
         Path = obj[0]
@@ -100,17 +100,17 @@ def directory_sizes(entries):
         dirPath = ""
 
         for dir in Stack:
-            if dir == "": # Urpsrung / wird Abgeschnitten
+            if dir == "":  # Urpsrung / wird Abgeschnitten
                 returnDict["/"] += Size
             else:
-                dirPath += "/" + dir # Path wird tiefer verfolgt
+                dirPath += "/" + dir  # Path wird tiefer verfolgt
 
                 if dirPath not in returnDict:
-                    returnDict[dirPath] = Size # neu angelegt falls nicht enthalten
+                    returnDict[dirPath] = Size  # neu angelegt falls nicht enthalten
                 else:
-                    returnDict[dirPath] += Size # erhöht falls enthalten
+                    returnDict[dirPath] += Size  # erhöht falls enthalten
 
-    return returnDict        
+    return returnDict
 
 
 def small_directories_total(sizes, limit=100000):
@@ -123,6 +123,7 @@ def small_directories_total(sizes, limit=100000):
             total += size
 
     return total
+
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
@@ -141,26 +142,26 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     SmallestOption = ("", float("inf"))
 
     if toBeFreed > 0:
-        for path,size in sizes.items():
+        for path, size in sizes.items():
             if size >= toBeFreed:
                 if size < SmallestOption[1]:
                     SmallestOption = (path, size)
 
         return SmallestOption[1]
-            
 
     else:
-        return None 
+        return None
+
 
 def delete_directory(sizes, path):
     """
-    Return a new dict of directory sizes, as if the directory `path` had been deleted. 
+    Return a new dict of directory sizes, as if the directory `path` had been deleted.
     If path is not in sizes return the unchanged sizes, as path is not in it, it is automatically removed.
     """
 
-    newDir = copy.deepcopy(sizes) # deepcopy shallow copy will still change sizes
+    newDir = copy.deepcopy(sizes)  # deepcopy shallow copy will still change sizes
 
-    prefix = path.rstrip("/") + "/" # Einheitlichkeit für paths mit / und ohne / am ende
+    prefix = path.rstrip("/") + "/"  # Einheitlichkeit für paths mit / und ohne / am ende
 
     contained = False
 
@@ -169,21 +170,22 @@ def delete_directory(sizes, path):
             del newDir[obj]
             contained = True
 
-    if contained == False:
+    if not contained:
         return newDir
 
-    parent = path.rstrip("/").rsplit("/", 1)[0] or "/" # Direktes parent dir 
+    parent = path.rstrip("/").rsplit("/", 1)[0] or "/"  # Direktes parent dir
 
     while True:
         if parent in newDir:
-            newDir[parent] -= sizes[path] # Parent wird in größe reduziert
+            newDir[parent] -= sizes[path]  # Parent wird in größe reduziert
 
         if parent == "/":
             break
 
-        parent = parent.rsplit("/", 1)[0] or "/" # Schritt nach außen 
+        parent = parent.rsplit("/", 1)[0] or "/"  # Schritt nach außen
 
     return newDir
+
 
 # ---------------------------------------------------------------- Answers
 

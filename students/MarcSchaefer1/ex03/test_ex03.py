@@ -64,9 +64,17 @@ def test_delete_directory():
 
 def test_delete_directory_false_path():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
-    assert delete_directory(sizes, "/photos/swummer") == {'/': 11100, '/music': 3000, '/photos': 8000, '/photos/summer': 4000}
+    assert delete_directory(sizes, "/photos/swummer") == {
+        "/": 11100,
+        "/music": 3000,
+        "/photos": 8000,
+        "/photos/summer": 4000,
+    }
 
 
 def test_delete_parent_directory():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
-    assert delete_directory(sizes, "/photos") == {'/': 3100, '/music': 3000,}
+    assert delete_directory(sizes, "/photos") == {
+        "/": 3100,
+        "/music": 3000,
+    }
