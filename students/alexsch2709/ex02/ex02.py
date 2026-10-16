@@ -51,10 +51,10 @@ def run(memory):
     """
     pos = 0
     while True:
-        valStep = step(memory, pos)
-        if valStep is not None:
-            pos = valStep
-        if valStep is None or valStep >= len(memory):
+        zwischen = step(memory, pos)
+        if zwischen is not None:
+            pos = zwischen
+        if zwischen is None or zwischen >= len(memory):
             return memory[0]
 
 
@@ -64,7 +64,7 @@ def run(memory):
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
 
-    copy = program[:]
+    copy = program.copy()
 
     copy[1] = noun
     copy[2] = verb
@@ -77,8 +77,8 @@ def find_noun_verb(program, target):
     Return None if there is no such pair.
     """
 
-    for i in range(100):
-        for j in range(100):
+    for i in range(0,100):
+        for j in range(0,100):
             if run_with(program, i, j) == target:
                 return (i, j)
 
