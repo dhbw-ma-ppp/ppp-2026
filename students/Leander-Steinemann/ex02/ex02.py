@@ -13,7 +13,7 @@ def step(memory, position):
 
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
-    When the Opcode isn't 1,2 or 99, then it wouldn't retourn anything. I think it should return -1.
+    When the Opcode isn't 1,2 or 99, then it wouldn't retourn anything. I think it should raise a Value Error.
     """
     if memory[position] == 99:
         return None
@@ -34,11 +34,9 @@ def run(memory):
 
     Return the value at position 0 after the program has halted.
     """
-    Position = 0
-    while Position is not None:
-        Position = step(memory, Position)
-        if Position == -1:
-            return -1
+    position = 0
+    while position is not None:
+        position = step(memory, position)
     return memory[0]
 
 
@@ -57,13 +55,11 @@ def find_noun_verb(program, target):
 
     Return None if there is no such pair.
     """
-    """if run(program.copy())==target:
-          return (program[1], program[2])
-    if:"""
-    for noun in range(100):
-        for verb in range(100):
+
+    for noun in range(0, 100):
+        for verb in range(0, 100):
             if run_with(program.copy(), noun, verb) == target:
-                return (noun, verb)
+                return noun, verb
     return None
 
 
