@@ -77,21 +77,21 @@ def run(memory):
     Return the value at position 0 after the program has halted.
     """
 
-    # use a copy of the input parameter to avoid changing the original
-    memory_copy = memory.copy()
-
     # check if memory is a list
-    if type(memory_copy) is not list:
+    if type(memory) is not list:
         raise TypeError("memory must be of type list")
 
     # check if memory is not empty
-    if len(memory_copy) == 0:
+    if len(memory) == 0:
         raise ValueError("memory must be of at least length 1")
 
     # check if memory only contains integers
-    for i in memory_copy:
+    for i in memory:
         if type(i) is not int:
             raise TypeError("memory must only contain integers")
+
+    # use a copy of memory to avoid changing the original
+    memory_copy = memory.copy()
 
     # starting position is 0
     position = 0
@@ -125,18 +125,21 @@ def run_with(program, noun, verb):
     if type(noun) is not int or type(verb) is not int:
         raise TypeError("noun and verb must be of type integer")
 
+    # use a copy of program to avoid changing the original
+    program_copy = program.copy()
+
     # set length of program to 3 if it's less than 3
-    if len(program) == 1:
-        program.append(None)
-    if len(program) == 2:
-        program.append(None)
+    if len(program_copy) == 1:
+        program_copy.append(None)
+    if len(program_copy) == 2:
+        program_copy.append(None)
 
     # insert noun and verb into the indecies 1 and 2 of program
-    program[1] = noun
-    program[2] = verb
+    program_copy[1] = noun
+    program_copy[2] = verb
 
     # runs the program
-    return run(program)
+    return run(program_copy)
 
 
 def find_noun_verb(program, target):
