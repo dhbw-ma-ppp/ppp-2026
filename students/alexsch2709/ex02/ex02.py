@@ -77,8 +77,8 @@ def find_noun_verb(program, target):
     Return None if there is no such pair.
     """
 
-    for i in range(0,100):
-        for j in range(0,100):
+    for i in range(0, 100):
+        for j in range(0, 100):
             if run_with(program, i, j) == target:
                 return (i, j)
 
