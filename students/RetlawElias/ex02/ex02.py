@@ -17,13 +17,19 @@ def step(memory, position):
             case 99:
                 return None
             case 1:
-                memory[memory[position + 3]] = (
-                    memory[memory[position + 1]] + memory[memory[position + 2]]
-                )
+                if len(memory) >= 1 and len(memory) - memory[position] > 2:
+                    memory[memory[position + 3]] = (
+                        memory[memory[position + 1]] + memory[memory[position + 2]]
+                    )
+                else:
+                    return None
             case 2:
-                memory[memory[position + 3]] = (
-                    memory[memory[position + 1]] * memory[memory[position + 2]]
-                )
+                if len(memory) >= 1 and len(memory) - memory[position] > 2:
+                    memory[memory[position + 3]] = (
+                        memory[memory[position + 1]] * memory[memory[position + 2]]
+                    )
+                else:
+                    return None
             case _:
                 return None
 
@@ -50,11 +56,14 @@ def run(memory):
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
-    memory = program.copy()
-    memory[1] = noun
-    memory[2] = verb
+    if len(program) > 2:
+        memory = program.copy()
+        memory[1] = noun
+        memory[2] = verb
 
-    return run(memory)
+        return run(memory)
+    else:
+        return None
 
 
 def find_noun_verb(program, target):
