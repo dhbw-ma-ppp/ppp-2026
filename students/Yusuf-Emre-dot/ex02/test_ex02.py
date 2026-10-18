@@ -1,5 +1,5 @@
 from ex02 import find_noun_verb, run, run_with, step
-
+import pytest
 # ---------------------------------------------------------------- Part 1
 
 
@@ -58,8 +58,14 @@ def test_find_noun_verb_zero():  # selbst gemacht
 
 
 def test_find_noun_verb_wrongtype():  # selbstgemacht
-    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, "00") == (0, 0)
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, "00") is None
 
 
-# def test_command_error(): #selbst gemacht
-# assert step([999,999,999,999],0)
+def test_command_error():
+    with pytest.raises(ValueError, match="Der Befehl ist nicht 1,2 oder 99"):
+        step([999, 999, 999, 999], 0)
+
+
+def test_run_with_Error():
+    with pytest.raises(TypeError, match="Input must be an int"):
+        run_with(HUNDRED_NOUN_PLUS_VERB, "Hi", "Error")
