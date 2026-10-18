@@ -12,20 +12,23 @@ def step(memory, position):
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
     """
-    if memory[position] == 99:
-        return None
-    if memory[position] != 1 and memory[position] != 2:
-        raise AttributeError
     opcode = memory[position]
-    pos1 = memory[memory[position + 1]]
-    pos2 = memory[memory[position + 2]]
+
+    if opcode == 99:
+        return None
+    if opcode != 1 and opcode != 2:
+        raise ValueError
+
+    value_pos1 = memory[memory[position + 1]]
+    value_pos2 = memory[memory[position + 2]]
     targetpos = memory[position + 3]
     if opcode == 1:
-        memory[targetpos] = pos1 + pos2
-        return position + 4
+        memory[targetpos] = value_pos1 + value_pos2
+
     elif opcode == 2:
-        memory[targetpos] = pos1 * pos2
-        return position + 4
+        memory[targetpos] = value_pos1 * value_pos2
+
+    return position + 4
 
 
 def run(memory):
@@ -46,10 +49,14 @@ def run(memory):
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
     if not isinstance(noun, int) or not isinstance(verb, int):
-        raise AttributeError
-    program[1] = noun
-    program[2] = verb
-    return run(program)
+        raise ValueError
+
+    if noun < 0 or verb < 0:
+        raise ValueError
+    programcopy = program.copy()
+    programcopy[1] = noun
+    programcopy[2] = verb
+    return run(programcopy)
 
 
 def find_noun_verb(program, target):
