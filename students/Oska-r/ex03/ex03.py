@@ -27,27 +27,15 @@ EXAMPLE = [
 # ---------------------------------------------------------------- Part 1 (in class)
 
 
-def format_path_size_pairs(path_size_pairs):
-    new_path_size_pairs = []
-
-    for path, size in path_size_pairs:
-        line_path = ""
-        for index, element in enumerate(path):
-            if index == len(path) - 1 or index == 0:
-                line_path += element
-            else:
-                line_path += element + "/"
-
-        new_path_size_pairs.append((line_path, int(size)))
-    return new_path_size_pairs
-
-
 def parse_transcript(lines):
     """Return a list of (path, size) pairs, one per file listed in the transcript.
 
     lines is a list of strings like EXAMPLE. Paths are full paths, e.g. "/photos/trip.jpg",
     in the order the files appear in the transcript.
     """
+    if lines is None:
+        return None
+
     path_size_pairs = []
 
     current_path = []
@@ -59,19 +47,20 @@ def parse_transcript(lines):
         if first_command == "$" and second_command == "cd":
             argument = line.split(" ")[2]
 
-            if argument == "/":
-                current_path = ["/"]
-            elif argument == "..":
-                current_path.pop()
-            else:
-                current_path.append(argument)
+            match argument:
+                case "/":
+                    current_path = ["/"]
+                case "..":
+                    current_path.pop()
+                case _:
+                    current_path.append(argument + "/")
 
-        elif first_command != "$" and first_command != "dir":
+        elif first_command not in {"$", "dir"}:
             current_path.append(second_command)
-            path_size_pairs.append((current_path.copy(), first_command))
+            path_size_pairs.append(("".join(current_path), int(first_command)))
             current_path.pop()
 
-    return format_path_size_pairs(path_size_pairs)
+    return path_size_pairs
 
 
 def directory_sizes(entries):
@@ -100,13 +89,7 @@ def directory_sizes(entries):
 
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
-    sum = 0
-    for size in sizes.values():
-        if size > limit:
-            continue
-
-        sum += size
-    return sum
+    return sum(size for size in sizes.values() if size <= limit)
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -119,9 +102,12 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
     if needed_free > disk_size:
-        raise ValueError("needed_free cannot be bigger than disk_size")
+        raise ValueError(
+            f"needed_free ({needed_free}) cannot be bigger than disk_size ({disk_size})"
+        )
 
     space_to_free_up = needed_free - (disk_size - sizes["/"])
+
     if space_to_free_up <= 0:
         return None
 
@@ -133,6 +119,7 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
 
         if size < smallest_so_far:
             smallest_so_far = size
+
     return smallest_so_far
 
 
@@ -147,14 +134,14 @@ def delete_directory(sizes, path):
     if path not in sizes:
         return sizes
 
-    new_sizes = sizes.copy()
-    new_sizes.pop(path)
+    sizes_copy = sizes.copy()
+    sizes_copy.pop(path)
 
-    for new_path in new_sizes.keys():
-        if new_path in path:
-            new_sizes[new_path] -= sizes[path]
+    for current_path in sizes_copy.keys():
+        if current_path in path:
+            sizes_copy[current_path] -= sizes[path]
 
-    return new_sizes
+    return sizes_copy
 
 
 # ---------------------------------------------------------------- Answers
