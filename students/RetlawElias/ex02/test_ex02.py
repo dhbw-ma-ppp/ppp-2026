@@ -78,7 +78,7 @@ def test_find_noun_verb_Impossible():
 
 
 def test_step_index_overflow():
-    assert step([1, 0, 0, 3, 2, 1], 22) == 0
+    assert step([1, 0, 0, 3, 2, 1], 22) is None
 
 
 def test_run_infinite_looping():

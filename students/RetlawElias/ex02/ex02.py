@@ -7,6 +7,11 @@ from puzzle_input import PROGRAM, TARGET
 
 
 def step(memory, position):
+    """Execute the instruction that starts at `position` in memory.
+
+    Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
+    Return the position of the next instruction, or None if the opcode is 99.
+    """
     try:
         match memory[position]:
             case 99:
@@ -20,11 +25,11 @@ def step(memory, position):
                     memory[memory[position + 1]] * memory[memory[position + 2]]
                 )
             case _:
-                raise ValueError("Invalid Operation! Only 1, 2 and 99 Operations are allowed!")
+                return None
 
         return position + 4
     except IndexError:
-        return 0
+        return None
 
 
 def run(memory):
@@ -34,10 +39,10 @@ def run(memory):
     """
     position = 0
 
-    while True:
+    while position is not None:
         position = step(memory, position)
-        if position is None:
-            return memory[0]
+
+    return memory[0]
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -45,7 +50,7 @@ def run(memory):
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
-    memory = list(program)
+    memory = program.copy()
     memory[1] = noun
     memory[2] = verb
 
