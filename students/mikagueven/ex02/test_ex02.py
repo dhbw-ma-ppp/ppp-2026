@@ -66,6 +66,3 @@ def test_run_halts_immediately():
 
 def test_find_noun_verb_not_found():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 99999) is None
-
-
-print(run_with(HUNDRED_NOUN_PLUS_VERB, "Hallo", 0.5))
