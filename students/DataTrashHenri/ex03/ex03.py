@@ -33,21 +33,21 @@ def parse_transcript(lines):
     lines is a list of strings like EXAMPLE. Paths are full paths, e.g. "/photos/trip.jpg",
     in the order the files appear in the transcript.
     """
-    path = ""
-    tuples = []
+    abs_path = "/"
+    file_tuples = []
     for line in lines:
         if line.startswith("$ cd "):
             if line == "$ cd /":
-                path = "/"
+                abs_path = "/"
             elif line == "$ cd ..":
-                path = path[0:path[0:-1].rfind("/")+1]
+                abs_path = abs_path[0:abs_path[0:-1].rfind("/")+1]
             else:
-                path = path + line[5:] + "/"
+                #cd into any directory
+                abs_path = abs_path + line[5:] + "/"
         elif not (line.startswith("dir") or line.startswith("$ ls")): #must be file
-            full_file_path = f"{path}{line.split(" ")[1]}"
-            # print(full_file_path)
-            tuples.append((full_file_path, int(line.split(" ")[0])))
-    return tuples
+            full_file_path = f"{abs_path}{line.split(" ")[1]}"# 'dir' is always followed by the filename
+            file_tuples.append((full_file_path, int(line.split(" ")[0])))
+    return file_tuples
 
 
 def directory_sizes(entries):
@@ -56,23 +56,21 @@ def directory_sizes(entries):
     entries is a list of (path, size) pairs, e.g. ("/a/b/c.txt", 100). A directory's total
     size includes every file anywhere below it, however deep. The root directory is "/".
     """
-    dict_sizes = {}
+    folder_size_dict = {}
     for file,size in entries:
-        dir = file[0:file.rfind("/") + 1]
-        # print(dir)
-        if dir != "/":
-            dict_sizes[dir[0:-1]] = dict_sizes.get(dir[0:-1], 0) + size
-        else:
-            dict_sizes[dir] = dict_sizes.get(dir, 0) + size
-        while dir != "/":
-            dir = dir[0:dir[0:-1].rfind("/")+1]
-            # print(dir)
-            if dir != "/":
-                dict_sizes[dir[0:-1]] = dict_sizes.get(dir[0:-1], 0) + size
-            else :
-                dict_sizes[dir] = dict_sizes.get(dir, 0) + size
-    # print(dict_sizes.items())
-    return dict_sizes
+        current_path = file[0:file.rfind("/") + 1]
+        if current_path != "/":
+            current_path = current_path[:-1]
+
+        folder_size_dict[current_path] = folder_size_dict.get(current_path, 0) + size
+
+        while current_path != "/":
+            current_path = current_path[0:current_path[0:-1].rfind("/")+1]
+            if current_path != "/":
+                current_path = current_path[:-1]
+            folder_size_dict[current_path] = folder_size_dict.get(current_path, 0) + size
+
+    return folder_size_dict
 
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
@@ -87,35 +85,34 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     The disk holds `disk_size` in total; at least `needed_free` must stay unused.
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
-    min_directorty_size = needed_free - (disk_size - sizes["/"])
-    if min_directorty_size < 0:
+    required_space = needed_free - (disk_size - sizes["/"])
+    if required_space < 0:
         return None
 
     smallest_key = "/"
     for k,v in sizes.items():
-        if v >= min_directorty_size and sizes[k]< sizes[smallest_key]:
+        if v >= required_space and sizes[k]< sizes[smallest_key]:
             smallest_key = k
     return sizes[smallest_key]
 
 
 def delete_directory(sizes, path):
     """Return a new dict of directory sizes, as if the directory `path` had been deleted.
-    #TODO DOCSTINRG
+
     The result is what directory_sizes would return for the files that remain.
     `sizes` itself must not change.
+
+    If `path` is not a directory in sizes, returns a copy of `sizes` unchanged.
     """
     sizes_copy =  {k: v for k,v in sizes.items() if k != path}
+    if sizes_copy == sizes:
+        return sizes_copy
 
     target = path
-    if sizes.get(target) is None:
-        return sizes_copy
     target_size = sizes[target]
-    # print(f"deliting size {target_size}")
 
     while target != "/":
         target = target[0:target[0:-1].rfind("/") + 1]
-        # print(target)
-        # print(dir)
         if target != "/":
             sizes_copy[target[0:-1]] = sizes_copy[target[0:-1]] - target_size
         else:
