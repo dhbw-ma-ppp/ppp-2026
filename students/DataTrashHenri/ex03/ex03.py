@@ -40,12 +40,14 @@ def parse_transcript(lines):
             if line == "$ cd /":
                 abs_path = "/"
             elif line == "$ cd ..":
-                abs_path = abs_path[0:abs_path[0:-1].rfind("/")+1]
+                abs_path = abs_path[0 : abs_path[0:-1].rfind("/") + 1]
             else:
-                #cd into any directory
+                # cd into any directory
                 abs_path = abs_path + line[5:] + "/"
-        elif not (line.startswith("dir") or line.startswith("$ ls")): #must be file
-            full_file_path = f"{abs_path}{line.split(" ")[1]}"# 'dir' is always followed by the filename
+        elif not (line.startswith("dir") or line.startswith("$ ls")):  # must be file
+            full_file_path = (
+                f"{abs_path}{line.split(' ')[1]}"  # 'dir' is always followed by the filename
+            )
             file_tuples.append((full_file_path, int(line.split(" ")[0])))
     return file_tuples
 
@@ -57,24 +59,26 @@ def directory_sizes(entries):
     size includes every file anywhere below it, however deep. The root directory is "/".
     """
     folder_size_dict = {}
-    for file,size in entries:
-        current_path = file[0:file.rfind("/") + 1]
+    for file, size in entries:
+        current_path = file[0 : file.rfind("/") + 1]
         if current_path != "/":
             current_path = current_path[:-1]
 
         folder_size_dict[current_path] = folder_size_dict.get(current_path, 0) + size
 
         while current_path != "/":
-            current_path = current_path[0:current_path[0:-1].rfind("/")+1]
+            current_path = current_path[0 : current_path[0:-1].rfind("/") + 1]
             if current_path != "/":
                 current_path = current_path[:-1]
             folder_size_dict[current_path] = folder_size_dict.get(current_path, 0) + size
 
     return folder_size_dict
 
+
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
-    return sum(v for k,v in sizes.items() if v <= limit)
+    return sum(v for k, v in sizes.items() if v <= limit)
+
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
@@ -90,8 +94,8 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
         return None
 
     smallest_key = "/"
-    for k,v in sizes.items():
-        if v >= required_space and sizes[k]< sizes[smallest_key]:
+    for k, v in sizes.items():
+        if v >= required_space and sizes[k] < sizes[smallest_key]:
             smallest_key = k
     return sizes[smallest_key]
 
@@ -104,7 +108,7 @@ def delete_directory(sizes, path):
 
     If `path` is not a directory in sizes, returns a copy of `sizes` unchanged.
     """
-    sizes_copy =  {k: v for k,v in sizes.items() if k != path}
+    sizes_copy = {k: v for k, v in sizes.items() if k != path}
     if sizes_copy == sizes:
         return sizes_copy
 
@@ -112,7 +116,7 @@ def delete_directory(sizes, path):
     target_size = sizes[target]
 
     while target != "/":
-        target = target[0:target[0:-1].rfind("/") + 1]
+        target = target[0 : target[0:-1].rfind("/") + 1]
         if target != "/":
             sizes_copy[target[0:-1]] = sizes_copy[target[0:-1]] - target_size
         else:
@@ -120,10 +124,10 @@ def delete_directory(sizes, path):
 
     return sizes_copy
 
+
 # ---------------------------------------------------------------- Answers
 
 if __name__ == "__main__":
-
     print("Part 1")
     example_sizes = directory_sizes(parse_transcript(EXAMPLE))
     print("1:", small_directories_total(example_sizes, limit=5000))

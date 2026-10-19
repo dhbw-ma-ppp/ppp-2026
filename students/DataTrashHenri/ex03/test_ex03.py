@@ -68,6 +68,7 @@ def test_delete_directory():
         "/music": 3000,
     }
 
+
 def test_sizes_unchanged():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
     delete_directory(sizes, "/photos/summer")
