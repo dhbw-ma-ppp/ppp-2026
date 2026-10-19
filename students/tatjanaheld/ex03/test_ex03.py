@@ -60,3 +60,16 @@ def test_delete_directory():
         "/photos": 4000,
         "/music": 3000,
     }
+
+
+def test_delete_directory_does_not_change_sizes():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+    sizes_before = dict(sizes)
+    delete_directory(sizes, "/photos")
+    assert sizes == sizes_before
+
+
+def test_directory_to_delete_enough_space_free():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+    disk_size = sizes["/"] + 1000
+    assert directory_to_delete(sizes, disk_size=disk_size, needed_free=500) is None
