@@ -22,7 +22,7 @@ def step(memory, position):
     elif memory[position] == 99:
         return None
     else:
-        return "Die Funktion hat keine klare Anweisung bekommen."
+        raise ValueError(f"Kein gültiger Befehl an der Stelle {position}")
 
 
 def run(memory):
@@ -31,9 +31,10 @@ def run(memory):
     Return the value at position 0 after the program has halted.
     """
     pos = 0
-    while memory[pos] != 99:
-        pos = step(memory, pos)
-    return memory[0]
+    program = memory.copy()
+    while program[pos] != 99:
+        pos = step(program, pos)
+    return program[0]
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -51,9 +52,9 @@ def find_noun_verb(program, target):
 
     Return None if there is no such pair.
     """
-    for a in program:
-        for b in program:
-            if str(a) + str(b) == str(target):
+    for a in range(0, 100):
+        for b in range(0, 100):
+            if run_with(program, a, b) == target:
                 return a, b
     return None
 

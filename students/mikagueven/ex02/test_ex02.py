@@ -1,5 +1,5 @@
 from ex02 import find_noun_verb, run, run_with, step
-
+import pytest
 # ---------------------------------------------------------------- Part 1
 
 
@@ -56,7 +56,8 @@ def test_find_noun_verb():
 def test_empty_opcode():
     """Opcode which does not equal 1,2 or 99"""
     memory = [8, 0, 0, 0, 2, 4, 4, 0, 99]
-    assert step(memory, 0) == "Die Funktion hat keine klare Anweisung bekommen."
+    with pytest.raises(ValueError):
+        step(memory, 0)
 
 
 def test_run_halts_immediately():
@@ -65,3 +66,6 @@ def test_run_halts_immediately():
 
 def test_find_noun_verb_not_found():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 99999) is None
+
+
+print(run_with(HUNDRED_NOUN_PLUS_VERB, "Hallo", 0.5))
