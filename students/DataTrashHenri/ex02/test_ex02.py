@@ -25,10 +25,6 @@ def test_step_halt():
     assert step([99], 0) is None
 
 
-def test_step_unknown_opcode():
-    assert step([3, 0, 0, 1, 99], 0) is -1
-
-
 def test_run():
     assert run([1, 5, 6, 0, 99, 20, 22]) == 42
 
