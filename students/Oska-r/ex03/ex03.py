@@ -42,9 +42,8 @@ def parse_transcript(lines):
 
     for line in lines:
         first_command = line.split(" ")[0]
-        second_command = line.split(" ")[1]
 
-        if first_command == "$" and second_command == "cd":
+        if line.startswith("$ cd"):
             argument = line.split(" ")[2]
 
             match argument:
@@ -55,7 +54,9 @@ def parse_transcript(lines):
                 case _:
                     current_path.append(argument + "/")
 
-        elif first_command not in {"$", "dir"}:
+        elif first_command.isnumeric():
+            second_command = line.split(" ")[1]
+
             current_path.append(second_command)
             path_size_pairs.append(("".join(current_path), int(first_command)))
             current_path.pop()
@@ -103,7 +104,7 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     """
     if needed_free > disk_size:
         raise ValueError(
-            f"needed_free ({needed_free}) cannot be bigger than disk_size ({disk_size})"
+            f"needed_free ({needed_free}) must be smaller or equal to disk_size ({disk_size})"
         )
 
     space_to_free_up = needed_free - (disk_size - sizes["/"])
@@ -114,10 +115,7 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     smallest_so_far = sizes["/"]
 
     for size in sizes.values():
-        if size < space_to_free_up:
-            continue
-
-        if size < smallest_so_far:
+        if size >= space_to_free_up and size < smallest_so_far:
             smallest_so_far = size
 
     return smallest_so_far
