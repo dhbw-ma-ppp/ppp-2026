@@ -23,6 +23,8 @@ def step(memory, position):
         mal = memory[memory[position + 1]] * memory[memory[position + 2]]
         memory[memory[position + 3]] = mal
         return position + 4
+    else:
+        return -1
 
 
 def run(memory):
@@ -33,6 +35,8 @@ def run(memory):
     Position = 0
     while Position is not None:
         Position = step(memory, Position)
+        if Position == -1:
+            return -1
     return memory[0]
 
 

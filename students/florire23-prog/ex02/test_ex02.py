@@ -60,4 +60,4 @@ def test_find_noun_verb1():
 
 
 def test_invalid_opcode():
-    assert run([3, 1, 1, 2, 1, 5, 6, 0, 99, 20, 22]) == 11
+    assert run([3, 1, 1, 2, 1, 5, 6, 0, 99, 20, 22]) == -1
