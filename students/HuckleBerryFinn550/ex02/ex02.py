@@ -20,8 +20,8 @@ def step(memory, position):
     if opCode == 99:
         return None
 
-    if len(memory) >= position+3:
-        number1  = memory[position + 1]
+    if len(memory) >= position + 3:
+        number1 = memory[position + 1]
         number2 = memory[position + 2]
         res = memory[position + 3]
     else:

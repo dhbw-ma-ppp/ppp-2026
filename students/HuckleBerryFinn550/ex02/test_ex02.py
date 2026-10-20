@@ -69,8 +69,10 @@ def test_run_with():
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
 
+
 def test_find_noun_verb2():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 9999) == (99, 99)
+
 
 def test_find_noun_verb3():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 10000) is None
