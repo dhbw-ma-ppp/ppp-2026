@@ -26,7 +26,7 @@ def step(memory, position):
     elif memory[position] == 2:  # multi
         memory[memory[position + 3]] = first * second
     else:
-        return -1
+        raise ValueError(f"Unknown opcode {memory[position]}")
 
     return position + 4
 
@@ -37,9 +37,9 @@ def run(memory):
     Return the value at position 0 after the program has halted.
     """
     program = memory.copy()  # else programm is modified! bad for brute forcing last exercise e.g.
-    IP = 0
-    while IP is not None:
-        IP = step(program, IP)
+    instruction_pointer = 0
+    while instruction_pointer is not None:
+        instruction_pointer = step(program, instruction_pointer)
     return program[0]
 
 
