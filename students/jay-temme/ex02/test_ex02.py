@@ -44,6 +44,7 @@ def test_run_changes_its_own_program():
 def test_step_wrong_memory_length():
     try:
         step([1, 0, 0], 0)
+        assert False
     except IndexError:
         assert True
 
@@ -54,6 +55,18 @@ def test_step_wrong_memory_length():
 def test_step_unknown_opcode():
     try:
         step([3], 0)
+        assert False
+    except ValueError:
+        assert True
+
+
+# input:            step([1, 0, 0, 999, 99],0)
+# expected output:  ValueError "Output index is out of bounds"
+# case:             999 is not in the range of the list.
+def test_step_index_out_of_bounds():
+    try:
+        step([1, 0, 0, 999, 99], 0)
+        assert False
     except ValueError:
         assert True
 
@@ -86,12 +99,13 @@ def test_find_noun_verb():
 def test_run_with_noun_is_not_int():
     try:
         run_with([99, 0, 0], "test", 0)
+        assert False
     except TypeError:
         assert True
 
 
 # input:            program = [99], noun = 0, verb = 0
-# expected output:  None
+# expected output:  99
 # case:             program is not long enough to simply insert noun and verb
 def test_run_with_program_length_is_1():
     assert run_with([99], 0, 0) == 99

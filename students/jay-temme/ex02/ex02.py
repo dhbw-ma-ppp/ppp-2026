@@ -25,22 +25,27 @@ def step(memory, position):
     if len(memory) == 0:
         raise ValueError("memory must be of at least length 1")
 
-    # check if position is an index in memory
+    # check if position is in bounds of memory
     if position < 0 or len(memory) <= position:
-        raise ValueError("position must be a valid index of memory")
+        raise ValueError("position is out of bounds of memory")
 
     # easily expandable opcode listing
     match memory[position]:
         # opcode 1: addition
         case 1:
             # check if enough following indecies exist
-            if len(memory) < position + 5:
+            if len(memory) < position + 4:
                 raise IndexError("memory is not large enough or contains wrong opcode")
 
             # find indecies of values to add and write into
             input_1_index = memory[position + 1]
             input_2_index = memory[position + 2]
             output_index = memory[position + 3]
+
+            # checks if input and output indecies are in bounds of memory
+            for i in [input_1_index, input_2_index, output_index]:
+                if i < 0 or len(memory) <= i:
+                    raise ValueError("input or output indecies are out of bounds of memory")
 
             # add values at previously found indecies and writes sum into memory
             memory[output_index] = memory[input_1_index] + memory[input_2_index]
@@ -50,13 +55,17 @@ def step(memory, position):
         # opcode 2: multiplication
         case 2:
             # check if enough following indecies exist
-            if len(memory) < position + 5:
+            if len(memory) < position + 4:
                 raise IndexError("memory is not large enough or contains wrong opcode")
 
             # find indecies of values to multiply and write into
             input_1_index = memory[position + 1]
             input_2_index = memory[position + 2]
             output_index = memory[position + 3]
+
+            for i in [input_1_index, input_2_index, output_index]:
+                if i < 0 or len(memory) <= i:
+                    raise ValueError("input or output indecies are out of bounds of memory")
 
             # multiply values at previously found indecies and writes product into memory
             memory[output_index] = memory[input_1_index] * memory[input_2_index]
