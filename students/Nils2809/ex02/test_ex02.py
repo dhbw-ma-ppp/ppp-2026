@@ -7,6 +7,7 @@ def test_step_add():
     memory = [1, 0, 0, 0, 99]
     assert step(memory, 0) == 4
     assert memory == [2, 0, 0, 0, 99]
+    assert step([1, 2, 3, 3, 99], 0) == 4
 
 
 def test_step_multiply():
@@ -51,10 +52,6 @@ def test_run_with():
 
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
-
-
-def test_find_noun_verb_string_in_list():
-    assert find_noun_verb(["123", 34, 0, 5, 1, "huhu"], "123huhu") == ("123", "huhu")
 
 
 def test_run_with_false_input():
