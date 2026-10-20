@@ -1,6 +1,5 @@
 # Exercise 03. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-from zipfile import sizeCentralDir
 
 from puzzle_input import TRANSCRIPT
 
@@ -27,6 +26,7 @@ EXAMPLE = [
 
 # ---------------------------------------------------------------- Part 1 (in class)
 
+
 def parse_transcript(lines):
     """Return a list of (path, size) pairs, one per file listed in the transcript.
 
@@ -35,16 +35,15 @@ def parse_transcript(lines):
     """
 
     path = []
-    pair = []
     file_list = []
 
     for commandline in lines:
         command1 = commandline.split()[0]
-        #print("commandline", commandline)
-        #if len(commandline.split()) > 1:
-            #command2 = commandline.split()[1]
-            #if len(commandline.split()) > 2
-                #command3 = commandline.split()[2]
+        # print("commandline", commandline)
+        # if len(commandline.split()) > 1:
+        # command2 = commandline.split()[1]
+        # if len(commandline.split()) > 2
+        # command3 = commandline.split()[2]
 
         # elif isinstance(command1, int):
         #     path.append(commandline.split()[2])
@@ -52,29 +51,35 @@ def parse_transcript(lines):
         #     print("append in file_list")
         #     file_list.append(pair)
         #     path.pop()
-        if len(commandline.split()) > 2 and commandline.split()[1] == "cd":
+        if commandline.split()[0].isdigit is False:
+            raise ValueError
 
+        elif len(commandline.split()) > 2 and commandline.split()[1] == "cd":
             if commandline == "$ cd /":
                 path = [""]
-                #print("zurück zum start")
+                # print("zurück zum start")
 
             elif commandline.split()[2] == "..":
                 if len(path) >= 1:
                     path.pop()
-                    #print("ordner zurück", path)
+                    # print("ordner zurück", path)
             else:
                 path.append(commandline.split()[2])
-                #print ("ordner weiter", path)
-        elif len(commandline.split()) > 1 and commandline.split()[0] != "$" and commandline.split()[0] != "dir":
+                # print ("ordner weiter", path)
+        elif (
+            len(commandline.split()) > 1
+            and commandline.split()[0] != "$"
+            and commandline.split()[0] != "dir"
+        ):
             path.append(commandline.split()[1])
             joinedpath = "/".join(path)
             slicedjoinedpath = joinedpath[1:]
             pair = ("/" + slicedjoinedpath, int(command1))
-            #print("pair:", pair)
+            # print("pair:", pair)
             file_list.append(pair)
             path.pop()
-            #print("append in file_list",file_list)
-    #print("FINAL ERGEBNIS EINS:",file_list)
+            # print("append in file_list",file_list)
+    # print("FINAL ERGEBNIS EINS:",file_list)
     return file_list
 
     # Alles Quatsch, stack zum tracken vom directory?
@@ -105,43 +110,45 @@ def directory_sizes(entries):
     entries is a list of (path, size) pairs, e.g. ("/a/b/c.txt", 100). A directory's total
     size includes every file anywhere below it, however deep. The root directory is "/".
     """
-    #[('/notes.txt', 100), ('/photos/trip.jpg', 4000), ('/photos/summer/beach.jpg', 2500),
-    #('/photos/summer/sunset.jpg', 1500), ('/music/song.mp3', 3000)]
+    # [('/notes.txt', 100), ('/photos/trip.jpg', 4000), ('/photos/summer/beach.jpg', 2500),
+    # ('/photos/summer/sunset.jpg', 1500), ('/music/song.mp3', 3000)]
 
     sizedictionary = {}
     for entry in entries:
         path = entry[0].split("/"[:])
         size = entry[1]
         temp_path = "/"
-        #print("ENTRY0", path)
-        #print(path.split("/")[:])
+        # print("ENTRY0", path)
+        # print(path.split("/")[:])
         for element in path:
-        #pathwithoutdata = "/" + "/".join(path.split("/")[1:-1]) + "/"
-        #print(pathwithoutdata)
-        #if path.find(".") >= 0:
+            # pathwithoutdata = "/" + "/".join(path.split("/")[1:-1]) + "/"
+            # print(pathwithoutdata)
+            # if path.find(".") >= 0:
             if element != "":
                 if temp_path in sizedictionary:
                     sizedictionary[temp_path] += int(size)
-                    #print("TRUE")
+                    # print("TRUE")
                 elif temp_path not in sizedictionary:
-                    #print("False")
+                    # print("False")
                     sizedictionary[temp_path] = int(size)
                 if temp_path != "/":
                     temp_path += "/" + element
                 elif temp_path == "/":
                     temp_path += element
-    #print("SIZEDICTIONARY", sizedictionary)
+    # print("SIZEDICTIONARY", sizedictionary)
     return sizedictionary
 
 
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
-    #small_directories = {path: size for path, size in sizes.items() if size <= limit}
-    #total = sum(age for age in ages.values() if age >= 36)
+    # small_directories = {path: size for path, size in sizes.items() if size <= limit}
+    # total = sum(age for age in ages.values() if age >= 36)
     small_directories_sum = sum(size for size in sizes.values() if size <= limit)
     return small_directories_sum
 
+
 # ---------------------------------------------------------------- Part 2 (at home)
+
 
 def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     """Return the size of the smallest directory whose deletion frees enough space.
@@ -164,10 +171,8 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
         return None
     deletable = {path: size for path, size in sizes.items() if size >= blocked}
     smallest = min(deletable.values())
-    #smallest_path = [path for path, size in deletable.items() if size == smallest]
+    # smallest_path = [path for path, size in deletable.items() if size == smallest]
     return smallest
-
-
 
 
 def delete_directory(sizes, path):
@@ -176,10 +181,26 @@ def delete_directory(sizes, path):
     The result is what directory_sizes would return for the files that remain.
     `sizes` itself must not change.
     """
+    # datei löschen, dann path nehmen ohne das neben dem rechtesten /, dann da die größe abziehen, dann beim path zu einem slash zurück und so weiter
     copied_sizes = sizes.copy()
+    size_to_delete = sizes[path]
     del copied_sizes[path]
-    return directory_sizes(list(copied_sizes.items()))
+    splitted_path = path.split("/")
+    i = -1
+    for path_element in splitted_path:
+        path_without_element_to_delete = "/".join(splitted_path[:i])
 
+        if path_without_element_to_delete != "":
+            copied_sizes[path_without_element_to_delete] = (
+                copied_sizes[path_without_element_to_delete] - size_to_delete
+            )
+        # copied_sizes["/".join(splitted_path[:-1])] = copied_sizes["/".join(splitted_path[:-1])] - size_to_delete
+        # else:
+        # copied_sizes["/"] = copied_sizes["/"] - size_to_delete
+        i = i - 1
+    copied_sizes["/"] = copied_sizes["/"] - size_to_delete
+
+    return copied_sizes
 
 
 # ---------------------------------------------------------------- Answers
