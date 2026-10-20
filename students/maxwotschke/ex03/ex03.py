@@ -39,33 +39,21 @@ def parse_transcript(lines):
 
     for commandline in lines:
         command1 = commandline.split()[0]
-        # print("commandline", commandline)
-        # if len(commandline.split()) > 1:
-        # command2 = commandline.split()[1]
-        # if len(commandline.split()) > 2
-        # command3 = commandline.split()[2]
 
-        # elif isinstance(command1, int):
-        #     path.append(commandline.split()[2])
-        #     pair = ["/".join(path), command1]
-        #     print("append in file_list")
-        #     file_list.append(pair)
-        #     path.pop()
         if commandline.split()[0].isdigit is False:
             raise ValueError
 
         elif len(commandline.split()) > 2 and commandline.split()[1] == "cd":
             if commandline == "$ cd /":
                 path = [""]
-                # print("zurück zum start")
 
             elif commandline.split()[2] == "..":
                 if len(path) >= 1:
                     path.pop()
-                    # print("ordner zurück", path)
+
             else:
                 path.append(commandline.split()[2])
-                # print ("ordner weiter", path)
+
         elif (
             len(commandline.split()) > 1
             and commandline.split()[0] != "$"
@@ -75,33 +63,10 @@ def parse_transcript(lines):
             joinedpath = "/".join(path)
             slicedjoinedpath = joinedpath[1:]
             pair = ("/" + slicedjoinedpath, int(command1))
-            # print("pair:", pair)
             file_list.append(pair)
             path.pop()
-            # print("append in file_list",file_list)
-    # print("FINAL ERGEBNIS EINS:",file_list)
+
     return file_list
-
-    # Alles Quatsch, stack zum tracken vom directory?
-
-    # commandlist = []
-    # for commandline in lines:
-    #     command = commandline.split()[0]
-    #     command2 = commandline.split()[1]
-    #     command3 = commandline.split()[2]
-    #
-    #     if command == "dir":
-    #         commandlist.append(list(command2))
-    #
-    #     if isinstance(command, int):
-    #         commandlist.append(commandline)
-    #
-    #     if command == "$":
-    #         if command2 == "cd" and command3 != "..":
-    #             while command != "$":
-    #                 command3.append(commandline)
-    #         if command2 == "cd" and command3 == "..":
-    #                 pass
 
 
 def directory_sizes(entries):
@@ -110,39 +75,31 @@ def directory_sizes(entries):
     entries is a list of (path, size) pairs, e.g. ("/a/b/c.txt", 100). A directory's total
     size includes every file anywhere below it, however deep. The root directory is "/".
     """
-    # [('/notes.txt', 100), ('/photos/trip.jpg', 4000), ('/photos/summer/beach.jpg', 2500),
-    # ('/photos/summer/sunset.jpg', 1500), ('/music/song.mp3', 3000)]
 
     sizedictionary = {}
     for entry in entries:
         path = entry[0].split("/"[:])
         size = entry[1]
         temp_path = "/"
-        # print("ENTRY0", path)
-        # print(path.split("/")[:])
+
         for element in path:
-            # pathwithoutdata = "/" + "/".join(path.split("/")[1:-1]) + "/"
-            # print(pathwithoutdata)
-            # if path.find(".") >= 0:
             if element != "":
                 if temp_path in sizedictionary:
                     sizedictionary[temp_path] += int(size)
-                    # print("TRUE")
+
                 elif temp_path not in sizedictionary:
-                    # print("False")
                     sizedictionary[temp_path] = int(size)
                 if temp_path != "/":
                     temp_path += "/" + element
                 elif temp_path == "/":
                     temp_path += element
-    # print("SIZEDICTIONARY", sizedictionary)
+
     return sizedictionary
 
 
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
-    # small_directories = {path: size for path, size in sizes.items() if size <= limit}
-    # total = sum(age for age in ages.values() if age >= 36)
+
     small_directories_sum = sum(size for size in sizes.values() if size <= limit)
     return small_directories_sum
 
@@ -155,11 +112,6 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     The disk holds `disk_size` in total; at least `needed_free` must stay unused.
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
-    # needed free kleiner disk size?
-    # alle sizes addieren, kleiner als disk size?
-    # insgesamt size - alle disk sizes (grade frei), needed free - grade frei, wenn negativ muss nix deleted werden
-    # directory nur mit dateien > differenz, wenn keine dann error oder so
-    # davon die kleinste suchen und ausgeben
     if needed_free > disk_size:
         raise ValueError("disk_size is too small")
     used_size = sizes["/"]
@@ -171,7 +123,6 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
         return None
     deletable = {path: size for path, size in sizes.items() if size >= blocked}
     smallest = min(deletable.values())
-    # smallest_path = [path for path, size in deletable.items() if size == smallest]
     return smallest
 
 
@@ -180,23 +131,22 @@ def delete_directory(sizes, path):
 
     The result is what directory_sizes would return for the files that remain.
     `sizes` itself must not change.
+    Returns an unchanged copy of sizes if path is not in sizes.
     """
-    # datei löschen, dann path nehmen ohne das neben dem rechtesten /, dann da die größe abziehen, dann beim path zu einem slash zurück und so weiter
     copied_sizes = sizes.copy()
-    size_to_delete = sizes[path]
+    if path not in copied_sizes:
+        return copied_sizes
+    size_to_delete = copied_sizes[path]
     del copied_sizes[path]
     splitted_path = path.split("/")
     i = -1
+
     for path_element in splitted_path:
         path_without_element_to_delete = "/".join(splitted_path[:i])
-
         if path_without_element_to_delete != "":
             copied_sizes[path_without_element_to_delete] = (
                 copied_sizes[path_without_element_to_delete] - size_to_delete
             )
-        # copied_sizes["/".join(splitted_path[:-1])] = copied_sizes["/".join(splitted_path[:-1])] - size_to_delete
-        # else:
-        # copied_sizes["/"] = copied_sizes["/"] - size_to_delete
         i = i - 1
     copied_sizes["/"] = copied_sizes["/"] - size_to_delete
 

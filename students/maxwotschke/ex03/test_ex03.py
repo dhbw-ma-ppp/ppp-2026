@@ -86,3 +86,4 @@ def test_delete_directory():
         "/photos": 4000,
         "/music": 3000,
     }
+    assert delete_directory(sizes, "/photos/winter") == sizes
