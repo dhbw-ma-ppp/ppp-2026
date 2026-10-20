@@ -13,25 +13,25 @@ def step(memory, position):
     Return the position of the next instruction, or None if the opcode is 99.
     """
     if len(memory) >= 1:
-        op = memory[position]
+        opCode = memory[position]
     else:
         raise IndexError("No opcode detected.")
 
-    if op == 99:
+    if opCode == 99:
         return None
 
-    if len(memory) >= 4:
-        factor1 = memory[position + 1]
-        factor2 = memory[position + 2]
+    if len(memory) >= position+3:
+        number1  = memory[position + 1]
+        number2 = memory[position + 2]
         res = memory[position + 3]
     else:
-        pass
+        raise IndexError("Opcode not long enough.")
 
-    if op == 1:
-        memory[res] = memory[factor1] + memory[factor2]
+    if opCode == 1:
+        memory[res] = memory[number1] + memory[number2]
         # print(f"res bei add: {memory[res]}")
-    elif op == 2:
-        memory[res] = memory[factor1] * memory[factor2]
+    elif opCode == 2:
+        memory[res] = memory[number1] * memory[number2]
         # print(f"res bei mul: {memory[res]}")
     else:
         pass
@@ -69,8 +69,8 @@ def find_noun_verb(program, target):
 
     Return None if there is no such pair.
     """
-    for i in range(0, 99):
-        for j in range(0, 99):
+    for i in range(0, 100):
+        for j in range(0, 100):
             output = run_with(program, i, j)
             if output == target:
                 return i, j
