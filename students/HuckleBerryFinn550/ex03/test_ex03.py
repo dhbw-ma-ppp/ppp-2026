@@ -17,7 +17,6 @@ EXAMPLE_ENTRIES = [
 ]
 
 
-
 # ---------------------------------------------------------------- Part 1
 
 
@@ -64,13 +63,14 @@ def test_delete_directory():
         "/music": 3000,
     }
 
+
 def test_delete_directory_not_existing_path():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
     with pytest.raises(ValueError, match="Directory path does not exist"):
         delete_directory(sizes, "/data/summer")
 
+
 def test_parse_transcript_invalid_input():
     sizes = None
     with pytest.raises(TypeError, match="Invalid transcript format."):
         parse_transcript(sizes)
-

@@ -1,7 +1,5 @@
 # Exercise 03. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-from zipfile import sizeCentralDir
-
 from puzzle_input import TRANSCRIPT
 
 EXAMPLE = [
@@ -27,6 +25,7 @@ EXAMPLE = [
 
 # ---------------------------------------------------------------- Part 1 (in class)
 
+
 def parse_transcript(lines):
     """Return a list of (path, size) pairs, one per file listed in the transcript.
 
@@ -35,7 +34,6 @@ def parse_transcript(lines):
     """
     pairs = []
     root = []
-    size = {}
     if lines is not None and isinstance(lines, list):
         for entry in lines:
             entries = entry.split()
@@ -49,7 +47,7 @@ def parse_transcript(lines):
                     root.append(entries[2])
             elif not entry.startswith("$ ls") and not entry.startswith("dir"):
                 root.append(entries[1])
-                pair =  ("/" + "/".join(root), int(entries[0]))
+                pair = ("/" + "/".join(root), int(entries[0]))
                 pairs.append(pair)
                 root.pop()
     else:
@@ -72,21 +70,18 @@ def directory_sizes(entries):
         pathSplitted = path.split("/")
         totalSize += number
 
-        for i in range (len(pathSplitted)):
+        for i in range(len(pathSplitted)):
             root = "/".join(pathSplitted[:-i])
-            pathSize.update({root: pathSize.get(root, 0)+number})
+            pathSize.update({root: pathSize.get(root, 0) + number})
 
     pathSize.update({"/": totalSize})
     return pathSize
 
 
-
-
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
-    sumUnderLimit = sum(s for s in sizes.values() if s <=limit)
+    sumUnderLimit = sum(s for s in sizes.values() if s <= limit)
     return sumUnderLimit
-
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -99,8 +94,8 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
     currentlyUsed = sizes.get("/")
-    if disk_size-currentlyUsed >= needed_free:
-         return None
+    if disk_size - currentlyUsed >= needed_free:
+        return None
     else:
         stillNeededSpace = needed_free - (disk_size - currentlyUsed)
         smallestDirectory = sizes.get("/")
@@ -116,32 +111,26 @@ def delete_directory(sizes, path):
     The result is what directory_sizes would return for the files that remain.
     `sizes` itself must not change. If path doesn't exist, raises ValueError.
     """
-    print(f"I got called.")
-    print(f"sizes: {sizes}")
     dictAfterDeletion = {}
     if path in sizes:
         pathSize = sizes.get(path)
         pathNameSplitted = path.split("/")
         significantName = str(pathNameSplitted[1])
         for key in sizes.keys():
-            print(f"key: {key}, size: {sizes[key]}")
-            print(f"type: {type(key)}")
             if key == "/":
-                dictAfterDeletion.update({key: sizes.get(key)-pathSize})
+                dictAfterDeletion.update({key: sizes.get(key) - pathSize})
             elif significantName in key:
-                if sizes.get(key)-pathSize != 0:
-                    dictAfterDeletion.update({key: sizes.get(key)-pathSize}) #path-deleted object
+                if sizes.get(key) - pathSize != 0:
+                    dictAfterDeletion.update(
+                        {key: sizes.get(key) - pathSize}
+                    )  # path-deleted object
             else:
                 dictAfterDeletion[key] = sizes.get(key)
-            print(f"dictAfterDeletion: {dictAfterDeletion}")
-        dictAfterDeletion.update({"": sizes.get("/")/pathSize})
+        dictAfterDeletion.update({"": sizes.get("/") / pathSize})
         del dictAfterDeletion[""]
         return dictAfterDeletion
     else:
-        raise ValueError(f"Directory path does not exist")
-
-
-
+        raise ValueError("Directory path does not exist")
 
 
 # ---------------------------------------------------------------- Answers
