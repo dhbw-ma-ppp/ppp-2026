@@ -41,9 +41,12 @@ def run(memory):
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
-    program[1] = noun
-    program[2] = verb
-    return run(program.copy())
+
+    copy = program[:]
+
+    copy[1] = noun
+    copy[2] = verb
+    return run(copy)
 
 
 def find_noun_verb(program, target):

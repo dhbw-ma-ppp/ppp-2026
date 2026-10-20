@@ -57,3 +57,7 @@ def test_find_noun_verb():
 
 def test_find_noun_verb1():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 10000) is None
+
+
+def test_invalid_opcode():
+    assert run([3, 1, 1, 2, 1, 5, 6, 0, 99, 20, 22]) == 11
