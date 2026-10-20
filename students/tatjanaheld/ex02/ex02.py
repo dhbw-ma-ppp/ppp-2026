@@ -21,6 +21,8 @@ def step(memory, position):
         memory[memory[position + 3]] = memory[memory[position + 1]] + memory[memory[position + 2]]
     elif opcode == 2:
         memory[memory[position + 3]] = memory[memory[position + 1]] * memory[memory[position + 2]]
+    else:
+        raise ValueError(f"Invalid opcode {opcode} at position {position}")
     return position + 4
 
 
