@@ -33,6 +33,10 @@ def test_run():
     assert run([1, 5, 6, 0, 99, 20, 22]) == 42
 
 
+def test_run_example():
+    assert run([1, 1, 1, 4, 99, 5, 6, 0, 99]) == 30
+
+
 def test_run_reads_what_it_wrote():
     assert run([2, 9, 10, 9, 1, 9, 11, 0, 99, 6, 7, 3]) == 45
 
