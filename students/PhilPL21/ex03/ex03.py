@@ -2,9 +2,6 @@
 # Replace each `pass` line with your code, ending with `return`.
 
 
-
-
-
 from puzzle_input import TRANSCRIPT
 
 EXAMPLE = [
