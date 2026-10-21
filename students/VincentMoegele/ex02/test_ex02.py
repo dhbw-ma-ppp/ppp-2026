@@ -32,9 +32,10 @@ def test_step_at_a_later_position():
 def test_step_halt():
     assert step([99], 0) is None
 
+
 def test_step_no_opcode_last_element():
     memory = [42]
-    assert step(memory, 0) == 4 
+    assert step(memory, 0) == 4
 
 
 def test_run():
