@@ -1,5 +1,5 @@
 # Exercise 02. See README.md for the full task.
-# Replace each `pass` line with your code, ending with `return`.
+
 
 from puzzle_input import PROGRAM, TARGET
 
@@ -41,11 +41,14 @@ def run(memory):
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
-    newProgram = list(program)
-    newProgram[1] = noun
-    newProgram[2] = verb
-    run(newProgram)
-    return newProgram[0]  # replace this line with your code
+    if isinstance(noun, int) and isinstance(verb, int):
+        newProgram = list(program)
+        newProgram[1] = noun
+        newProgram[2] = verb
+        run(newProgram)
+        return newProgram[0]
+    else:
+        raise TypeError
 
 
 def find_noun_verb(program, target):
@@ -58,7 +61,6 @@ def find_noun_verb(program, target):
             if run_with(program, noun, verb) == target:
                 return (noun, verb)
     return None
-    # replace this line with your code
 
 
 # ---------------------------------------------------------------- Answers

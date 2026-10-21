@@ -62,6 +62,14 @@ def test_run_with():
     assert run_with(HUNDRED_NOUN_PLUS_VERB, 12, 34) == 1234
 
 
+def test_run_with_not_int():
+    memory = [2, 9, 10, 9, 1, 9, 11, 0, 99, 6, 7, 3]
+    str = "This input is invalid"
+    verb = 5
+    with pytest.raises(TypeError):
+        run_with(memory, str, verb)
+
+
 def test_find_noun_verb():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 1234) == (12, 34)
 
