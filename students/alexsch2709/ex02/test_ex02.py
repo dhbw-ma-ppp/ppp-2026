@@ -61,3 +61,7 @@ def test_step_self():
 
 def test_run_with_self():
     assert run_with(HUNDRED_NOUN_PLUS_VERB, 22, 33) == 2233
+
+def test_noun_verb_self():
+    assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 9999) == (99, 99)
+
