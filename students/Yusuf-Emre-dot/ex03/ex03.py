@@ -29,6 +29,8 @@ EXAMPLE = [
 # ---------------------------------------------------------------- Part 1 (in class)
 # Diese Funktion gibt den oberen path der Eingabe zurück
 def delete_till(path, zeichen):
+    if path=="/":
+        return "/"
     path = path[:-1]
     for i in range(len(path) - 1, 0, -1):
         if path[i] == zeichen:
@@ -42,12 +44,10 @@ def delete_till(path, zeichen):
 def directory(entries):
     L = []
     for filename, size in entries:
-        index = 0
         for i in range(filename.count("/")):
             direct = delete_till(filename, "/")
             if direct not in L:
                 L.append(direct)
-            index = filename.find("/", index + 1)
     return L
 
 
@@ -59,7 +59,7 @@ def parse_transcript(lines):
         # geht alle $ cd möglichkeiten durch mit .. zum root wechseln und tiefer gehen
         if "$ cd " in i:
             if i[5:] == "..":
-                directory_name = delete_till(directory_name, "/")
+                directory_name = delete_till(directory_name, "/")+"/"
             elif i[-1] == "/":
                 directory_name = "/"
             else:
@@ -106,7 +106,7 @@ def small_directories_total(sizes, limit=100000):
 # ---------------------------------------------------------------- Part 2 (at home)
 
 
-def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
+def directory_to_delete(sizes, disk_size=50_000_000, needed_free=20_000_000):
     # needed ist der freizugebene platz, fall <=0 gib None zurück
     # minsize als obere Schranke des kleinsten paths
 
@@ -147,7 +147,7 @@ def delete_directory(sizes, path):
 
 
 # ---------------------------------------------------------------- Answers
-
+print(directory_sizes(parse_transcript(TRANSCRIPT)))
 
 if __name__ == "__main__":
     print("Part 1")
