@@ -29,7 +29,7 @@ EXAMPLE = [
 # ---------------------------------------------------------------- Part 1 (in class)
 # Diese Funktion gibt den oberen path der Eingabe zurück
 def delete_till(path, zeichen):
-    if path=="/":
+    if path == "/":
         return "/"
     path = path[:-1]
     for i in range(len(path) - 1, 0, -1):
@@ -60,8 +60,8 @@ def parse_transcript(lines):
         if "$ cd " in i:
             if i[5:] == "..":
                 directory_name = delete_till(directory_name, "/")
-                if directory_name!= "/":
-                    directory_name+="/"
+                if directory_name != "/":
+                    directory_name += "/"
             elif i[-1] == "/":
                 directory_name = "/"
             else:
