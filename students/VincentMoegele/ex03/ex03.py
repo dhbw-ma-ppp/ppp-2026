@@ -35,7 +35,7 @@ def parse_transcript(lines):
     """
     directory = []
     files = []
-    delimiter = '/'
+    delimiter = "/"
     for line in lines:
         if line == "$ cd /":
             directory = []
@@ -57,20 +57,17 @@ def parse_transcript(lines):
             files.append((path, size))
     return files
 
-            
-
-
 
 def directory_sizes(entries):
     """Return the total size of files under each directory, including root."""
     dictionary = {}
 
     for filename, size in entries:
-        directories = filename.strip("/").split("/")[:-1]
+        parent_directory_parts = filename.strip("/").split("/")[:-1]
 
-        for depth in range(len(directories), -1, -1):
+        for depth in range(len(parent_directory_parts), -1, -1):
             if depth > 0:
-                key = "/" + "/".join(directories[:depth])
+                key = "/" + "/".join(parent_directory_parts[:depth])
             else:
                 key = "/"
             dictionary[key] = dictionary.get(key, 0) + size
@@ -80,7 +77,7 @@ def directory_sizes(entries):
 
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
-    sum_of_directories  = 0
+    sum_of_directories = 0
     for size in sizes.values():
         if size <= limit:
             sum_of_directories = sum_of_directories + size
@@ -98,8 +95,22 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     The disk holds `disk_size` in total; at least `needed_free` must stay unused.
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
-    if sizes["/"] >= disk_size - needed_free:
-        return {path: size for path, size in sizes.items() if size >= disk_size - needed_free}
+    total_size = sizes["/"]
+    free_space = disk_size - total_size
+
+    if free_space < needed_free:
+        small = {}
+        size_to_delete = needed_free - free_space
+        for key in sizes:
+            if sizes[key] >= size_to_delete:
+                small[key] = sizes[key]
+        sorted_by_values = dict(sorted(small.items(), key=lambda item: item[1]))
+        smallest_directory_size = 0
+        for directory in sorted_by_values:
+            smallest_directory_size = sorted_by_values[directory]
+            break
+        return smallest_directory_size
+
     else:
         return None
 
@@ -109,8 +120,31 @@ def delete_directory(sizes, path):
 
     The result is what directory_sizes would return for the files that remain.
     `sizes` itself must not change.
+
+    If path does not exist, it will return a copy of the original sizes.
     """
-    pass  # replace this line with your code
+
+    remaining_sizes = {}
+    deleted_sizes = {}
+    for directory_path in sizes:
+        if path in directory_path:
+            deleted_sizes[directory_path] = sizes[directory_path]
+        else:
+            remaining_sizes[directory_path] = sizes[directory_path]
+
+    for affected_directory_path in deleted_sizes:
+        parent_directory_parts = affected_directory_path.strip("/").split("/")[:-1]
+
+        for depth in range(len(parent_directory_parts), -1, -1):
+            if depth > 0:
+                directory_path = "/" + "/".join(parent_directory_parts[:depth])
+            else:
+                directory_path = "/"
+            remaining_sizes[directory_path] = (
+                remaining_sizes.get(directory_path, 0) - deleted_sizes[affected_directory_path]
+            )
+
+    return remaining_sizes
 
 
 # ---------------------------------------------------------------- Answers

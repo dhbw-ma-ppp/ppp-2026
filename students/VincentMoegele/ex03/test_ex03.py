@@ -60,3 +60,21 @@ def test_delete_directory():
         "/photos": 4000,
         "/music": 3000,
     }
+    assert delete_directory(sizes, "/photos/winter") == {
+        "/": 11100,
+        "/photos": 8000,
+        "/photos/summer": 4000,
+        "/music": 3000,
+    }
+
+
+def test_delete_directory_sizes_not_change():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+    delete_directory(sizes, "/photos/summer")
+    assert sizes == {"/": 11100, "/photos": 8000, "/photos/summer": 4000, "/music": 3000}
+
+
+def test_directory_to_delete_enough_space():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+    smallest_directory_size = directory_to_delete(sizes, 50000000, 20)
+    assert smallest_directory_size is None
