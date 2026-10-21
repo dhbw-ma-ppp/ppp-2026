@@ -59,7 +59,9 @@ def parse_transcript(lines):
         # geht alle $ cd möglichkeiten durch mit .. zum root wechseln und tiefer gehen
         if "$ cd " in i:
             if i[5:] == "..":
-                directory_name = delete_till(directory_name, "/")+"/"
+                directory_name = delete_till(directory_name, "/")
+                if directory_name!= "/":
+                    directory_name+="/"
             elif i[-1] == "/":
                 directory_name = "/"
             else:
@@ -147,7 +149,7 @@ def delete_directory(sizes, path):
 
 
 # ---------------------------------------------------------------- Answers
-print(directory_sizes(parse_transcript(TRANSCRIPT)))
+print(parse_transcript(EXAMPLE))
 
 if __name__ == "__main__":
     print("Part 1")
