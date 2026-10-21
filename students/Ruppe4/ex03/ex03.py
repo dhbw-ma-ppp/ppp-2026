@@ -33,7 +33,7 @@ def parse_transcript(lines):
     lines is a list of strings like EXAMPLE. Paths are full paths, e.g. "/photos/trip.jpg",
     in the order the files appear in the transcript.
     """
-    cwd = []
+    cwd = []         
     files = []
     for line in lines:
         line = line.strip()
@@ -50,14 +50,13 @@ def parse_transcript(lines):
                         cwd.pop()
                 else:
                     cwd.append(target)
-            # "$ ls" braucht nichts
+           
         elif parts[0] == "dir":
             continue
         else:
             size, name = int(parts[0]), parts[1]
             files.append(("/" + "/".join(cwd + [name]), size))
     return files
-
 
 def _ancestors(file_path):
     """'/a/b/f.txt' -> ['/', '/a', '/a/b']"""
@@ -118,13 +117,13 @@ def delete_directory(sizes, path):
             result = {"/": 0}
             break
         if d == path or d.startswith(path + "/"):
-            continue
+            continue                     
         if path.startswith(d + "/") or d == "/":
-            s -= removed
-
+            s -= removed                  
+            
             if s == 0 and d != "/":
-                continue
-
+                continue                  
+            
         result[d] = s
     return result
 
