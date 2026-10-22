@@ -54,8 +54,8 @@ def find_noun_verb(program, target):
     """
     for i in range(100):
         for a in range(100):
-            if run_with(program, a, i) == target:
-                return (a, i)
+            if run_with(program, i, a) == target:
+                return (i, a)
     return None
 
 

@@ -56,3 +56,7 @@ def test_find_noun_verb():
 
 def test_run_with_false_input():
     assert run_with([3, 9, 10, 9, 1, 9, 11, 0, 99, 6, 7, 3], 2, 3) == "Falsche Eingabe"
+
+
+def test_find_noun_verb_review():
+    assert find_noun_verb([1, 0, 0, 0, 99] + [0] * 95, 3) == (0, 2)
