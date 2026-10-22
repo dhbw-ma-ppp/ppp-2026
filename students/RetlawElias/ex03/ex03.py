@@ -33,47 +33,35 @@ def parse_transcript(lines):
     lines is a list of strings like EXAMPLE. Paths are full paths, e.g. "/photos/trip.jpg",
     in the order the files appear in the transcript.
     """
-    cwd = "/"        # cwd = Current Working Directory
-    cwd_size = 0
-    pairs = []
-    sumUpNextLines = False
+    # None Exception
+    if lines is None:
+        return None
+
+    if type(lines) is not list:
+        return None
+
+    cwd = []
+    entries = []
 
     for line in lines:
-        if sumUpNextLines:
-            if "$" in line:     # Empty Folder
-                sumUpNextLines = False
-                if cwd_size > 0:
-                    cwd_size = 0
-            elif "dir" in line:    # Another Folder listed
-                pass
+        if line.startswith("$ cd "):
+            destination = line[5:]
+            if destination == "/":  # root directory case
+                cwd = []
+            elif destination == "..":  # previous directory case
+                if cwd:
+                    cwd.pop()
             else:
-                cwd_size += int(line[0:line.find(" ")])
-                pairs.append((cwd + line[line.find(" ")+1::], int(line[0:line.find(" ")])))
-
-        if "$ cd " in line:
-            strippedString = line.replace("$ cd ", "")
-            if strippedString == "..":
-                if cwd == "/":
-                    pass 
-                else:
-                    tmp = cwd[0:-1:]
-                    cwd = cwd[0:tmp.rfind("/")+1]
-            elif strippedString == "/":
-                cwd = "/"
-            else:
-                if "/" in strippedString:
-                    parts = strippedString.split("/")
-                    for part in parts:
-                        cwd += part +"/"
-                else:
-                    cwd += strippedString +"/"
-
-
-        if "$ ls" in line:
-            sumUpNextLines = True
-
-    print(pairs)
-    return pairs
+                cwd.append(destination)  # next directory case
+        elif line.startswith("$") or line.startswith("dir "):
+            continue
+        else:
+            size_text, filename = line.split(" ", 1)
+            size = int(size_text)
+            path_parts = cwd + [filename]
+            path = "/" + "/".join(path_parts)
+            entries.append((path, size))
+    return entries
 
 
 def directory_sizes(entries):
@@ -82,35 +70,37 @@ def directory_sizes(entries):
     entries is a list of (path, size) pairs, e.g. ("/a/b/c.txt", 100). A directory's total
     size includes every file anywhere below it, however deep. The root directory is "/".
     """
-    directories = {}
+    sizes = {"/": 0}
 
-    for entry in entries:
-        l = entry[0].split("/")
-        for item in l:
-            if "." in item:
-                pass
+    for path, size in entries:
+        parts = path.strip("/").split("/")
+
+        directory = "/"
+
+        for part in parts[:-1]:
+            if directory == "/":
+                directory = "/" + part
             else:
-                directories["/" + item] = 0
+                directory += "/" + part
 
-    for path, value in entries:
-        for key in directories.keys():
-            if key in path:
-                directories[key] += value
+            sizes.setdefault(directory, 0)
+            sizes[directory] += size
 
-    print(directories)
-    return directories
+        sizes["/"] += size
 
-
+    return sizes
 
 
 def small_directories_total(sizes, limit=100000):
-    """Return the sum of the sizes of all directories whose total size is at most `limit`."""
+    """Sum the sizes of directories at or below the limit."""
     sum = 0
-    for dir in sizes:
-        sum += sizes[dir]
-        if sum > limit:
-            return limit
+
+    for size in sizes.values():
+        if size <= limit:
+            sum += size
+
     return sum
+
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
@@ -121,7 +111,22 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     The disk holds `disk_size` in total; at least `needed_free` must stay unused.
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
-    pass  # replace this line with your code
+    used = sizes["/"]
+    candidates = []
+    free = disk_size - used
+    required = needed_free - free
+
+    if required <= 0:
+        return None
+
+    for size in sizes.values():
+        if size >= required:
+            candidates.append(size)
+
+    if not candidates:
+        return None
+
+    return min(candidates)
 
 
 def delete_directory(sizes, path):
@@ -130,7 +135,28 @@ def delete_directory(sizes, path):
     The result is what directory_sizes would return for the files that remain.
     `sizes` itself must not change.
     """
-    pass  # replace this line with your code
+    result = sizes.copy()
+
+    if path not in result:
+        return result
+
+    deleted_size = result[path]
+
+    for directory in list(result):
+        if directory == path or directory.startswith(path.rstrip("/") + "/"):
+            del result[directory]
+
+    parent = path.rstrip("/").rsplit("/", 1)[0] or "/"
+
+    while True:
+        if parent in result:
+            result[parent] -= deleted_size
+
+        if parent == "/":
+            break
+
+        parent = parent.rsplit("/", 1)[0] or "/"
+    return result
 
 
 # ---------------------------------------------------------------- Answers

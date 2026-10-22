@@ -60,3 +60,17 @@ def test_delete_directory():
         "/photos": 4000,
         "/music": 3000,
     }
+
+
+def test_parse_transcript_typeerror():
+    assert parse_transcript(2) is None
+    assert parse_transcript(True) is None
+    assert parse_transcript(None) is None
+    assert parse_transcript("Test") is None
+
+
+def test_small_directories_negative():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+    assert small_directories_total(sizes, -100) == 0
+    assert small_directories_total(sizes, -100.001) == 0
+    assert small_directories_total(sizes, -999999999999999999999) == 0
