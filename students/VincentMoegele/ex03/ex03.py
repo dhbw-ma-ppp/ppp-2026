@@ -104,13 +104,13 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
         for key in sizes:
             if sizes[key] >= size_to_delete:
                 small[key] = sizes[key]
-        sorted_by_values = dict(sorted(small.items(), key=lambda item: item[1]))
-        smallest_directory_size = 0
-        for directory in sorted_by_values:
-            smallest_directory_size = sorted_by_values[directory]
-            break
-        return smallest_directory_size
 
+        minvalue = total_size
+
+        for value in small.values():
+            if value < minvalue:
+                minvalue = value
+        return minvalue
     else:
         return None
 
