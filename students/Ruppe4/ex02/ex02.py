@@ -46,10 +46,11 @@ def run_with(program, noun, verb):
         memory = program.copy()
         memory[1] = noun
         memory[2] = verb
-    
+
         return run(memory)
     else:
         return None
+
 
 def find_noun_verb(program, target):
     """Return (noun, verb), each from 0 to 99, for which run_with gives target.
