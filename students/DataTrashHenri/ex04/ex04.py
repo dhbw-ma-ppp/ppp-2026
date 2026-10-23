@@ -2,6 +2,7 @@
 # Replace each `pass` line with your code, ending with `return`.
 
 from pathlib import Path
+from traceback import print_tb
 
 # The program file sits next to this file, wherever you run Python from (see README.md).
 PROGRAM_FILE = Path(__file__).parent / "diagnostic.txt"
@@ -59,7 +60,7 @@ def parameter(memory, position, n):
     Any other mode raises a ValueError.
     """
     _,modes = decode(memory[position]) # e.g. MULTIPLY,[IMM,MEM,MEM]
-    if modes[n-1] == 0:#TODO EMPTY 0
+    if modes[n-1] == 0:
         return memory[memory[position+n]]
     return memory[position+n]
 
@@ -74,21 +75,36 @@ def step(memory, position, inputs, outputs):
     known_ops = [1,2,3,4,99]
     full_opcode = memory[position]
     opcode = full_opcode%100
-    print(f"OPCODE {opcode}")
+
     if opcode not in known_ops:
         raise ValueError
-    if opcode == 1:#ADD
-        first = parameter(memory, position, 1)
-        second = parameter(memory, position, 2)
-        memory[parameter(memory, position, 3)] = first + second
-    elif opcode == 2:#MUL
-        first = parameter(memory, position, 1)
-        second = parameter(memory, position, 2)
-        print(f"first {first}, second {second}")
-        print(f"write to index {parameter(memory, position, 3)}")
-        memory[parameter(memory, position, 3)] = first * second
+    next_offset = 0
+    if opcode == 99:
+        return None
 
-    return position + 4
+    if opcode == 1:#ADD
+        next_offset = 4
+        first = parameter(memory, position, 1)
+        second = parameter(memory, position, 2)
+        memory[memory[position+3]] = first + second
+    elif opcode == 2:#MUL
+        next_offset = 4
+        first = parameter(memory, position, 1)
+        second = parameter(memory, position, 2)
+        memory[memory[position+3]] = first * second
+    elif opcode == 3:
+        next_offset = 2
+        memory[memory[position+1]] = inputs.pop(0)
+    elif opcode == 4:
+        next_offset = 2
+        _,mode = decode(full_opcode)
+        if mode[0] == 0:
+            outputs.append(memory[memory[position+1]])
+        else:
+            outputs.append(memory[position+1])
+    else:
+        raise ValueError
+    return position + next_offset
 
 
 def run(memory, inputs):
@@ -97,7 +113,12 @@ def run(memory, inputs):
     `inputs` is the list of numbers the program reads, in order. `inputs` itself must not
     change. Return the list of numbers the program output.
     """
-    pass  # replace this line with your code
+    outputs = []
+    position = 0
+    inputs_cpy = inputs.copy()
+    while position is not None:
+        position = step(memory, position, inputs_cpy, outputs)
+    return outputs
 
 
 # ---------------------------------------------------------------- Answers
@@ -105,12 +126,10 @@ def run(memory, inputs):
 if __name__ == "__main__":
     program = load_program(PROGRAM_FILE)
 
-    # print("Part 1")
-    # print("1:", run([3, 0, 4, 0, 99], [42]))
-    # print("2:", run(program.copy(), [1]))
-    #
-    # print("Part 2")
-    # print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
-    # print("4:", run(program.copy(), [5]))
-    memory = [1002, 4, 3, 4, 33]
-    step(memory,0,[],[])
+    print("Part 1")
+    print("1:", run([3, 0, 4, 0, 99], [42]))
+    print("2:", run(program.copy(), [1]))
+
+    print("Part 2")
+    print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
+    print("4:", run(program.copy(), [5]))
