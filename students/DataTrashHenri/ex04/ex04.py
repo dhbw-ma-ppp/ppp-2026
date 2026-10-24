@@ -2,7 +2,6 @@
 # Replace each `pass` line with your code, ending with `return`.
 
 from pathlib import Path
-from traceback import print_tb
 
 # The program file sits next to this file, wherever you run Python from (see README.md).
 PROGRAM_FILE = Path(__file__).parent / "diagnostic.txt"
@@ -21,15 +20,17 @@ def parse_program(text):
     """
     res = []
     for line in text.splitlines():
-        porgramm = line.split("#")[0].strip()
-        for number in porgramm.split(","):
+        parsed_line = line.split("#")[0].strip()
+        for number in parsed_line.split(","):
             if number != "":
                 res.append(int(number))
     return res
+
+
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
     full_string = ""
-    with open(PROGRAM_FILE,"r") as file:
+    with open(PROGRAM_FILE, "r") as file:
         for line in file:
             full_string += line
 
@@ -43,14 +44,15 @@ def decode(instruction):
     immediate mode, third in position mode.
     """
     opcode = instruction % 100
-    instruction//=100
+    instruction //= 100
 
     par_modes = []
 
     for i in range(3):
-        par_modes.append(instruction%10)
-        instruction//=10
-    return opcode,par_modes
+        par_modes.append(instruction % 10)
+        instruction //= 10
+    return opcode, par_modes
+
 
 def parameter(memory, position, n):
     """Return the value of the n-th parameter (1, 2 or 3) of the instruction at `position`.
@@ -59,10 +61,12 @@ def parameter(memory, position, n):
     Mode 1 (immediate mode): the parameter itself.
     Any other mode raises a ValueError.
     """
-    _,modes = decode(memory[position]) # e.g. MULTIPLY,[IMM,MEM,MEM]
-    if modes[n-1] == 0:
-        return memory[memory[position+n]]
-    return memory[position+n]
+    _, modes = decode(memory[position])  # e.g. MULTIPLY,[IMM,MEM,MEM]
+    if modes[n - 1] == 0:
+        return memory[memory[position + n]]
+    elif modes[n - 1] == 1:
+        return memory[position + n]
+    raise ValueError("unknown mode" + str(modes[n - 1]))
 
 
 def step(memory, position, inputs, outputs):
@@ -72,36 +76,56 @@ def step(memory, position, inputs, outputs):
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
     """
-    known_ops = [1,2,3,4,99]
+    known_ops = [1, 2, 3, 4, 5, 6, 7, 8, 99]
     full_opcode = memory[position]
-    opcode = full_opcode%100
+    opcode = full_opcode % 100
 
     if opcode not in known_ops:
-        raise ValueError
+        raise ValueError("unknown opcode" + str(opcode))
     next_offset = 0
     if opcode == 99:
         return None
 
-    if opcode == 1:#ADD
+    if opcode == 1:  # ADD
         next_offset = 4
         first = parameter(memory, position, 1)
         second = parameter(memory, position, 2)
-        memory[memory[position+3]] = first + second
-    elif opcode == 2:#MUL
+        memory[memory[position + 3]] = first + second
+    elif opcode == 2:  # MUL
         next_offset = 4
         first = parameter(memory, position, 1)
         second = parameter(memory, position, 2)
-        memory[memory[position+3]] = first * second
+        memory[memory[position + 3]] = first * second
     elif opcode == 3:
         next_offset = 2
-        memory[memory[position+1]] = inputs.pop(0)
+        memory[memory[position + 1]] = inputs.pop(0)
     elif opcode == 4:
         next_offset = 2
-        _,mode = decode(full_opcode)
+        _, mode = decode(full_opcode)
         if mode[0] == 0:
-            outputs.append(memory[memory[position+1]])
+            outputs.append(memory[memory[position + 1]])
         else:
-            outputs.append(memory[position+1])
+            outputs.append(memory[position + 1])
+    elif opcode == 5:
+        if parameter(memory, position, 1) != 0:
+            position = parameter(memory, position, 2)  # next_offset stays 0, thats fine
+        else:
+            next_offset = 3
+    elif opcode == 6:
+        if parameter(memory, position, 1) == 0:
+            position = parameter(memory, position, 2)
+        else:
+            next_offset = 3
+    elif opcode == 7:
+        next_offset = 4
+        first = parameter(memory, position, 1)
+        second = parameter(memory, position, 2)
+        memory[memory[position + 3]] = int(first < second)
+    elif opcode == 8:
+        next_offset = 4
+        first = parameter(memory, position, 1)
+        second = parameter(memory, position, 2)
+        memory[memory[position + 3]] = int(first == second)
     else:
         raise ValueError
     return position + next_offset
