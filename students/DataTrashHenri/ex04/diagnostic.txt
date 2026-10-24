@@ -1,0 +1,107 @@
+# Diagnostic program for exercise 04.
+# Run it with system ID 1 for Part 1, and with system ID 5 for Part 2.
+# Each check outputs 0 if your computer passed it; the last output is the
+# diagnostic code. Comments start with the position of the first number.
+
+3, 190                  # 0: read the system ID
+1, 190, 191, 6          # 2: write ID + 1100 over the opcode at position 6
+0, 1, 83, 192           # 6: ID 1 makes this 1101 (add, carry on); ID 5 makes it 1105 (jump to Part 2)
+
+# Part 1: opcodes 1 to 4, position and immediate mode
+
+1, 193, 194, 197        # 10: add A and B (position mode)
+1001, 197, -86, 197     # 14: subtract 86
+4, 197                  # 18: output: 0 if correct
+
+1101, 53, 38, 197       # 20: add 53 and 38 (both immediate)
+1001, 197, -91, 197     # 24: subtract 91
+4, 197                  # 28: output: 0 if correct
+
+104, 0                  # 30: output 0 (immediate mode)
+
+1101, 25, -46, 197      # 32: add 25 and -46
+1001, 197, 21, 197      # 36: add 21
+4, 197                  # 40: output: 0 if correct
+
+102, 5, 193, 197        # 42: multiply 5 (immediate) by A (position)
+1001, 197, -200, 197    # 46: subtract 200
+4, 197                  # 50: output: 0 if correct
+
+1001, 190, -1, 197      # 52: subtract 1 from the system ID
+4, 197                  # 56: output: 0 if correct
+
+1002, 194, 4, 197       # 58: multiply B (position) by 4 (immediate)
+1001, 197, -184, 197    # 62: subtract 184
+4, 197                  # 66: output: 0 if correct
+
+# Part 1 diagnostic code
+1002, 193, 4, 198       # 68: C = A * 4
+101, 744, 198, 198      # 72: C = 744 + C
+2, 198, 194, 198        # 76: C = C * B
+4, 198                  # 80: output the diagnostic code
+99                      # 82: halt
+
+# Part 2: opcodes 5 to 8
+
+1006, 195, 187          # 83: the value at ONE is not zero: don't jump
+
+7, 193, 194, 197        # 86: is A less than B? (position mode)
+1001, 197, -1, 197      # 90: subtract 1
+4, 197                  # 94: output: 0 if correct
+
+1005, 195, 101          # 96: the value at ONE is not zero: jump
+104, 998                # 99: output 998: only if the jump was missed
+
+1107, 62, 26, 197       # 101: is 62 less than 26?
+4, 197                  # 105: output: 0 if correct
+
+8, 193, 194, 197        # 107: is A equal to B? (position mode)
+4, 197                  # 111: output: 0 if correct
+
+1101, 6, 0, 199         # 113: loop: N = 6
+1101, 0, 0, 200         # 117: ACC = 0
+1001, 200, 5, 200       # 121: ACC = ACC + 5
+1001, 199, -1, 199      # 125: N = N - 1
+1005, 199, 121          # 129: back to the start of the loop while N is not zero
+1001, 200, -30, 197     # 132: subtract 30 from ACC
+4, 197                  # 136: output: 0 if correct
+
+1105, 0, 187            # 138: 0 is zero: don't jump
+
+1106, 0, 146            # 141: 0 is zero: jump over the next instruction
+104, 999                # 144: output 999: only if the jump was missed
+
+105, 1, 196             # 146: 1 is not zero: jump to the address stored at TARGET
+104, 997                # 149: output 997: only if the jump was missed
+
+1108, 85, 85, 197       # 151: is 85 equal to 85? (both immediate)
+1001, 197, -1, 197      # 155: subtract 1
+4, 197                  # 159: output: 0 if correct
+
+# Part 2 diagnostic code
+1101, 8, 0, 201         # 161: I = 8
+1101, 2, 0, 198         # 165: C = a starting value
+1002, 198, 3, 198       # 169: C = C * 3
+1, 198, 201, 198        # 173: C = C + I
+1001, 201, -1, 201      # 177: I = I - 1
+1005, 201, 169          # 181: back to the start of the loop while I is not zero
+4, 198                  # 184: output the diagnostic code
+99                      # 186: halt
+
+# Only reached if a jump went wrong
+104, 666                # 187: output 666
+99                      # 189: halt
+
+# Data
+0                       # 190: ID: the system ID goes here
+1100                    # 191: BASE
+0                       # 192: SCRATCH
+40                      # 193: A
+46                      # 194: B
+1                       # 195: ONE
+151                     # 196: TARGET: an address to jump to
+0                       # 197: R
+0                       # 198: C
+0                       # 199: N
+0                       # 200: ACC
+0                       # 201: I
