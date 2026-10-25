@@ -161,12 +161,6 @@ def parameter_bonus(memory, position, n, relative):
         return index
     else:
         memory += [0] * (index - len(memory) + 1)
-        if modes[n - 1] == 2:
-            return index
-        if modes[n - 1] == 0:
-            return index
-        if modes[n - 1] == 1:
-            return index
         return index
 
 
@@ -246,11 +240,11 @@ def run_bonus(memory, inputs):
 if __name__ == "__main__":
     program = load_program(PROGRAM_FILE)
 
-    # print("Part 1")
-    # print("1:", run([3, 0, 4, 0, 99], [42]))
-    # print("2:", run(program.copy(), [1]))
-    #
-    # print("Part 2")
-    # print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
-    # print("4:", run(program.copy(), [5]))
-    print(run_bonus([4, 1000, 99], []))
+    print("Part 1")
+    print("1:", run([3, 0, 4, 0, 99], [42]))
+    print("2:", run(program.copy(), [1]))
+
+    print("Part 2")
+    print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
+    print("4:", run(program.copy(), [5]))
+
