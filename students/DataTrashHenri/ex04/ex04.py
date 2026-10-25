@@ -146,14 +146,14 @@ def run(memory, inputs):
 
 
 # ======================BONUS=================================================================
-def parameter_bonus(memory, position, n,relative):
+def parameter_bonus(memory, position, n, relative):
     _, modes = decode(memory[position])  # e.g. MULTIPLY,[IMM,MEM,MEM]
     if modes[n - 1] == 0:
         index = memory[position + n]
     elif modes[n - 1] == 1:
         index = position + n
     elif modes[n - 1] == 2:
-        index = relative+memory[position + n]
+        index = relative + memory[position + n]
     else:
         raise ValueError("unknown mode" + str(modes[n - 1]))
 
@@ -169,6 +169,7 @@ def parameter_bonus(memory, position, n,relative):
             return index
         return index
 
+
 def step_bonus(memory, position, inputs, outputs, relative_base):
     known_ops = [1, 2, 3, 4, 5, 6, 7, 8, 9, 99]
     full_opcode = memory[position]
@@ -178,54 +179,56 @@ def step_bonus(memory, position, inputs, outputs, relative_base):
         raise ValueError("unknown opcode" + str(opcode))
     next_offset = 0
     if opcode == 99:
-        return None,None
+        return None, None
 
     if opcode == 1:  # ADD
         next_offset = 4
-        first = memory[parameter_bonus(memory, position, 1,relative_base)]
-        second = memory[parameter_bonus(memory, position, 2,relative_base)]
-        index = parameter_bonus(memory, position, 3,relative_base)
+        first = memory[parameter_bonus(memory, position, 1, relative_base)]
+        second = memory[parameter_bonus(memory, position, 2, relative_base)]
+        index = parameter_bonus(memory, position, 3, relative_base)
         print("ADD", first, second, index)
         memory[index] = first + second
 
     elif opcode == 2:  # MUL
         next_offset = 4
-        first = memory[parameter_bonus(memory, position, 1,relative_base)]
-        second = memory[parameter_bonus(memory, position, 2,relative_base)]
-        index = parameter_bonus(memory, position, 3,relative_base)
+        first = memory[parameter_bonus(memory, position, 1, relative_base)]
+        second = memory[parameter_bonus(memory, position, 2, relative_base)]
+        index = parameter_bonus(memory, position, 3, relative_base)
         memory[index] = first * second
-    elif opcode == 3: #input
+    elif opcode == 3:  # input
         next_offset = 2
-        memory[parameter_bonus(memory, position, 1,relative_base)] = inputs.pop(0)
-    elif opcode == 4: #out
+        memory[parameter_bonus(memory, position, 1, relative_base)] = inputs.pop(0)
+    elif opcode == 4:  # out
         next_offset = 2
-        outputs.append(memory[parameter_bonus(memory, position, 1,relative_base)])
-    elif opcode == 5:#if
-        if memory[parameter_bonus(memory, position, 1,relative_base)] != 0:
-            position = memory[parameter_bonus(memory, position, 2,relative_base)]  # next_offset stays 0, thats fine
+        outputs.append(memory[parameter_bonus(memory, position, 1, relative_base)])
+    elif opcode == 5:  # if
+        if memory[parameter_bonus(memory, position, 1, relative_base)] != 0:
+            position = memory[
+                parameter_bonus(memory, position, 2, relative_base)
+            ]  # next_offset stays 0, thats fine
         else:
             next_offset = 3
-    elif opcode == 6:#if
-        if memory[parameter_bonus(memory, position, 1,relative_base)] == 0:
-            position = memory[parameter_bonus(memory, position, 2,relative_base)]
+    elif opcode == 6:  # if
+        if memory[parameter_bonus(memory, position, 1, relative_base)] == 0:
+            position = memory[parameter_bonus(memory, position, 2, relative_base)]
         else:
             next_offset = 3
-    elif opcode == 7:#less
+    elif opcode == 7:  # less
         next_offset = 4
-        first = memory[parameter_bonus(memory, position, 1,relative_base)]
-        second = memory[parameter_bonus(memory, position, 2,relative_base)]
-        memory[parameter_bonus(memory, position, 3,relative_base)] = int(first < second)
-    elif opcode == 8:#equal
+        first = memory[parameter_bonus(memory, position, 1, relative_base)]
+        second = memory[parameter_bonus(memory, position, 2, relative_base)]
+        memory[parameter_bonus(memory, position, 3, relative_base)] = int(first < second)
+    elif opcode == 8:  # equal
         next_offset = 4
-        first = memory[parameter_bonus(memory, position, 1,relative_base)]
-        second = memory[parameter_bonus(memory, position, 2,relative_base)]
-        memory[parameter_bonus(memory, position, 3,relative_base)] = int(first == second)
+        first = memory[parameter_bonus(memory, position, 1, relative_base)]
+        second = memory[parameter_bonus(memory, position, 2, relative_base)]
+        memory[parameter_bonus(memory, position, 3, relative_base)] = int(first == second)
     elif opcode == 9:
         next_offset = 2
-        relative_base += memory[parameter_bonus(memory, position, 1,relative_base)]
+        relative_base += memory[parameter_bonus(memory, position, 1, relative_base)]
     else:
         raise ValueError
-    return position + next_offset,relative_base
+    return position + next_offset, relative_base
 
 
 def run_bonus(memory, inputs):
@@ -234,7 +237,7 @@ def run_bonus(memory, inputs):
     relative_base = 0
     inputs_cpy = inputs.copy()
     while position is not None:
-        position,relative_base = step_bonus(memory, position, inputs_cpy, outputs, relative_base)
+        position, relative_base = step_bonus(memory, position, inputs_cpy, outputs, relative_base)
     return outputs
 
 
