@@ -145,15 +145,109 @@ def run(memory, inputs):
     return outputs
 
 
+# ======================BONUS=================================================================
+def parameter_bonus(memory, position, n,relative):
+    _, modes = decode(memory[position])  # e.g. MULTIPLY,[IMM,MEM,MEM]
+    if modes[n - 1] == 0:
+        index = memory[position + n]
+    elif modes[n - 1] == 1:
+        index = position + n
+    elif modes[n - 1] == 2:
+        index = relative+memory[position + n]
+    else:
+        raise ValueError("unknown mode" + str(modes[n - 1]))
+
+    if index < len(memory):
+        return index
+    else:
+        memory += [0] * (index - len(memory) + 1)
+        if modes[n - 1] == 2:
+            return index
+        if modes[n - 1] == 0:
+            return index
+        if modes[n - 1] == 1:
+            return index
+        return index
+
+def step_bonus(memory, position, inputs, outputs, relative_base):
+    known_ops = [1, 2, 3, 4, 5, 6, 7, 8, 9, 99]
+    full_opcode = memory[position]
+    opcode = full_opcode % 100
+
+    if opcode not in known_ops:
+        raise ValueError("unknown opcode" + str(opcode))
+    next_offset = 0
+    if opcode == 99:
+        return None,None
+
+    if opcode == 1:  # ADD
+        next_offset = 4
+        first = memory[parameter_bonus(memory, position, 1,relative_base)]
+        second = memory[parameter_bonus(memory, position, 2,relative_base)]
+        index = parameter_bonus(memory, position, 3,relative_base)
+        print("ADD", first, second, index)
+        memory[index] = first + second
+
+    elif opcode == 2:  # MUL
+        next_offset = 4
+        first = memory[parameter_bonus(memory, position, 1,relative_base)]
+        second = memory[parameter_bonus(memory, position, 2,relative_base)]
+        index = parameter_bonus(memory, position, 3,relative_base)
+        memory[index] = first * second
+    elif opcode == 3: #input
+        next_offset = 2
+        memory[parameter_bonus(memory, position, 1,relative_base)] = inputs.pop(0)
+    elif opcode == 4: #out
+        next_offset = 2
+        outputs.append(memory[parameter_bonus(memory, position, 1,relative_base)])
+    elif opcode == 5:#if
+        if memory[parameter_bonus(memory, position, 1,relative_base)] != 0:
+            position = memory[parameter_bonus(memory, position, 2,relative_base)]  # next_offset stays 0, thats fine
+        else:
+            next_offset = 3
+    elif opcode == 6:#if
+        if memory[parameter_bonus(memory, position, 1,relative_base)] == 0:
+            position = memory[parameter_bonus(memory, position, 2,relative_base)]
+        else:
+            next_offset = 3
+    elif opcode == 7:#less
+        next_offset = 4
+        first = memory[parameter_bonus(memory, position, 1,relative_base)]
+        second = memory[parameter_bonus(memory, position, 2,relative_base)]
+        memory[parameter_bonus(memory, position, 3,relative_base)] = int(first < second)
+    elif opcode == 8:#equal
+        next_offset = 4
+        first = memory[parameter_bonus(memory, position, 1,relative_base)]
+        second = memory[parameter_bonus(memory, position, 2,relative_base)]
+        memory[parameter_bonus(memory, position, 3,relative_base)] = int(first == second)
+    elif opcode == 9:
+        next_offset = 2
+        relative_base += memory[parameter_bonus(memory, position, 1,relative_base)]
+    else:
+        raise ValueError
+    return position + next_offset,relative_base
+
+
+def run_bonus(memory, inputs):
+    outputs = []
+    position = 0
+    relative_base = 0
+    inputs_cpy = inputs.copy()
+    while position is not None:
+        position,relative_base = step_bonus(memory, position, inputs_cpy, outputs, relative_base)
+    return outputs
+
+
 # ---------------------------------------------------------------- Answers
 
 if __name__ == "__main__":
     program = load_program(PROGRAM_FILE)
 
-    print("Part 1")
-    print("1:", run([3, 0, 4, 0, 99], [42]))
-    print("2:", run(program.copy(), [1]))
-
-    print("Part 2")
-    print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
-    print("4:", run(program.copy(), [5]))
+    # print("Part 1")
+    # print("1:", run([3, 0, 4, 0, 99], [42]))
+    # print("2:", run(program.copy(), [1]))
+    #
+    # print("Part 2")
+    # print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
+    # print("4:", run(program.copy(), [5]))
+    print(run_bonus([4, 1000, 99], []))
