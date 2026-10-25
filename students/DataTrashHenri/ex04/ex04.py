@@ -247,4 +247,3 @@ if __name__ == "__main__":
     print("Part 2")
     print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
     print("4:", run(program.copy(), [5]))
-
