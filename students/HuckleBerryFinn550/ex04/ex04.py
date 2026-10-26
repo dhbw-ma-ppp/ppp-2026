@@ -1,0 +1,176 @@
+# Exercise 04. See README.md for the full task.
+# Replace each `pass` line with your code, ending with `return`.
+import opcode
+from pathlib import Path
+from pickletools import opcodes
+from statistics import mode
+
+# The program file sits next to this file, wherever you run Python from (see README.md).
+PROGRAM_FILE = Path(__file__).parent / "diagnostic.txt"
+
+# Reads two numbers and outputs the larger one (see README.md, Part 2).
+MAX_OF_TWO = [3, 20, 3, 21, 7, 20, 21, 22, 1005, 22, 14, 4, 20, 99, 4, 21, 99, 0, 0, 0, 0, 0, 0]
+
+# ---------------------------------------------------------------- Part 1 (in class)
+
+
+def parse_program(text):
+    """Return the numbers in `text` as a list of ints.
+
+    Numbers are separated by commas and/or line breaks. A `#` starts a comment that runs to
+    the end of its line. Spaces and blank lines don't matter.
+    """
+    numbers = []
+    with open(PROGRAM_FILE) as file:
+        for line in text.splitlines():
+            leftSide = line.split("#")[0].strip()
+            for part in leftSide.split(","):
+                if part != '':
+                    numbers.append(int(part))
+    return numbers
+
+
+
+def load_program(path):
+    """Read the file at `path` and return the program in it as a list of ints."""
+    return parse_program(Path(path).read_text())
+
+
+def decode(instruction):
+    """Split an instruction into its opcode and the modes of its three parameters.
+
+    decode(1002) == (2, [0, 1, 0]): opcode 2; first parameter in position mode, second in
+    immediate mode, third in position mode.
+    """
+    digits = []
+    mode = []
+
+    if instruction == 99:
+        opCode = 99
+    else:
+        for digit in str(instruction): #TODO: only takes one digit as opcode
+            #if instruction two digits --> gets separated
+            digits.append(int(digit))
+        print(f"instructions: {instruction}")
+        print(f"digits: {digits}")
+        opCode = digits[-1]
+        print(f"opcode: {opCode}")
+        mode.extend(digits[:-2])
+    while len(mode) != 3:
+        if len(digits) >=4:
+            mode.insert(0, 0)
+        else:
+            mode.append(0)
+    return opCode, mode
+
+def parameter(memory, position, n):
+    """Return the value of the n-th parameter (1, 2 or 3) of the instruction at `position`.
+
+    Mode 0 (position mode): the value at the address the parameter holds.
+    Mode 1 (immediate mode): the parameter itself.
+    Any other mode raises a ValueError.
+    """
+    opCode_Mode = decode(memory[position])
+    opCode = opCode_Mode[0]
+    modes = opCode_Mode[1]
+    mode = modes[3-n]
+    print(f"modes: {modes}, mode {mode}")
+    if mode == 0:
+        if n == 3:
+            if n < len(memory):
+                value = memory[n]
+            else:
+                value = None
+        else:
+            address = memory[n]
+            if address == 99:
+                return 99
+            print(f"address: {address}, len: {len(memory)}")
+            if address <= len(memory):
+                value = memory[address]
+            else:
+                value = None
+    elif mode == 1:
+        value = memory[n]
+    else:
+        raise ValueError
+    return value
+
+def step(memory, position, inputs, outputs):
+    """Execute the instruction that starts at `position` in memory.
+
+    Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
+    Return the position of the next instruction, or None if the opcode is 99.
+    An unknown opcode raises a ValueError.
+    """
+    opCode_Mode = decode(memory[position])
+    opCode = opCode_Mode[0]
+    print(f"opcode: {opCode}")
+    if opCode == 99:
+        return None
+    if opCode == 3:
+        newPosition = memory[position + 1]
+        memory[newPosition] = inputs.pop(0)
+        return position + 2
+    elif opCode == 4:
+        newPosition = memory[position + 1]
+        if newPosition < len(memory):
+            outputs.append(memory[newPosition])
+        else:
+            outputs.append(newPosition)
+        return position + 2
+
+    if len(memory) >= position + 3:
+        number1 = parameter(memory, position, 1)
+        number2 = parameter(memory, position, 2)
+        result = parameter(memory, position, 3)
+
+
+        print(f"number1 {number1}, number2: {number2}, result: {result}")
+    else:
+        raise IndexError("More information needed.")
+
+    if result is None:
+        pass
+    if opCode == 3 or opcode == 4:
+        pass
+    if number1 is None or number2 is None:
+        raise ValueError
+    else:
+        if opCode == 1:
+            memory[result] = number1 + number2
+        elif opCode == 2:
+            memory[result] = number1 * number2
+        # elif opCode == 3:
+        #     memory[newPosition] = inputs.pop(0)
+        #     return position+2
+        # elif opCode == 4:
+        #     memory.append(memory[newPosition])
+        #     return position+2
+        else:
+            raise ValueError
+    print(f"memory: {memory}, position: {position}, inputs: {inputs}, outputs: {outputs}")
+    return position+4
+
+
+def run(memory, inputs):
+    """Execute instructions, starting at position 0, until the program halts.
+
+    `inputs` is the list of numbers the program reads, in order. `inputs` itself must not
+    change. Return the list of numbers the program output.
+    """
+    pass  # replace this line with your code
+
+
+# ---------------------------------------------------------------- Answers
+
+if __name__ == "__main__":
+    program = load_program(PROGRAM_FILE)
+
+    print("Part 1")
+    print("1:", run([3, 0, 4, 0, 99], [42]))
+    print("2:", run(program.copy(), [1]))
+
+    print("Part 2")
+    print("3:", run(MAX_OF_TWO.copy(), [17, 4]))
+    print("4:", run(program.copy(), [5]))
