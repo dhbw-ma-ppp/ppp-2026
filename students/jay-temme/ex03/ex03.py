@@ -250,12 +250,12 @@ def delete_directory(sizes, path):
             pass
 
         # checks if path is under directory
-        elif set(directory.split("/")) <= set(path.split("/")):
+        elif directory.split("/") == path.split("/")[: len(directory.split("/"))]:
             # adds directory and size with the size of path subtracted to new_sizes
             new_sizes[directory] = sizes[directory] - sizes[path]
 
         # checks if directory is under path
-        elif set(path.split("/")) <= set(directory.split("/")):
+        elif path.split("/") == directory.split("/")[: len(path.split("/"))]:
             # doesn't add directory since it's getting deleted
             pass
 
