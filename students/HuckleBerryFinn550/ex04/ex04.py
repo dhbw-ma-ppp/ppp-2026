@@ -44,16 +44,21 @@ def decode(instruction):
     """
     digits = []
     mode = []
+    opCodeArr = []
 
     if instruction == 99:
         opCode = 99
     else:
-        for digit in str(instruction): #TODO: only takes one digit as opcode
-            #if instruction two digits --> gets separated
+        for digit in str(instruction):
             digits.append(int(digit))
-        print(f"instructions: {instruction}")
-        print(f"digits: {digits}")
-        opCode = digits[-1]
+        opCodeArr.extend(digits[-2:])
+        if len(opCodeArr) == 1:
+            opCode = opCodeArr[0]
+        elif opCodeArr[0] == 0:
+            opCode = opCodeArr[1]
+        else:
+            raise ValueError
+
         print(f"opcode: {opCode}")
         mode.extend(digits[:-2])
     while len(mode) != 3:
@@ -71,7 +76,7 @@ def parameter(memory, position, n):
     Any other mode raises a ValueError.
     """
     opCode_Mode = decode(memory[position])
-    opCode = opCode_Mode[0]
+    # opCode = opCode_Mode[0]
     modes = opCode_Mode[1]
     mode = modes[3-n]
     print(f"modes: {modes}, mode {mode}")
@@ -105,7 +110,6 @@ def step(memory, position, inputs, outputs):
     """
     opCode_Mode = decode(memory[position])
     opCode = opCode_Mode[0]
-    print(f"opcode: {opCode}")
     if opCode == 99:
         return None
     if opCode == 3:
@@ -141,12 +145,6 @@ def step(memory, position, inputs, outputs):
             memory[result] = number1 + number2
         elif opCode == 2:
             memory[result] = number1 * number2
-        # elif opCode == 3:
-        #     memory[newPosition] = inputs.pop(0)
-        #     return position+2
-        # elif opCode == 4:
-        #     memory.append(memory[newPosition])
-        #     return position+2
         else:
             raise ValueError
     print(f"memory: {memory}, position: {position}, inputs: {inputs}, outputs: {outputs}")
@@ -159,8 +157,14 @@ def run(memory, inputs):
     `inputs` is the list of numbers the program reads, in order. `inputs` itself must not
     change. Return the list of numbers the program output.
     """
-    pass  # replace this line with your code
-
+    outputList = []
+    inputsCopy = inputs.copy()
+    newMemory = memory.copy()
+    startIndex = 0
+    while startIndex is not None:
+        startIndex = step(newMemory, startIndex, inputsCopy, outputList)
+    return outputList
+ #TODO: input list change
 
 # ---------------------------------------------------------------- Answers
 
