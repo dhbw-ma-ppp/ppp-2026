@@ -110,6 +110,12 @@ def test_step_inputEmpty():
     with pytest.raises(ValueError, match="No inputs found."):
         step(memory, 0, inputs, [])
 
+def test_run_bad_input():
+    memory = [1, 0, 0, 99]
+    inputs = []
+    with pytest.raises(IndexError, match="Invalid result address."):
+        run(memory, inputs)
+
 
 def test_step_jump_if_true():
     assert step([1105, 1, 7], 0, [], []) == 7

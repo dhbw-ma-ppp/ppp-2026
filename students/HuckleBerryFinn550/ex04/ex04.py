@@ -132,10 +132,12 @@ def step(memory, position, inputs, outputs):
         else:
             raise IndexError("More information needed.")
 
-        if result is None:
-            pass
+        if opCode in (1, 2, 7, 8) and result >= len(memory):
+            raise IndexError("Invalid result address.")
+
         if number1 is None or number2 is None:
             raise ValueError("One number is None")
+
         else:
             if opCode == 1:
                 memory[result] = number1 + number2
