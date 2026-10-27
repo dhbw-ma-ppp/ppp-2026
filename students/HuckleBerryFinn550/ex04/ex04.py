@@ -1,9 +1,8 @@
 # Exercise 04. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-import opcode
+# import opcode
 from pathlib import Path
-from pickletools import opcodes
-from statistics import mode
+
 
 # The program file sits next to this file, wherever you run Python from (see README.md).
 PROGRAM_FILE = Path(__file__).parent / "diagnostic.txt"
@@ -21,19 +20,19 @@ def parse_program(text):
     the end of its line. Spaces and blank lines don't matter.
     """
     numbers = []
-    with open(PROGRAM_FILE) as file:
-        for line in text.splitlines():
-            leftSide = line.split("#")[0].strip()
-            for part in leftSide.split(","):
-                if part != '':
-                    numbers.append(int(part))
+    for line in text.splitlines():
+        leftSide = line.split("#")[0].strip()
+        for part in leftSide.split(","):
+            if part != "":
+                numbers.append(int(part))
     return numbers
-
 
 
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
-    return parse_program(Path(path).read_text())
+    with open(path) as input_file:
+        inputs = input_file.read()
+    return parse_program(inputs)
 
 
 def decode(instruction):
@@ -43,7 +42,7 @@ def decode(instruction):
     immediate mode, third in position mode.
     """
     digits = []
-    mode = []
+    modes = []
     opCodeArr = []
 
     if instruction == 99:
@@ -58,15 +57,12 @@ def decode(instruction):
             opCode = opCodeArr[1]
         else:
             raise ValueError("Opcode invalid.")
+        modes.extend(digits[:-2])
+    while len(modes) != 3:
+        modes.insert(0, 0)
+    modes.reverse()
+    return opCode, modes
 
-        print(f"opcode: {opCode}")
-        mode.extend(digits[:-2])
-    while len(mode) != 3:
-        if len(digits) >=4:
-            mode.insert(0, 0)
-        else:
-            mode.append(0)
-    return opCode, mode
 
 def parameter(memory, position, n):
     """Return the value of the n-th parameter (1, 2 or 3) of the instruction at `position`.
@@ -78,28 +74,27 @@ def parameter(memory, position, n):
     opCode_Mode = decode(memory[position])
     # opCode = opCode_Mode[0]
     modes = opCode_Mode[1]
-    mode = modes[3-n]
-    print(f"modes: {modes}, mode {mode}")
-    if mode == 0:
+    parameterMode = modes[n - 1]
+    if parameterMode == 0:
         if n == 3:
             if n < len(memory):
                 value = memory[position + n]
             else:
                 value = None
         else:
-            address = memory[position+n]
+            address = memory[position + n]
             if address == 99:
                 return 99
-            print(f"address: {address}, len: {len(memory)}")
             if address <= len(memory):
                 value = memory[address]
             else:
                 value = None
-    elif mode == 1:
-        value = memory[position+n]
+    elif parameterMode == 1:
+        value = memory[position + n]
     else:
         raise ValueError("Unknown mode.")
     return value
+
 
 def step(memory, position, inputs, outputs):
     """Execute the instruction that starts at `position` in memory.
@@ -150,7 +145,7 @@ def step(memory, position, inputs, outputs):
                 if number1 != 0:
                     return number2
                 else:
-                   return position+3
+                    return position + 3
             elif opCode == 6:
                 if number1 == 0:
                     return number2
@@ -169,7 +164,7 @@ def step(memory, position, inputs, outputs):
 
             else:
                 raise ValueError
-    return position+4
+    return position + 4
 
 
 def run(memory, inputs):
@@ -184,6 +179,7 @@ def run(memory, inputs):
     while startIndex is not None:
         startIndex = step(memory, startIndex, inputsCopy, outputList)
     return outputList
+
 
 # ---------------------------------------------------------------- Answers
 

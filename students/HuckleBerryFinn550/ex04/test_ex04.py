@@ -63,7 +63,6 @@ def test_step_input():
     assert inputs == [8]
 
 
-
 def test_step_output():
     outputs = []
     assert step([4, 2, 99], 0, [], outputs) == 2
@@ -104,11 +103,13 @@ def test_step_MemoryEmpty():
     with pytest.raises(IndexError):
         step(memory, 0, inputs, [])
 
+
 def test_step_inputEmpty():
     memory = [3, 0, 99]
     inputs = []
     with pytest.raises(ValueError, match="No inputs found."):
         step(memory, 0, inputs, [])
+
 
 def test_step_jump_if_true():
     assert step([1105, 1, 7], 0, [], []) == 7
