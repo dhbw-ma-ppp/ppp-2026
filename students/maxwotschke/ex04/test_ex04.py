@@ -123,3 +123,19 @@ def test_step_equals():
 
 def test_run_max_of_two():
     assert run(MAX_OF_TWO.copy(), [3, 8]) == [8]
+
+
+def test_negative_opcode():
+    with pytest.raises(ValueError):
+        run([-102, 2, 3, 4, 99], [])
+
+
+def test_run_empty_inputs():
+    memory = [3, 1, 4, 0, 99]
+    assert step(memory, 0, [], []) == 2
+    assert memory == [3, 1, 4, 0, 99]
+
+
+def test_run_without_inputs():
+    with pytest.raises(ValueError):
+        run([], [])

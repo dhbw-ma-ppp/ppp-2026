@@ -3,7 +3,6 @@
 
 from pathlib import Path
 
-from IPython.terminal.shortcuts import next_history_or_next_completion
 
 # The program file sits next to this file, wherever you run Python from (see README.md).
 PROGRAM_FILE = Path(__file__).parent / "diagnostic.txt"
@@ -27,62 +26,17 @@ def parse_program(text):
         inputs_strings = line_without_comments.split(",")
         for string in inputs_strings:
             if len(string.split()) > 0:
-                 #if string.split()[0].isdigit() is True or int(string.split()[0]) is True:
-                try:
-                    input.append(int(string.split()[0]))
-                except ValueError:
-                    continue
-                    input.append(int(string.split()[0]))
-
+                input.append(int(string))
 
     return input
-print(parse_program(" 1101, 100, -1, 4, 0 "))
-    # with open("students\maxwotschke\ex04\diagnostic.txt") as input_file:
-    #     inputs_raw = (input_file.read())
-    #
-    # inputs_without_comments = inputs_raw.split("#")[0]
-    # inputs = inputs_without_comments.split()
-    # return inputs
-    # pos = 0
-    # commands = inputs[pos]
-    #
-    # if len(commands) == 1:
-    #     opcode = "0" + commands
-    #
-    # elif len(commands) > 1:
-    #     opcode = commands[-2:]
-    #
-    # else:
-    #     raise ValueError
-    #
-    # while opcode != "99":
-    #     return inputs
-    #
-    # attribute_1 = inputs[pos + 1]
-    #
-    # if opcode == "01" or opcode == "02":
-    #     attribute_2 = inputs[pos + 2]
-    #     attribute_3 = inputs[pos + 3]
-    #
-    #     if opcode == "01":
-
-
-
-
-
-
 
 
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
     with open(path) as input_file:
-        inputs= (input_file.read())
-
-       # inputs.append(parse_program(line))
+        inputs = input_file.read()
 
     return parse_program(inputs)
-
-
 
 
 def decode(instruction):
@@ -92,55 +46,14 @@ def decode(instruction):
     immediate mode, third in position mode.
     """
 
-    parameters = []
-
-    if (instruction % 100 == 99 or instruction % 100 == 1 or instruction % 100 == 2 or instruction % 100 == 3 or instruction % 100 == 4):
-
-        opcode = instruction % 100
-        instruction = instruction // 100
-        parameter1 = instruction % 10
-        instruction_copied = instruction // 10
-        parameter2 = instruction_copied % 10
-        instruction_copied = instruction_copied //10
-        parameter3 = instruction_copied % 10
-        return (opcode, [parameter1, parameter2, parameter3])
-
-
-
-
-
-
-
-        # if len(str(instruction))  <= 2:
-        #     parameters = [0, 0, 0]
-        # elif len(str(instruction)) == 3:
-        #     parameters = [1, 0, 0]
-        # elif len(str(instruction)) == 4:
-        #     parameters = [instruction[-3], 1, 0]
-        # elif len(str(instruction)) == 5:
-        #     parameters = [instruction[-3], instruction[-4], 1]
-        #
-        # return instruction % 100, parameters
-
-    # elif instruction % 100 == 3 or instruction % 100 == 4:
-    #     if len(str(instruction)) <= 2:
-    #         parameters = [0]
-    #     elif len(str(instruction)) == 4:
-    #         parameters = [1]
-    #     return instruction % 100, parameters
-
-
-
-
-
-    # def describe(command):
-    #     match command:
-    #         case "start":
-    #             return "starting"
-    #         case "stop" | "halt":
-    #             return "stopping"
-    #         case _:
-    #             return "unknown command: " + command
+    opcode = instruction % 100
+    instruction = instruction // 100
+    parameter1 = instruction % 10
+    instruction_copied = instruction // 10
+    parameter2 = instruction_copied % 10
+    instruction_copied = instruction_copied // 10
+    parameter3 = instruction_copied % 10
+    return opcode, [parameter1, parameter2, parameter3]
 
 
 def parameter(memory, position, n):
@@ -153,11 +66,11 @@ def parameter(memory, position, n):
 
     decoded_memory = decode(memory[position])
     parameters = decoded_memory[1]
-    #return parameters,parameters[n-1]
-    if parameters[n-1] == 1:
-        return memory[position+n]
-    elif parameters[n-1] == 0:
-        return memory[memory[position+n]]
+
+    if parameters[n - 1] == 1:
+        return memory[position + n]
+    elif parameters[n - 1] == 0:
+        return memory[memory[position + n]]
     else:
         raise ValueError
 
@@ -168,22 +81,67 @@ def step(memory, position, inputs, outputs):
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
+    If inputs is empty, it returns the position of the next instruction, without writing.
     """
-    memory_copied = memory.copy()
-    opcode = decode(memory)[0]
+    if len(memory) < 1:
+        raise ValueError
+
+    opcode = decode(memory[position])[0]
+
+    if opcode == 99:
+        return None
 
     if opcode == 2:
-        memory_copied[parameter(memory_copied, position, 3)] = parameter(memory_copied, position, 1) * parameter(memory_copied, position, 2)
-    elif opcode == 1:
-        memory_copied[parameter(memory_copied, position, 3)] = parameter(memory_copied, position, 1) + parameter(memory_copied, position, 2)
-    elif opcode == 4:
-        outputs.append(parameter(memory_copied, position, 1))
-    elif opcode == 3:
-        memory_copied[parameter(memory_copied, position, 1)] = inputs[0]
-        if len(inputs) >= 1:
-            inputs = inputs[1:]
-    return memory_copied
+        memory[memory[position + 3]] = parameter(memory, position, 1) * parameter(
+            memory, position, 2
+        )
+        return position + 4
 
+    elif opcode == 1:
+        memory[memory[position + 3]] = parameter(memory, position, 1) + parameter(
+            memory, position, 2
+        )
+        return position + 4
+
+    elif opcode == 4:
+        outputs.append(parameter(memory, position, 1))
+        return position + 2
+
+    elif opcode == 3:
+        if len(inputs) >= 1:
+            memory[memory[position + 1]] = inputs[0]
+            del inputs[0]
+
+        return position + 2
+
+    elif opcode == 5:
+        if parameter(memory, position, 1) != 0:
+            return parameter(memory, position, 2)
+        else:
+            return position + 3
+
+    elif opcode == 6:
+        if parameter(memory, position, 1) == 0:
+            return parameter(memory, position, 2)
+        else:
+            return position + 3
+
+    elif opcode == 7:
+        if parameter(memory, position, 1) < parameter(memory, position, 2):
+            memory[memory[position + 3]] = 1
+        else:
+            memory[memory[position + 3]] = 0
+        return position + 4
+
+    elif opcode == 8:
+        if parameter(memory, position, 1) == parameter(memory, position, 2):
+            memory[memory[position + 3]] = 1
+        else:
+            memory[memory[position + 3]] = 0
+        return position + 4
+
+    else:
+        raise ValueError("unknown opcode")
 
 
 def run(memory, inputs):
@@ -192,7 +150,12 @@ def run(memory, inputs):
     `inputs` is the list of numbers the program reads, in order. `inputs` itself must not
     change. Return the list of numbers the program output.
     """
-    pass  # replace this line with your code
+    position = 0
+    outputs = []
+    inputs_copied = inputs.copy()
+    while position is not None:
+        position = step(memory, position, inputs_copied, outputs)
+    return outputs
 
 
 # ---------------------------------------------------------------- Answers
