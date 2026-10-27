@@ -44,8 +44,9 @@ def delete_till(path, zeichen):
 def directory(entries):
     L = []
     for filename, size in entries:
+        direct = filename
         for i in range(filename.count("/")):
-            direct = delete_till(filename, "/")
+            direct = delete_till(direct, "/")
             if direct not in L:
                 L.append(direct)
     return L

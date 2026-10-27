@@ -6,6 +6,7 @@ from ex03 import (
     directory_to_delete,
     parse_transcript,
     small_directories_total,
+    directory,
 )
 
 EXAMPLE_ENTRIES = [
@@ -73,3 +74,7 @@ def test_change_after_delete_directory():
 def test_wrong_path():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
     assert delete_directory(sizes, "/Epstein/Akten") == sizes
+
+
+def test_directory():
+    assert directory([("/a/b/datei.txt", 10)]) == ["/a/b", "/a", "/"]
