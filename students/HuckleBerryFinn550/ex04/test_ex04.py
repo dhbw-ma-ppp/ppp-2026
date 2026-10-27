@@ -110,6 +110,7 @@ def test_step_inputEmpty():
     with pytest.raises(ValueError, match="No inputs found."):
         step(memory, 0, inputs, [])
 
+
 def test_run_bad_input():
     memory = [1, 0, 0, 99]
     inputs = []
