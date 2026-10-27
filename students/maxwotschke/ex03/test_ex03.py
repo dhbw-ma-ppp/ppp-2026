@@ -43,7 +43,7 @@ INTEGER_TEST = [
 def test_parse_transcript_example():
     assert parse_transcript(EXAMPLE) == EXAMPLE_ENTRIES
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         parse_transcript(INTEGER_TEST)
 
 

@@ -59,12 +59,15 @@ def parse_transcript(lines):
             and commandline.split()[0] != "$"
             and commandline.split()[0] != "dir"
         ):
-            path.append(commandline.split()[1])
-            joinedpath = "/".join(path)
-            slicedjoinedpath = joinedpath[1:]
-            pair = ("/" + slicedjoinedpath, int(command1))
-            file_list.append(pair)
-            path.pop()
+            if commandline.split()[0].isdigit() is False:
+                raise TypeError
+            else:
+                path.append(commandline.split()[1])
+                joinedpath = "/".join(path)
+                slicedjoinedpath = joinedpath[1:]
+                pair = ("/" + slicedjoinedpath, int(command1))
+                file_list.append(pair)
+                path.pop()
 
     return file_list
 
