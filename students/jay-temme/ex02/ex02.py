@@ -1,0 +1,183 @@
+# Exercise 02. See README.md for the full task.
+# Replace each `pass` line with your code, ending with `return`.
+
+from puzzle_input import PROGRAM, TARGET
+
+# ---------------------------------------------------------------- Part 1 (in class)
+
+
+def step(memory, position):
+    """Execute the instruction that starts at `position` in memory.
+
+    Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
+    Return the position of the next instruction, or None if the opcode is 99.
+    Raises a ValueError when encountering an unknown opcode.
+    """
+    # check if position is an integer
+    if type(position) is not int:
+        raise TypeError("position must be of type integer")
+
+    # check if memory is an iterable
+    if type(memory) is not list:
+        raise TypeError("memory must be of type list")
+
+    # check if memory is empty
+    if len(memory) == 0:
+        raise ValueError("memory must be of at least length 1")
+
+    # check if position is in bounds of memory
+    if position < 0 or len(memory) <= position:
+        raise ValueError("position is out of bounds of memory")
+
+    # easily expandable opcode listing
+    match memory[position]:
+        # opcode 1: addition
+        case 1:
+            # check if enough following indecies exist
+            if len(memory) < position + 4:
+                raise IndexError("memory is not large enough or contains wrong opcode")
+
+            # find indecies of values to add and write into
+            input_1_index = memory[position + 1]
+            input_2_index = memory[position + 2]
+            output_index = memory[position + 3]
+
+            # checks if input and output indecies are in bounds of memory
+            for i in [input_1_index, input_2_index, output_index]:
+                if i < 0 or len(memory) <= i:
+                    raise ValueError("input or output indecies are out of bounds of memory")
+
+            # add values at previously found indecies and writes sum into memory
+            memory[output_index] = memory[input_1_index] + memory[input_2_index]
+
+            # return position of next opcode
+            return position + 4
+        # opcode 2: multiplication
+        case 2:
+            # check if enough following indecies exist
+            if len(memory) < position + 4:
+                raise IndexError("memory is not large enough or contains wrong opcode")
+
+            # find indecies of values to multiply and write into
+            input_1_index = memory[position + 1]
+            input_2_index = memory[position + 2]
+            output_index = memory[position + 3]
+
+            for i in [input_1_index, input_2_index, output_index]:
+                if i < 0 or len(memory) <= i:
+                    raise ValueError("input or output indecies are out of bounds of memory")
+
+            # multiply values at previously found indecies and writes product into memory
+            memory[output_index] = memory[input_1_index] * memory[input_2_index]
+
+            # return position of next opcode
+            return position + 4
+        # opcode 99: halts
+        case 99:
+            return None
+        # unknown opcode
+        case _:
+            raise ValueError("input contained unknown opcode")
+
+
+def run(memory):
+    """Execute instructions, starting at position 0, until the program halts.
+
+    Return the value at position 0 after the program has halted.
+    """
+
+    # check if memory is a list
+    if type(memory) is not list:
+        raise TypeError("memory must be of type list")
+
+    # check if memory is not empty
+    if len(memory) == 0:
+        raise ValueError("memory must be of at least length 1")
+
+    # check if memory only contains integers
+    for i in memory:
+        if type(i) is not int:
+            raise TypeError("memory must only contain integers")
+
+    # use a copy of memory to avoid changing the original
+    memory_copy = memory.copy()
+
+    # starting position is 0
+    position = 0
+
+    # iterates through memory
+    # as long as the program doesn't receive the halt opcode
+    while position is not None:
+        # since step returns the position of the next opcode, set position to that value
+        # executes instruction at position position in memory
+        position = step(memory_copy, position)
+
+    # returns the value at position 0
+    return memory_copy[0]
+
+
+# ---------------------------------------------------------------- Part 2 (at home)
+
+
+def run_with(program, noun, verb):
+    """Return the result of program with noun at position 1 and verb at position 2."""
+
+    # check if program is a list
+    if type(program) is not list:
+        raise TypeError("program must be of type list")
+
+    # check if program is not empty
+    if len(program) == 0:
+        raise ValueError("program must be of at least length 1")
+
+    # check if noun and verb are integers
+    if type(noun) is not int or type(verb) is not int:
+        raise TypeError("noun and verb must be of type integer")
+
+    # use a copy of program to avoid changing the original
+    program_copy = program.copy()
+
+    # set length of program to 3 if it's less than 3
+    if len(program_copy) == 1:
+        program_copy.append(None)
+    if len(program_copy) == 2:
+        program_copy.append(None)
+
+    # insert noun and verb into the indecies 1 and 2 of program
+    program_copy[1] = noun
+    program_copy[2] = verb
+
+    # runs the program
+    return run(program_copy)
+
+
+def find_noun_verb(program, target):
+    """Return (noun, verb), each from 0 to 99, for which run_with gives target.
+
+    Return None if there is no such pair.
+    """
+
+    # check if target is an integer
+    if type(target) is not int:
+        raise TypeError("target must be of type integer")
+
+    # brute force, check all posible noun and verb to see if one gives target
+    for i in range(100):
+        for j in range(100):
+            if run_with(program, i, j) == target:
+                return i, j
+
+    # if no noun and verb are found, return None
+    return None
+
+
+# ---------------------------------------------------------------- Answers
+
+if __name__ == "__main__":
+    print("Part 1")
+    print("1:", run([2, 9, 10, 9, 1, 9, 11, 0, 99, 6, 7, 3]))
+    print("2:", run(list(PROGRAM)))
+
+    print("Part 2")
+    print("3:", run_with(list(PROGRAM), 0, 0))
+    print("4:", find_noun_verb(list(PROGRAM), TARGET))
