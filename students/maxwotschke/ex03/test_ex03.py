@@ -86,4 +86,12 @@ def test_delete_directory():
         "/photos": 4000,
         "/music": 3000,
     }
+
     assert delete_directory(sizes, "/photos/winter") == sizes
+
+
+def test_sizes_remains_unchanged():
+    sizes = {"/": 7000, "/photos": 4000, "/photos/summer": 4000}
+    path = "photos/summer"
+    delete_directory(sizes, path)
+    assert sizes == {"/": 7000, "/photos": 4000, "/photos/summer": 4000}
