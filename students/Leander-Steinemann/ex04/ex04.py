@@ -3,6 +3,7 @@
 
 from pathlib import Path
 
+
 # The program file sits next to this file, wherever you run Python from (see README.md).
 PROGRAM_FILE = Path(__file__).parent / "diagnostic.txt"
 
@@ -27,24 +28,25 @@ def parse_program(text):
     Numbers are separated by commas and/or line breaks. A `#` starts a comment that runs to
     the end of its line. Spaces and blank lines don't matter.
     """
-    ints_without_comment = []
-    lines = text.splitlines()
-    for line in lines:
+    numbers = []
+
+    for line in text.splitlines():
         if first_is_number(line):
-            a = line.split("#")
-            a = a[0].strip().split(",")
-            for number in a:
-                ints_without_comment.append(int(number.strip()))
-        else:
-            continue
-    return ints_without_comment
+            line_without_comment = line.split("#")[0]
+            number_strings = line_without_comment.strip().split(",")
+
+            for number in number_strings:
+                numbers.append(int(number.strip()))
+
+    return numbers
 
 
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
     with open(path) as file:
-        a = file.read()
-    return parse_program(a)
+        text = file.read()
+
+    return parse_program(text)
 
 
 def decode(instruction):
@@ -53,17 +55,18 @@ def decode(instruction):
     decode(1002) == (2, [0, 1, 0]): opcode 2; first parameter in position mode, second in
     immediate mode, third in position mode.
     """
-    string_instruction = str(instruction)
-    if int(string_instruction[len(string_instruction) - 2 :]) == 99:
-        opcode = 99
-    else:
-        opcode = int(string_instruction[len(string_instruction) - 2 :])
-    parameters = list(string_instruction[:-2][::-1])
-    for i in range(len(parameters)):
-        parameters[i] = int(parameters[i])
-    while len(parameters) < 3:
-        parameters.append(0)
-    return (opcode, parameters)
+    instruction_string = str(instruction)
+    opcode = int(instruction_string[-2:])
+
+    parameter_modes = list(instruction_string[:-2][::-1])
+
+    for index in range(len(parameter_modes)):
+        parameter_modes[index] = int(parameter_modes[index])
+
+    while len(parameter_modes) < 3:
+        parameter_modes.append(0)
+
+    return opcode, parameter_modes
 
 
 def parameter(memory, position, n):
@@ -73,13 +76,15 @@ def parameter(memory, position, n):
     Mode 1 (immediate mode): the parameter itself.
     Any other mode raises a ValueError.
     """
-    a = decode(memory[position])
-    if a[1][n - 1] == 1:
+    opcode, parameter_modes = decode(memory[position])
+    mode = parameter_modes[n - 1]
+
+    if mode == 1:
         return memory[position + n]
-    elif a[1][n - 1] == 0:
+    elif mode == 0:
         return memory[memory[position + n]]
     else:
-        raise ValueError
+        raise ValueError(f"Unknown parameter mode {mode}")
 
 
 def step(memory, position, inputs, outputs):
@@ -88,56 +93,75 @@ def step(memory, position, inputs, outputs):
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
+    Opcode 3 raises a ValueError if no input is available.
     """
-    a = decode(memory[position])
-    opCode = a[0]
-    next_instruction1and2 = position + 4
-    next_instruction3and4 = position + 2
-    next_instruction5and6 = position + 3
-    match opCode:
+    opcode, parameter_modes = decode(memory[position])
+
+    next_position_1_or_2 = position + 4
+    next_position_3_or_4 = position + 2
+    next_position_5_or_6 = position + 3
+
+    match opcode:
         case 99:
             return None
+
         case 1:
-            b = parameter(memory, position, 1) + parameter(memory, position, 2)
-            memory[memory[position + 3]] = b
-            return next_instruction1and2
+            result = parameter(memory, position, 1) + parameter(memory, position, 2)
+            memory[memory[position + 3]] = result
+            return next_position_1_or_2
+
         case 2:
-            b = parameter(memory, position, 1) * parameter(memory, position, 2)
-            memory[memory[position + 3]] = b
-            return next_instruction1and2
+            result = parameter(memory, position, 1) * parameter(memory, position, 2)
+            memory[memory[position + 3]] = result
+            return next_position_1_or_2
+
         case 3:
-            insert = inputs[0]
-            inputs.pop(0)
-            if decode(memory[position])[1][0] == 0:
-                memory[memory[position + 1]] = insert
+            if not inputs:
+                raise ValueError("Opcode 3 requires an input, but inputs is empty")
+
+            input_value = inputs.pop(0)
+
+            if parameter_modes[0] == 0:
+                memory[memory[position + 1]] = input_value
             else:
-                memory[position + 1] = insert
-            return next_instruction3and4
+                memory[position + 1] = input_value
+
+            return next_position_3_or_4
+
         case 4:
             outputs.append(parameter(memory, position, 1))
-            return next_instruction3and4
+            return next_position_3_or_4
+
         case 5:
             if parameter(memory, position, 1) != 0:
                 return parameter(memory, position, 2)
-            return next_instruction5and6
+
+            return next_position_5_or_6
+
         case 6:
             if parameter(memory, position, 1) == 0:
                 return parameter(memory, position, 2)
-            return next_instruction5and6
+
+            return next_position_5_or_6
+
         case 7:
             if parameter(memory, position, 1) < parameter(memory, position, 2):
                 memory[memory[position + 3]] = 1
             else:
                 memory[memory[position + 3]] = 0
-            return next_instruction1and2
+
+            return next_position_1_or_2
+
         case 8:
             if parameter(memory, position, 1) == parameter(memory, position, 2):
                 memory[memory[position + 3]] = 1
             else:
                 memory[memory[position + 3]] = 0
-            return next_instruction1and2
+
+            return next_position_1_or_2
+
         case _:
-            raise ValueError(f"Unknown opcode {opCode} at position {position}")
+            raise ValueError(f"Unknown opcode {opcode} at position {position}")
 
 
 def run(memory, inputs):
@@ -146,11 +170,13 @@ def run(memory, inputs):
     `inputs` is the list of numbers the program reads, in order. `inputs` itself must not
     change. Return the list of numbers the program output.
     """
-    a = inputs.copy()
-    pos = 0
+    remaining_inputs = inputs.copy()
+    position = 0
     outputs = []
-    while pos is not None:
-        pos = step(memory, pos, a, outputs)
+
+    while position is not None:
+        position = step(memory, position, remaining_inputs, outputs)
+
     return outputs
 
 

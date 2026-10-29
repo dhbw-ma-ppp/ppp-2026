@@ -123,3 +123,22 @@ def test_step_equals():
 
 def test_run_max_of_two():
     assert run(MAX_OF_TWO.copy(), [3, 8]) == [8]
+
+
+# Input: Compare 3 and 4 using Opcode 8
+# Expected result: memory[7] becomes 0
+# Covered case: Opcode 8 when the two values are not equal
+def test_step_equals_false():
+    memory = [8, 5, 6, 7, 99, 3, 4, -1]
+
+    assert step(memory, 0, [], []) == 4
+    assert memory[7] == 0
+
+
+# Input: Jump-if-true using position mode for both parameters
+# Expected result: Jump to position 7
+# Covered case: Opcode 5 correctly handles position mode
+def test_step_jump_if_true_position_mode():
+    memory = [5, 4, 5, 99, 1, 7, 99, 99]
+
+    assert step(memory, 0, [], []) == 7
