@@ -112,25 +112,24 @@ def delete_directory(sizes, path):
     `sizes` itself must not change. If path doesn't exist, raises ValueError.
     """
     dictAfterDeletion = {}
-    if path in sizes:
-        pathSize = sizes.get(path)
-        pathNameSplitted = path.split("/")
-        significantName = str(pathNameSplitted[1])
-        for key in sizes.keys():
-            if key == "/":
-                dictAfterDeletion.update({key: sizes.get(key) - pathSize})
-            elif significantName in key:
-                if sizes.get(key) - pathSize != 0:
-                    dictAfterDeletion.update(
-                        {key: sizes.get(key) - pathSize}
-                    )  # path-deleted object
-            else:
-                dictAfterDeletion[key] = sizes.get(key)
-        dictAfterDeletion.update({"": sizes.get("/") / pathSize})
-        del dictAfterDeletion[""]
-        return dictAfterDeletion
-    else:
+    if path not in sizes:
         raise ValueError("Directory path does not exist")
+    else:
+        if path == "/":
+            return {}
+        deleted = sizes[path]
+        for key, size in sizes.items():
+            if key == "":
+                continue
+            if key == path or key.startswith(path + "/"):
+                continue
+            if path.startswith(key.rstrip("/") + "/"):
+                new_size = size - deleted
+                if new_size > 0 or key == "/":
+                    dictAfterDeletion[key] = new_size
+            else:
+                dictAfterDeletion[key] = size
+        return dictAfterDeletion
 
 
 # ---------------------------------------------------------------- Answers

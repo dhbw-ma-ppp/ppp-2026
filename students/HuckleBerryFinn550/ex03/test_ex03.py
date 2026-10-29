@@ -48,6 +48,13 @@ def test_small_directories_total():
 # ---------------------------------------------------------------- Part 2
 # Add at least two tests of your own below, for the Part 2 functions.
 # One of them must check that delete_directory does not change `sizes`.
+def test_delete_directory_root():
+    sizes = directory_sizes(parse_transcript(EXAMPLE))
+    original = sizes.copy()
+    result = delete_directory(sizes, "/")
+    assert result == {}
+    assert small_directories_total(result) == 0
+    assert sizes == original
 
 
 def test_directory_to_delete():
@@ -74,3 +81,16 @@ def test_parse_transcript_invalid_input():
     sizes = None
     with pytest.raises(TypeError, match="Invalid transcript format."):
         parse_transcript(sizes)
+
+
+def test_delete_directory_addition():
+    sizes = {
+        "/": 11100,
+        "/photos": 8000,
+        "/photos/summer": 4000,
+        "/music": 3000,
+    }
+    assert delete_directory(sizes, "/photos") == {
+        "/": 3100,
+        "/music": 3000,
+    }
