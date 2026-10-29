@@ -46,7 +46,7 @@ def parse_transcript(lines):
             lineAnfang = line.split()
             if len(lineAnfang) > 0 and lineAnfang[0].isdigit():
                 size = int(lineAnfang[0])
-                Dateiname = lineAnfang[1]
+                Dateiname = "".join(lineAnfang[1:])
                 if len(path) == 0:
                     route = "/" + Dateiname
                 else:
@@ -78,7 +78,7 @@ def directory_sizes(entries):
 def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
     if sizes is None:
-        return "keine Größen übergeben"
+        return None
     else:
         total = sum(size for size in sizes.values() if size < limit)
         return total
@@ -96,14 +96,9 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     if sizes["/"] <= disk_size - needed_free:
         return None
     else:
-        OrdnerzumLöschen = sizes.get("/")
-        gebrauchterPlatz = needed_free - (disk_size - sizes["/"])
-        if gebrauchterPlatz <= 0:
-            return None
-        else:
-            for a in sizes:
-                if sizes["/"] > sizes[a] >= gebrauchterPlatz:
-                    OrdnerzumLöschen = sizes[a]
+        for a in sizes:
+            if sizes["/"] > sizes[a] >= needed_free - (disk_size - sizes["/"]):
+                OrdnerzumLöschen = sizes[a]
         return OrdnerzumLöschen
 
 
@@ -115,12 +110,16 @@ def delete_directory(sizes, path):
     """
     if path not in sizes:
         return sizes
-    sizesCopy = sizes.copy()
-    sizesCopy.pop(path)
-    for Dateipfad in sizesCopy.keys():
-        if Dateipfad in path:
-            sizesCopy[Dateipfad] -= sizes[path]
-    return sizesCopy
+    sizesToDelete = sizes[path]
+    newSizes = {}
+    for Dateipfad, size in sizes.items():
+        if Dateipfad.startswith(path + "/") or Dateipfad == path:
+            continue
+        elif path.startswith(Dateipfad + "/") or Dateipfad == "/":
+            newSizes[Dateipfad] = size - sizesToDelete
+        else:
+            newSizes[Dateipfad] = size
+    return newSizes
 
 
 # ---------------------------------------------------------------- Answers

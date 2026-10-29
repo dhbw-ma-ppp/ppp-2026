@@ -72,3 +72,11 @@ def test_delete_empty_directory():
         "/": 2000,
         "/summer": 300,
     }
+
+
+def test_delete_directory_reviewer():
+    assert delete_directory({"/": 10, "/abc": 5, "/ab": 2, "/a": 1}, "/ab") == {
+        "/": 8,
+        "/abc": 5,
+        "/a": 1,
+    }
