@@ -75,3 +75,10 @@ def test_delete_directory_sizes_is_not_changed():
 def test_delete_directory_that_does_not_exist():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
     assert delete_directory(sizes, "/test") == sizes
+
+
+def test_delete_directory_with_subdirectories():
+    assert delete_directory(directory_sizes(EXAMPLE_ENTRIES), "/photos") == {
+        "/": 3100,
+        "/music": 3000,
+    }

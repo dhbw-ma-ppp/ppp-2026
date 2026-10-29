@@ -135,9 +135,16 @@ def delete_directory(sizes, path):
     sizes_copy = sizes.copy()
     sizes_copy.pop(path)
 
+    to_delete = []
+
     for current_path in sizes_copy.keys():
-        if current_path in path:
+        if current_path.startswith(path + "/"):
+            to_delete.append(current_path)
+        elif current_path == "/" or path.startswith(current_path + "/"):
             sizes_copy[current_path] -= sizes[path]
+
+    for path_to_delte in to_delete:
+        sizes_copy.pop(path_to_delte)
 
     return sizes_copy
 
