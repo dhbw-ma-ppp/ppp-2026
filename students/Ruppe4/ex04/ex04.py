@@ -27,6 +27,7 @@ def parse_program(text):
                 numbers.append(int(part))
     return numbers
 
+
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
     return parse_program(Path(path).read_text())
@@ -39,9 +40,7 @@ def decode(instruction):
     immediate mode, third in position mode.
     """
     opcode = instruction % 100
-    modes = [(instruction // 100) % 10,
-             (instruction // 1000) % 10,
-             (instruction // 10000) % 10]
+    modes = [(instruction // 100) % 10, (instruction // 1000) % 10, (instruction // 10000) % 10]
     return opcode, modes
 
 
@@ -70,38 +69,42 @@ def step(memory, position, inputs, outputs):
     An unknown opcode raises a ValueError.
     """
     opcode, _ = decode(memory[position])
- 
-    if opcode == 1:  
-        memory[memory[position + 3]] = (parameter(memory, position, 1)
-                                        + parameter(memory, position, 2))
+
+    if opcode == 1:
+        memory[memory[position + 3]] = parameter(memory, position, 1) + parameter(
+            memory, position, 2
+        )
         return position + 4
-    if opcode == 2:  
-        memory[memory[position + 3]] = (parameter(memory, position, 1)
-                                        * parameter(memory, position, 2))
+    if opcode == 2:
+        memory[memory[position + 3]] = parameter(memory, position, 1) * parameter(
+            memory, position, 2
+        )
         return position + 4
-    if opcode == 3:  
+    if opcode == 3:
         memory[memory[position + 1]] = inputs.pop(0)
         return position + 2
-    if opcode == 4:  
+    if opcode == 4:
         outputs.append(parameter(memory, position, 1))
         return position + 2
-    if opcode == 5:  
+    if opcode == 5:
         if parameter(memory, position, 1) != 0:
             return parameter(memory, position, 2)
         return position + 3
-    if opcode == 6:  
+    if opcode == 6:
         if parameter(memory, position, 1) == 0:
             return parameter(memory, position, 2)
         return position + 3
-    if opcode == 7:  
-        memory[memory[position + 3]] = int(parameter(memory, position, 1)
-                                           < parameter(memory, position, 2))
+    if opcode == 7:
+        memory[memory[position + 3]] = int(
+            parameter(memory, position, 1) < parameter(memory, position, 2)
+        )
         return position + 4
-    if opcode == 8:  
-        memory[memory[position + 3]] = int(parameter(memory, position, 1)
-                                           == parameter(memory, position, 2))
+    if opcode == 8:
+        memory[memory[position + 3]] = int(
+            parameter(memory, position, 1) == parameter(memory, position, 2)
+        )
         return position + 4
-    if opcode == 99:  
+    if opcode == 99:
         return None
     raise ValueError(f"Unknown opcode: {opcode}")
 
@@ -112,13 +115,12 @@ def run(memory, inputs):
     `inputs` is the list of numbers the program reads, in order. `inputs` itself must not
     change. Return the list of numbers the program output.
     """
-    remaining = list(inputs)  
+    remaining = list(inputs)
     outputs = []
     position = 0
     while position is not None:
         position = step(memory, position, remaining, outputs)
     return outputs
-
 
 
 # ---------------------------------------------------------------- Answers
