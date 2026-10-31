@@ -91,28 +91,32 @@ def step(memory, position, inputs, outputs):
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
     """
-    opcode = decode(memory[position])[0]
-
-    first_position = memory[position + 1]
-    second_position = memory[position + 2]
-
-    target_position = memory[position + 3]
+    opcode, modes = decode(memory[position])
 
     match opcode:
         case 99:
             return None
         case 1:
-            result = memory[first_position] + memory[second_position]
+            first_parameter = parameter(memory, position, 1)
+            second_parameter = parameter(memory, position, 2)
+            target = memory[position + 3]
+            memory[target] = first_parameter + second_parameter
+            return position + 4
         case 2:
-            result = memory[first_position] * memory[second_position]
+            first_parameter = parameter(memory, position, 1)
+            second_parameter = parameter(memory, position, 2)
+            target = memory[position + 3]
+            memory[target] = first_parameter * second_parameter
+            return position + 4
         case 3:
-            result = inputs.pop()
+            target = memory[position + 1]
+            memory[target] = inputs.pop(0)
+            return position + 2
+        case 4:
+            outputs.append(parameter(memory, position, 1))
+            return position + 2
         case _:
-            raise ValueError("The opcode only allows 1, 2 or 99.")
-
-    memory[target_position] = result
-
-    return position + 4
+            raise ValueError(f"Opcode {opcode} at position {position} is not valid.")
 
 
 def run(memory, inputs):
@@ -124,11 +128,13 @@ def run(memory, inputs):
     index = 0
 
     working_memory = memory.copy()
+    working_inputs = inputs.copy()
+    outputs = []
 
     while index is not None:
-        index = step(working_memory, index)
+        index = step(working_memory, index, working_inputs, outputs)
 
-    return working_memory[0]
+    return outputs
 
 
 # ---------------------------------------------------------------- Answers
