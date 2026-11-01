@@ -6,6 +6,7 @@ from ex03 import (
     parse_transcript,
     small_directories_total,
 )
+import pytest
 
 EXAMPLE_ENTRIES = [
     ("/notes.txt", 100),
@@ -71,4 +72,13 @@ def test_delete_directory_does_not_change_sizes():
 
 def test_directory_which_not_exist():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
-    assert delete_directory(sizes, "/notExisting") == sizes
+
+    with pytest.raises(ValueError):
+        delete_directory(sizes, "/notExisting")
+
+
+def test_directory_to_delete_raises_error():
+    sizes = {"/": 100}
+
+    with pytest.raises(ValueError):
+        directory_to_delete(sizes, disk_size=100, needed_free=150)

@@ -95,8 +95,8 @@ def small_directories_total(sizes, limit=100000):
 def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     """Return the size of the smallest directory whose deletion frees enough space.
 
-    The disk holds `disk_size` in total; at least `needed_free` must stay unused.
-    `sizes["/"]` is the space currently used. Return None if enough space is free already.
+    Return None if enough space is already free.
+    Raise ValueError if no directory is large enough.
     """
     used_space = sizes["/"]
     free_space = disk_size - used_space
@@ -105,34 +105,37 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
         return None
 
     required_space = needed_free - free_space
-    smallest_size = float("inf")
 
-    for size in sizes.values():
-        if size >= required_space and size < smallest_size:
-            smallest_size = size
+    possible_sizes = [size for size in sizes.values() if size >= required_space]
 
-    if smallest_size == float("inf"):
-        return None
+    if not possible_sizes:
+        raise ValueError("No directory is large enough to free the required space.")
 
-    return smallest_size
+    return min(possible_sizes)
 
 
 def delete_directory(sizes, path):
     """Return a new dict of directory sizes, as if the directory `path` had been deleted.
 
-    The result is what directory_sizes would return for the files that remain.
-    `sizes` itself must not change.
+    Raise ValueError if the directory does not exist.
+    Deleting the root directory returns an empty dictionary.
+    The original dictionary remains unchanged.
     """
-    sizes_left = sizes.copy()
-
     if path not in sizes:
-        return sizes_left
+        raise ValueError(f"Directory does not exist: {path}")
 
+    if path == "/":
+        return {}
+
+    sizes_left = sizes.copy()
     deleted_size = sizes[path]
 
     for directory in list(sizes_left):
+        # Delete the specified directory and all its subdirectories.
         if directory == path or directory.startswith(path + "/"):
             del sizes_left[directory]
+
+        # Subtract the deleted size from all parent directories.
         elif directory == "/" or path.startswith(directory + "/"):
             sizes_left[directory] -= deleted_size
 
