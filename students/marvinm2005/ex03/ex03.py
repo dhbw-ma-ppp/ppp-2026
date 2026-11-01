@@ -163,7 +163,9 @@ def delete_directory(sizes, path):
 
     for directory, size in sizes.items():
         # Every parent directory also loses the files inside `path`.
-        if directory == "/" or path.startswith(directory + "/") or path == directory:
+        if directory == path or directory.startswith(path + "/"):
+            continue
+        if directory == "/" or path.startswith(directory + "/"):
             size -= removed_size
 
         # A directory without any remaining files does not appear in directory_sizes.
@@ -186,5 +188,3 @@ if __name__ == "__main__":
     print("3:", directory_to_delete(sizes))
     print("4:", small_directories_total(delete_directory(sizes, "/home/backup")))
     print("2 again:", small_directories_total(sizes))
-
-    print(parse_transcript(EXAMPLE))
