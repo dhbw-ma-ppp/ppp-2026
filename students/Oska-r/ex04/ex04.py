@@ -69,6 +69,8 @@ def parameter(memory, position, n):
     Mode 1 (immediate mode): the parameter itself.
     Any other mode raises a ValueError.
     """
+    if position < 0:
+        raise IndexError(f"Can't access negative index {n} at position {position}.")
     opcode, modes_of_parameters = decode(memory[position])
 
     argument = memory[position + n]
@@ -80,7 +82,7 @@ def parameter(memory, position, n):
             return argument
         case _:
             raise ValueError(
-                f"{modes_of_parameters[n]} is not a valid opcode. Only 0 and 1 are valid."
+                f"{modes_of_parameters[n - 1]} is not a valid parameter. Only 0 and 1 are valid."
             )
 
 
@@ -90,6 +92,8 @@ def step(memory, position, inputs, outputs):
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
+
+    Trying to read from empty inputs or trying to jump to a negative index results in an IndexError.
     """
     opcode, modes = decode(memory[position])
 
@@ -109,12 +113,52 @@ def step(memory, position, inputs, outputs):
             memory[target] = first_parameter * second_parameter
             return position + 4
         case 3:
+            if inputs == []:
+                raise IndexError(
+                    f"Can't read from inputs at position {position + 1} as inputs are emtpy."
+                )
             target = memory[position + 1]
             memory[target] = inputs.pop(0)
             return position + 2
         case 4:
             outputs.append(parameter(memory, position, 1))
             return position + 2
+        case 5:
+            first_parameter = parameter(memory, position, 1)
+            if first_parameter != 0:
+                target = parameter(memory, position, 2)
+                if target < 0:
+                    raise IndexError(
+                        f"Can't access negative index {target} at position {position}."
+                    )
+                return target
+            return position + 3
+        case 6:
+            first_parameter = parameter(memory, position, 1)
+            if first_parameter == 0:
+                target = parameter(memory, position, 2)
+                if target < 0:
+                    raise IndexError(
+                        f"Can't access negative index {target} at position {position}."
+                    )
+                return target
+            return position + 3
+        case 7:
+            first_parameter = parameter(memory, position, 1)
+            second_parameter = parameter(memory, position, 2)
+            if first_parameter < second_parameter:
+                memory[memory[position + 3]] = 1
+            else:
+                memory[memory[position + 3]] = 0
+            return position + 4
+        case 8:
+            first_parameter = parameter(memory, position, 1)
+            second_parameter = parameter(memory, position, 2)
+            if first_parameter == second_parameter:
+                memory[memory[position + 3]] = 1
+            else:
+                memory[memory[position + 3]] = 0
+            return position + 4
         case _:
             raise ValueError(f"Opcode {opcode} at position {position} is not valid.")
 
@@ -127,12 +171,11 @@ def run(memory, inputs):
     """
     index = 0
 
-    working_memory = memory.copy()
     working_inputs = inputs.copy()
     outputs = []
 
     while index is not None:
-        index = step(working_memory, index, working_inputs, outputs)
+        index = step(memory, index, working_inputs, outputs)
 
     return outputs
 

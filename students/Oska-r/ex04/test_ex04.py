@@ -123,3 +123,21 @@ def test_step_equals():
 
 def test_run_max_of_two():
     assert run(MAX_OF_TWO.copy(), [3, 8]) == [8]
+
+
+def test_step_empty_inputs():
+    memory = [3, 3, 99, 0]
+    with pytest.raises(IndexError):
+        step(memory, 0, [], [])
+
+
+def test_run_negative_indeces():
+    memory = [5, 1, -2, 99]
+    with pytest.raises(IndexError):
+        run(memory, [])
+
+
+def test_parameter_negative_index():
+    memory = [1, 1, 1, 5, 99, 0]
+    with pytest.raises(IndexError):
+        parameter(memory, -1, 1)
