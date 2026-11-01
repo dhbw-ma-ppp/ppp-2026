@@ -84,3 +84,8 @@ def test_delete_directory_names_partly_similar():
         "/home": 60,
         "/home/backup_old": 60,
     }
+
+
+def test_parse_transcript_filename_with_space():
+    lines = ["$ cd /", "$ ls", "53 my file.txt"]  # noqa: F811
+    assert parse_transcript(lines) == [("/my file.txt", 53)]

@@ -51,7 +51,7 @@ def parse_transcript(lines):
 
         elif "$ cd .." in line[:7]:
             # Check if you are in the root directory
-            if not current_paths:
+            if len(current_paths) == 1:
                 raise ValueError(
                     f"Zeile {line_number}: Über das Hauptverzeichnis / "
                     "kann nicht hinausgewechselt werden."
@@ -85,7 +85,7 @@ def parse_transcript(lines):
             if size < 0:
                 raise ValueError(f"Zeile {line_number}: Dateigrößen dürfen nicht negativ sein.")
 
-            filepath = current_paths[-1] + "/" + line.split()[1]
+            filepath = current_paths[-1] + "/" + filename
             size = line.split()[0]
             pairs.append((filepath, int(size)))
 
@@ -105,7 +105,7 @@ def directory_sizes(entries):
     directories = []  # Liste mit directory paths
 
     for entry in entries:  # für ein Paar
-        path = entry[0]  #
+        path = entry[0]
         directories = []
         while "/" in path:
             path = path[: path.rfind("/")]
@@ -114,7 +114,7 @@ def directory_sizes(entries):
         for directory in directories:
             groesse = int(entry[1])
             pathssizes[directory] = pathssizes.get(directory, 0) + groesse
-    pathssizes["/"] = pathssizes.pop("")
+    pathssizes["/"] = pathssizes.pop("", 0)  # default value 0 if the key does not exist
     return pathssizes
 
 
@@ -122,7 +122,7 @@ def small_directories_total(sizes, limit=100000):
     """Return the sum of the sizes of all directories whose total size is at most `limit`."""
     sum = 0
     for wert in sizes.values():
-        if wert < limit:
+        if wert <= limit:
             sum += wert
     return sum
 
@@ -163,7 +163,7 @@ def delete_directory(sizes, path):
 
     for directory, size in sizes.items():
         # Every parent directory also loses the files inside `path`.
-        if path.startswith(directory.rstrip("/")):
+        if directory == "/" or path.startswith(directory + "/") or path == directory:
             size -= removed_size
 
         # A directory without any remaining files does not appear in directory_sizes.
