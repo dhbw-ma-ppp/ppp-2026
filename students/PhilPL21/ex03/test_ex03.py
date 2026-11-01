@@ -82,3 +82,14 @@ def test_directory_to_delete_raises_error():
 
     with pytest.raises(ValueError):
         directory_to_delete(sizes, disk_size=100, needed_free=150)
+
+
+def test_delete_root_directory():
+    sizes = directory_sizes(parse_transcript(EXAMPLE))
+    original = sizes.copy()
+
+    result = delete_directory(sizes, "/")
+
+    assert result == {}
+    assert small_directories_total(result) == 0
+    assert sizes == original
