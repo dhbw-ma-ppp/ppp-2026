@@ -126,8 +126,10 @@ def delete_directory(sizes, path):
 
     remaining_sizes = {}
     deleted_sizes = {}
+    prefix = path.rstrip("/") + "/"
+
     for directory_path in sizes:
-        if path in directory_path:
+        if directory_path == path or directory_path.startswith(prefix):
             deleted_sizes[directory_path] = sizes[directory_path]
         else:
             remaining_sizes[directory_path] = sizes[directory_path]
