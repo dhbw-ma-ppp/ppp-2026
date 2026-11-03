@@ -35,10 +35,10 @@ def parse_transcript(lines):
     """
     # None Exception
     if lines is None:
-        return None
+        raise TypeError("Wrong transcript type! Only use list.")
 
     if type(lines) is not list:
-        return None
+        raise TypeError("Wrong transcript type! Only use list.")
 
     cwd = []
     entries = []
@@ -111,6 +111,9 @@ def directory_to_delete(sizes, disk_size=50000000, needed_free=20000000):
     The disk holds `disk_size` in total; at least `needed_free` must stay unused.
     `sizes["/"]` is the space currently used. Return None if enough space is free already.
     """
+    if disk_size < needed_free:
+        raise ValueError("Cant search for requested space if it exceeds the disks size!")
+
     used = sizes["/"]
     candidates = []
     free = disk_size - used

@@ -1,3 +1,5 @@
+import pytest
+
 from ex03 import (
     EXAMPLE,
     delete_directory,
@@ -62,11 +64,21 @@ def test_delete_directory():
     }
 
 
+def test_directory_to_delete_needed_free_exceeds_disk():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+    with pytest.raises(ValueError):
+        directory_to_delete(sizes, disk_size=20000, needed_free=30000)
+
+
 def test_parse_transcript_typeerror():
-    assert parse_transcript(2) is None
-    assert parse_transcript(True) is None
-    assert parse_transcript(None) is None
-    assert parse_transcript("Test") is None
+    with pytest.raises(TypeError) as exc_info:
+        parse_transcript(2)
+    with pytest.raises(TypeError) as exc_info:
+        parse_transcript(True)
+    with pytest.raises(TypeError) as exc_info:
+        parse_transcript(None)
+    with pytest.raises(TypeError) as exc_info:
+        parse_transcript("Test")
 
 
 def test_small_directories_negative():
