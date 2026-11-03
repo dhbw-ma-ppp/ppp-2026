@@ -46,10 +46,6 @@ def parse_program(text):
 
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
-    # check if path is a string
-    if type(path) is not str:
-        raise TypeError("path must be of type string")
-
     # opens the file at path
     with open(path) as file:
         # parses the file into program
