@@ -123,3 +123,15 @@ def test_step_equals():
 
 def test_run_max_of_two():
     assert run(MAX_OF_TWO.copy(), [3, 8]) == [8]
+
+
+def test_step_equals_false_immediate_mode():
+    memory = [1108, 3, 4, 5, 99, -1]
+    assert step(memory, 0, [], []) == 4
+    assert memory[5] == 0
+
+
+def test_run_less_than_8_position_mode():
+    program = [3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8]
+    assert run(program.copy(), [5]) == [1]
+    assert run(program.copy(), [8]) == [0]
