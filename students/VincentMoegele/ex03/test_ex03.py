@@ -60,6 +60,11 @@ def test_delete_directory():
         "/photos": 4000,
         "/music": 3000,
     }
+
+
+def test_delete_directory_path_not_exist():
+    sizes = directory_sizes(EXAMPLE_ENTRIES)
+
     assert delete_directory(sizes, "/photos/winter") == {
         "/": 11100,
         "/photos": 8000,

@@ -81,8 +81,7 @@ def small_directories_total(sizes, limit=100000):
     for size in sizes.values():
         if size <= limit:
             sum_of_directories = sum_of_directories + size
-        else:
-            continue
+
     return sum_of_directories
 
 
