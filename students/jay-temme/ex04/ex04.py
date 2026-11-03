@@ -46,6 +46,10 @@ def parse_program(text):
 
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
+    # check if path is a string
+    if type(path) is not str:
+        raise TypeError("path must be of type string")
+
     # opens the file at path
     with open(path) as file:
         # parses the file into program
@@ -60,6 +64,14 @@ def decode(instruction):
     decode(1002) == (2, [0, 1, 0]): opcode 2; first parameter in position mode, second in
     immediate mode, third in position mode.
     """
+    # check if instruction is an integer
+    if type(instruction) is not int:
+        raise TypeError("instruction must be of type int")
+
+    # check if instruction has too many modes
+    if 10**5 <= instruction:
+        raise ValueError("instruction contains too many modes")
+
     # determine the opcode
     opcode = instruction % 100
 
