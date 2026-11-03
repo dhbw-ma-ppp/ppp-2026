@@ -71,13 +71,13 @@ def test_directory_to_delete_needed_free_exceeds_disk():
 
 
 def test_parse_transcript_typeerror():
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(TypeError):
         parse_transcript(2)
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(TypeError):
         parse_transcript(True)
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(TypeError):
         parse_transcript(None)
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(TypeError):
         parse_transcript("Test")
 
 
