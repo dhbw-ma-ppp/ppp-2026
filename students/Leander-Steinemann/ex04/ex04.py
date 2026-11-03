@@ -84,7 +84,7 @@ def parameter(memory, position, n):
     elif mode == 0:
         return memory[memory[position + n]]
     else:
-        raise ValueError(f"Unknown parameter mode {mode}")
+        raise ValueError(f"Unknown parameter Mode {mode}")
 
 
 def step(memory, position, inputs, outputs):
