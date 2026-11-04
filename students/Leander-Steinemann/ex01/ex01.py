@@ -9,14 +9,14 @@ from puzzle_input import INSTRUCTIONS
 
 def quotient_and_remainder(a, b):
     """Return the quotient and remainder of the integer division a // b, e.g. (3, 2) for 17, 5."""
-    q = int(a//b)
-    r = a%b
+    q = int(a // b)
+    r = a % b
     return (q, r)
 
 
 def celsius_to_fahrenheit(celsius):
     """Return the temperature celsius (in °C) converted to °F."""
-    return celsius*1.8+32
+    return celsius * 1.8 + 32
 
 
 def first_three(text):
@@ -36,12 +36,12 @@ def backwards(text):
 
 def science_to_analytics(text):
     """Return text with every "Science" replaced by "Analytics"."""
-    return text.replace("Science","Analytics")
+    return text.replace("Science", "Analytics")
 
 
 def floor(instructions):
     """Return the floor Santa ends up on, starting on floor 0: "(" is one up, ")" one down."""
-    return str(instructions).count("(")-str(instructions).count(")")
+    return str(instructions).count("(") - str(instructions).count(")")
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -58,39 +58,39 @@ def floor_after(instructions, steps):
 
 def mirrored(instructions):
     """Return the instructions as seen in a mirror: every "(" becomes ")" and vice versa."""
-    a=0
-    mirrored_instructions=""
-    while a < len(instructions):
-        if instructions[a] == "(":
-            mirrored_instructions +=")"
-        else:
-            mirrored_instructions +="("
-        a+= 1
-    return mirrored_instructions
 
-            
+    mirrored_instructions = ""
+    for a in instructions:
+        if a == "(":
+            mirrored_instructions += ")"
+        elif a == ")":
+            mirrored_instructions += "("
+        else:
+            raise ValueError("Nicht nur Klammern im String")
+    return mirrored_instructions
 
 
 def common_elements(first, second):
     """Return the set of elements that occur in both lists."""
-    return (set(first)&set(second))
+    return set(first) & set(second)
 
 
 def count_letter(words, letter):
     """Return how often letter occurs in all the strings of the list words together."""
     return "".join(words).count(letter)
 
+
 def basement(instructions):
-    level=0
-    steps=0
+    level = 0
+    steps = 0
     while level > 0:
         if instructions[steps] == "(":
-            level=level+1
-        else: 
-            level=level-1
-        steps+= 1
+            level = level + 1
+        else:
+            level = level - 1
+        steps += 1
         if len(instructions) == steps:
-                    return None
+            return None
     return steps
 
 
