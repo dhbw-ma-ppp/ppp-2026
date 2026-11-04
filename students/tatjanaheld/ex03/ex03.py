@@ -51,10 +51,7 @@ def parse_transcript(lines):
             groesse = int(teile[0])
             name = teile[1]
 
-            voller_pfad = ""
-            for ordner in pfad:
-                voller_pfad = voller_pfad + "/" + ordner
-            voller_pfad = voller_pfad + "/" + name
+            voller_pfad = "/" + "/".join(pfad + [name])
 
             result.append((voller_pfad, groesse))
 

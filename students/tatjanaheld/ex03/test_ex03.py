@@ -73,3 +73,7 @@ def test_directory_to_delete_enough_space_free():
     sizes = directory_sizes(EXAMPLE_ENTRIES)
     disk_size = sizes["/"] + 1000
     assert directory_to_delete(sizes, disk_size=disk_size, needed_free=500) is None
+
+
+def test_directory_sizes_empty():
+    assert directory_sizes([]) == {}
