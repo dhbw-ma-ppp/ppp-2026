@@ -15,18 +15,18 @@ def step(memory, position):
     Return the position of the next instruction, or None if the opcode is 99.
     When the Opcode isn't 1,2 or 99, then it wouldn't retourn anything. I think it should raise a Value Error.
     """
-    if memory[position] == 99:
+    opcode = memory[position]
+    if opcode == 99:
         return None
-    elif memory[position] == 1:
-        a = memory[memory[position + 1]] + memory[memory[position + 2]]
-        memory[memory[position + 3]] = a
-        return position + 4
-    elif memory[position] == 2:
-        b = memory[memory[position + 1]] * memory[memory[position + 2]]
-        memory[memory[position + 3]] = b
-        return position + 4
+    elif opcode == 1:
+        addposition = memory[opcode + 1] + memory[opcode + 2]
+        memory[opcode + 3] = addposition
+    elif opcode == 2:
+        mulposition = memory[opcode + 1] * memory[opcode + 2]
+        memory[opcode + 3] = mulposition
     else:
         raise ValueError
+    return position + 4
 
 
 def run(memory):
@@ -35,6 +35,8 @@ def run(memory):
     Return the value at position 0 after the program has halted.
     """
     position = 0
+    if memory is None:
+        return None
     while position is not None:
         position = step(memory, position)
     return memory[0]

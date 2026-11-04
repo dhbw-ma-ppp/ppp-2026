@@ -66,3 +66,7 @@ the Code isn't implemented careful enough"""
 
 def test_find_noun_verb2():
     assert find_noun_verb(HUNDRED_NOUN_PLUS_VERB, 0) == (0, 0)
+
+
+def test_empty_run():
+    assert run() is None
