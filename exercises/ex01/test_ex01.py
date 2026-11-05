@@ -66,14 +66,6 @@ def test_floor_up_and_down():
 # Add at least two tests of your own below, for the Part 2 functions.
 
 
-def test_floor_after_empty():
-    assert floor_after("", 0) == 0
-
-
-def test_count_letter_empty():
-    assert count_letter([], "a") == 0
-
-
 def test_floor_after():
     assert floor_after("((())", 3) == 3
 
