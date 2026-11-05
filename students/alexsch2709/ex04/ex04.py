@@ -51,7 +51,6 @@ def decode(instruction):
         int(modes[-3]) if len(modes) >= 3 else 0,
     ]
     return opcode, modes
-    
 
 
 def parameter(memory, position, n):
@@ -86,7 +85,6 @@ def step(memory, position, inputs, outputs):
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
     """
-    
 
     instruction = memory[position]
     opcode = instruction % 100
@@ -136,7 +134,6 @@ def step(memory, position, inputs, outputs):
 
     else:
         raise ValueError("Unbekannter Opcode")
-
 
 
 def run(memory, inputs):
