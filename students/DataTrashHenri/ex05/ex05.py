@@ -2,6 +2,7 @@
 # Replace each `pass` line with your code, ending with `return`.
 from prompt_toolkit.renderer import print_formatted_text
 from puzzle_input import CAVE
+from collections import deque
 
 EXAMPLE_TEXT = """
 19999
@@ -125,10 +126,20 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    known_lowest_costs = [[9999999 for col in range(100)] for row in range(100)]
-    known_lowest_costs[0][0] = 0
-    lowest_risk_any_direction_rec(grid,0,0,known_lowest_costs)
-    return known_lowest_costs[len(grid)-1][len(grid)-1]
+    costs = [[9999999 for col in range(100)] for row in range(100)]
+    costs[0][0] = 0
+    queue = deque([(0, 0)])
+
+    while queue:
+        row,col = queue.popleft()
+        neighbour_list = neighbours(grid, row,col)
+        for neighbor in neighbour_list:
+            cost_n = costs[row][col] + grid[neighbor[0]][neighbor[1]]
+            if cost_n < costs[neighbor[0]][neighbor[1]]:
+                costs[neighbor[0]][neighbor[1]] = cost_n
+                queue.append(neighbor)
+
+    return costs[len(grid)-1][len(grid)-1]
 
 
 def lowest_risk_any_direction_rec(grid,row,col,costs):
