@@ -38,8 +38,9 @@ def test_lowest_risk_one_position():
 
 
 def test_lowest_risk_two_by_two():
-    assert lowest_risk([[1, 2],[3, 4]]) == 6
+    assert lowest_risk([[1, 2], [3, 4]]) == 6
     assert lowest_risk([[1, 9], [1, 1]]) == 2
+
 
 def test_lowest_risk_three_by_three():
     assert lowest_risk([[1, 1, 9], [2, 9, 9], [1, 1, 1]]) == 5
