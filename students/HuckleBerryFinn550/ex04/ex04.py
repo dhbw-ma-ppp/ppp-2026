@@ -21,7 +21,7 @@ def parse_program(text):
     """
     numbers = []
     for line in text.splitlines():
-        leftSide = line.split("#")[0].strip()
+        leftSide = line.split("#", 1)[0].strip()
         for part in leftSide.split(","):
             if part != "":
                 numbers.append(int(part))
@@ -77,15 +77,15 @@ def parameter(memory, position, n):
     parameterMode = modes[n - 1]
     if parameterMode == 0:
         if n == 3:
-            if n < len(memory):
+            if n < len(memory): #muesste position+n sein?
                 value = memory[position + n]
             else:
                 value = None
         else:
             address = memory[position + n]
             if address == 99:
-                return 99
-            if address <= len(memory):
+                return 99 #Opcode mit Adresse verwechselt?
+            if address <= len(memory): #eigentlich len-1
                 value = memory[address]
             else:
                 value = None
@@ -110,6 +110,7 @@ def step(memory, position, inputs, outputs):
         opCode = opCode_Mode[0]
         if opCode == 99:
             return None
+
         if opCode == 3:
             newPosition = memory[position + 1]
             if len(inputs) >= 1:
@@ -117,6 +118,7 @@ def step(memory, position, inputs, outputs):
             else:
                 raise ValueError("No inputs found.")
             return position + 2
+
         elif opCode == 4:
             newPosition = memory[position + 1]
             if newPosition < len(memory):
@@ -141,23 +143,28 @@ def step(memory, position, inputs, outputs):
         else:
             if opCode == 1:
                 memory[result] = number1 + number2
+
             elif opCode == 2:
                 memory[result] = number1 * number2
+
             elif opCode == 5:
                 if number1 != 0:
                     return number2
                 else:
                     return position + 3
+
             elif opCode == 6:
                 if number1 == 0:
                     return number2
                 else:
                     return position + 3
+
             elif opCode == 7:
                 if number1 < number2:
-                    memory[result] = number1
+                    memory[result] = 1 #changed number1 to 1
                 else:
                     memory[result] = 0
+
             elif opCode == 8:
                 if number1 == number2:
                     memory[result] = 1
