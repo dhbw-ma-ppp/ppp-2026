@@ -1,6 +1,6 @@
 # Exercise 05. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-
+from prompt_toolkit.renderer import print_formatted_text
 from puzzle_input import CAVE
 
 EXAMPLE_TEXT = """
@@ -125,48 +125,26 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
+    known_lowest_costs = [[9999999 for col in range(100)] for row in range(100)]
+    known_lowest_costs[0][0] = 0
+    lowest_risk_any_direction_rec(grid,0,0,known_lowest_costs)
+    return known_lowest_costs[len(grid)-1][len(grid)-1]
 
-    known_risks = [[-1 for col in range(100)] for row in range(100)]
-    return lowest_risk_any_direction_rec(grid,0,0,known_risks)
 
-def lowest_risk_any_direction_rec(grid,row,col,known_risks):
+def lowest_risk_any_direction_rec(grid,row,col,costs):
     size = len(grid) # must be square grid nxn
-    if size == 1:
-        return 0
-    if row == size-1 and col == size-1:
-        return grid[row][col]
-
-    move_options = []
-    if col+1 < size:
-        move_options.append([1,0])
-    if row+1 < size:
-        move_options.append([0,1])
-    if col-1 >= 0:
-        move_options.append([-1,0])
-    if row-1 >= 0:
-        move_options.append([0,-1])
-
-    all_risks = []
-    for option in move_options:
-        next_row = row + option[1]
-        next_col = col + option[0]
-        if known_risks[next_row][next_col] == -1:
-            known_risks[next_row][next_col] = lowest_risk_any_direction_rec(grid,next_row,next_col,known_risks)
-            all_risks.append(known_risks[next_row][next_col])
-        else:
-            all_risks.append(known_risks[next_row][next_col])
-    # print(all_risks)
-    lowest_index = 0
-    for i in range(0,len(all_risks)):
-        if all_risks[i] < all_risks[lowest_index]:
-            lowest_index = i
-
-    if row == 0 and col == 0:
-        return all_risks[lowest_index]
-    else:
-        return all_risks[lowest_index] + grid[row][col]
 
 
+    neighbour_list = neighbours(grid,row,col)
+    needs_recheck = []
+    for neighbor in neighbour_list:
+        cost_n = costs[row][col] + grid[neighbor[0]][neighbor[1]]
+        if cost_n < costs[neighbor[0]][neighbor[1]]:
+            needs_recheck.append(neighbor)
+            costs[neighbor[0]][neighbor[1]] = cost_n
+    for recheck in needs_recheck:
+        lowest_risk_any_direction_rec(grid, recheck[0],recheck[1], costs)
+    return
 # ---------------------------------------------------------------- Answers
 
 if __name__ == "__main__":
