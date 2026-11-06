@@ -1,6 +1,5 @@
 # Exercise 05. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-from prompt_toolkit.renderer import print_formatted_text
 from puzzle_input import CAVE
 from collections import deque
 
@@ -40,8 +39,9 @@ def parse_grid(text):
         for num in current_row_list:
             risk_row.append(int(num))
         risk_list.append(risk_row)
-    print(risk_list)
+    # print(risk_list)
     return risk_list
+
 
 def path_risk(grid, path):
     """Return the total risk of following `path`, a list of (row, col) positions.
@@ -51,7 +51,7 @@ def path_risk(grid, path):
     risk = 0
     if len(path) == 1:
         return risk
-    for row,col in path[1:]:
+    for row, col in path[1:]:
         risk += grid[row][col]
     return risk
 
@@ -64,34 +64,36 @@ def lowest_risk(grid, row=0, col=0):
     srow = row
     scol = col
     known_risks = [[-1 for col in range(100)] for row in range(100)]
-    return lowest_risk_rec(grid,row,col,srow,scol,known_risks)
+    return lowest_risk_rec(grid, row, col, srow, scol, known_risks)
 
 
-def lowest_risk_rec(grid,row,col,srow,scol,known_risks):
-    size = len(grid) # must be square grid nxn
+def lowest_risk_rec(grid, row, col, srow, scol, known_risks):
+    size = len(grid)  # must be square grid nxn
     if size == 1:
         return 0
-    if row == size-1 and col == size-1:
+    if row == size - 1 and col == size - 1:
         return grid[row][col]
 
     move_options = []
-    if col+1 < size:
-        move_options.append([1,0])
-    if row+1 < size:
-        move_options.append([0,1])
+    if col + 1 < size:
+        move_options.append([1, 0])
+    if row + 1 < size:
+        move_options.append([0, 1])
 
     all_risks = []
     for option in move_options:
         next_row = row + option[1]
         next_col = col + option[0]
         if known_risks[next_row][next_col] == -1:
-            known_risks[next_row][next_col] = lowest_risk_rec(grid,next_row,next_col,srow,scol,known_risks)
+            known_risks[next_row][next_col] = lowest_risk_rec(
+                grid, next_row, next_col, srow, scol, known_risks
+            )
             all_risks.append(known_risks[next_row][next_col])
         else:
             all_risks.append(known_risks[next_row][next_col])
     # print(all_risks)
     lowest_index = 0
-    for i in range(0,len(all_risks)):
+    for i in range(0, len(all_risks)):
         if all_risks[i] < all_risks[lowest_index]:
             lowest_index = i
 
@@ -99,6 +101,7 @@ def lowest_risk_rec(grid,row,col,srow,scol,known_risks):
         return all_risks[lowest_index]
     else:
         return all_risks[lowest_index] + grid[row][col]
+
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
@@ -131,31 +134,17 @@ def lowest_risk_any_direction(grid):
     queue = deque([(0, 0)])
 
     while queue:
-        row,col = queue.popleft()
-        neighbour_list = neighbours(grid, row,col)
+        row, col = queue.popleft()
+        neighbour_list = neighbours(grid, row, col)
         for neighbor in neighbour_list:
             cost_n = costs[row][col] + grid[neighbor[0]][neighbor[1]]
             if cost_n < costs[neighbor[0]][neighbor[1]]:
                 costs[neighbor[0]][neighbor[1]] = cost_n
                 queue.append(neighbor)
 
-    return costs[len(grid)-1][len(grid)-1]
+    return costs[len(grid) - 1][len(grid) - 1]
 
 
-def lowest_risk_any_direction_rec(grid,row,col,costs):
-    size = len(grid) # must be square grid nxn
-
-
-    neighbour_list = neighbours(grid,row,col)
-    needs_recheck = []
-    for neighbor in neighbour_list:
-        cost_n = costs[row][col] + grid[neighbor[0]][neighbor[1]]
-        if cost_n < costs[neighbor[0]][neighbor[1]]:
-            needs_recheck.append(neighbor)
-            costs[neighbor[0]][neighbor[1]] = cost_n
-    for recheck in needs_recheck:
-        lowest_risk_any_direction_rec(grid, recheck[0],recheck[1], costs)
-    return
 # ---------------------------------------------------------------- Answers
 
 if __name__ == "__main__":
