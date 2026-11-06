@@ -90,7 +90,7 @@ def step(memory, position, inputs, outputs):
 
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
     Return the position of the next instruction, or None if the opcode is 99.
-    An unknown opcode raises a ValueError.
+    An unknown opcode raises a ValueError. Empty inputs[] list and opcode 3 will raise an Index Error. 
     """
     opcode, modes = decode(memory[position])
     match opcode:
