@@ -86,14 +86,15 @@ def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
 
+
 def test_lowest_risk_any_direction_better():
-    assert lowest_risk_any_direction([[1, 1, 1, 1], 
-                                      [9, 9, 9, 1],
-                                      [1, 1, 1, 1],
-                                      [1, 9, 9, 9],
-                                      [1, 1, 1, 1]]) == 13
+    assert (
+        lowest_risk_any_direction(
+            [[1, 1, 1, 1], [9, 9, 9, 1], [1, 1, 1, 1], [1, 9, 9, 9], [1, 1, 1, 1]]
+        )
+        == 13
+    )
+
 
 def test_lowest_risk_any_direction_runtime():
-    assert lowest_risk_any_direction(
-        [[1] * 50] * 50
-    ) == 98
+    assert lowest_risk_any_direction([[1] * 50] * 50) == 98

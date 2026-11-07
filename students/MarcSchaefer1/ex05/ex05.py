@@ -32,16 +32,14 @@ def parse_grid(text):
     Rows = text.split("\n")
     NewRows = []
     for Row in Rows:
-        if Row: # remove \n\n eg doubling and creating empty rows
+        if Row:  # remove \n\n eg doubling and creating empty rows
             NewRow = []
             for char in Row:
-                if char != " " and char: # remove spaces and nonexistent chars
+                if char != " " and char:  # remove spaces and nonexistent chars
                     NewRow.append(int(char))
             NewRows.append(NewRow)
 
-
     return NewRows
-
 
 
 def path_risk(grid, path):
@@ -51,9 +49,10 @@ def path_risk(grid, path):
     """
 
     TotalRisk = 0
-    for Kachel in path[1:]: # first pos skipped already there
+    for Kachel in path[1:]:  # first pos skipped already there
         TotalRisk += grid[Kachel[0]][Kachel[1]]
     return TotalRisk
+
 
 def cheapestPath(grid, paths, best, any_direction=False):
     Options = []
@@ -64,32 +63,32 @@ def cheapestPath(grid, paths, best, any_direction=False):
 
         # down
         if coordinates[0] + 1 < len(grid):
-            downCost = cost + grid[coordinates[0]+1][coordinates[1]]
-            if downCost < best.get((coordinates[0]+1, coordinates[1]), float("inf")):
-                Options.append([(coordinates[0]+1, coordinates[1]), downCost, path[2]+"d"])
+            downCost = cost + grid[coordinates[0] + 1][coordinates[1]]
+            if downCost < best.get((coordinates[0] + 1, coordinates[1]), float("inf")):
+                Options.append([(coordinates[0] + 1, coordinates[1]), downCost, path[2] + "d"])
 
         # right
         if coordinates[1] + 1 < len(grid[0]):
-            rightCost = cost + grid[coordinates[0]][coordinates[1]+1]
-            if rightCost < best.get((coordinates[0], coordinates[1]+1), float("inf")):
-                Options.append([(coordinates[0], coordinates[1]+1), rightCost, path[2]+"r"])
+            rightCost = cost + grid[coordinates[0]][coordinates[1] + 1]
+            if rightCost < best.get((coordinates[0], coordinates[1] + 1), float("inf")):
+                Options.append([(coordinates[0], coordinates[1] + 1), rightCost, path[2] + "r"])
 
         if any_direction:
             # up
             if coordinates[0] - 1 >= 0:
-                upCost = cost + grid[coordinates[0]-1][coordinates[1]]
-                if upCost < best.get((coordinates[0]-1, coordinates[1]), float("inf")):
-                    Options.append([(coordinates[0]-1, coordinates[1]), upCost, path[2]+"u"])
+                upCost = cost + grid[coordinates[0] - 1][coordinates[1]]
+                if upCost < best.get((coordinates[0] - 1, coordinates[1]), float("inf")):
+                    Options.append([(coordinates[0] - 1, coordinates[1]), upCost, path[2] + "u"])
 
             # left
             if coordinates[1] - 1 >= 0:
-                leftCost = cost + grid[coordinates[0]][coordinates[1]-1]
-                if leftCost < best.get((coordinates[0], coordinates[1]-1), float("inf")):
-                    Options.append([(coordinates[0], coordinates[1]-1), leftCost, path[2]+"l"])
+                leftCost = cost + grid[coordinates[0]][coordinates[1] - 1]
+                if leftCost < best.get((coordinates[0], coordinates[1] - 1), float("inf")):
+                    Options.append([(coordinates[0], coordinates[1] - 1), leftCost, path[2] + "l"])
 
     if not Options:
         return None
-    
+
     bestOption = min(Options, key=lambda Option: Option[1])
     return bestOption
 
@@ -100,27 +99,26 @@ def lowest_risk(grid, row=0, col=0, boole=False):
     Moves go only right or down. The risk of (row, col) itself doesn't count.
     """
 
-    AllPaths = [[(row,col),0,""]]
-    best = {(row,col): 0}
+    AllPaths = [[(row, col), 0, ""]]
+    best = {(row, col): 0}
 
-    if (row,col) == (len(grid)-1, len(grid[0])-1):
+    if (row, col) == (len(grid) - 1, len(grid[0]) - 1):
         return 0
-    
+
     while True:
         BestOption = cheapestPath(grid, AllPaths, best, boole)
 
         if BestOption is None:
             return None
-        
+
         pos, cost, _ = BestOption
         if cost >= best.get(pos, float("inf")):
             continue
 
         best[pos] = cost
-        if pos == (len(grid)-1, len(grid[0])-1):
+        if pos == (len(grid) - 1, len(grid[0]) - 1):
             return cost
         AllPaths.append(BestOption)
-
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -147,6 +145,7 @@ def lowest_risk_any_direction(grid):
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
     return lowest_risk(grid, 0, 0, True)
+
 
 # ---------------------------------------------------------------- Answers
 
