@@ -40,6 +40,7 @@ def decode(instruction):
     decode(1002) == (2, [0, 1, 0]): opcode 2; first parameter in position mode, second in
     immediate mode, third in position mode.
     """
+    instruction = int(instruction)
     opcode = instruction % 100
     mode = instruction // 100
     parameter1 = mode % 10

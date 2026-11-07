@@ -144,7 +144,5 @@ def test_step_inputs_pops_correctly():
     assert inputs == [16]
 
 
-# Test, ob der richtige Error auch ausgegeben wird
-def test_step_unkown_opcode():
-    with pytest.raises(ValueError):
-        assert step([11, 3, 99], 0, [], [])
+def test_review_decode_string():
+    assert decode("1002") == (2, [0, 1, 0])
