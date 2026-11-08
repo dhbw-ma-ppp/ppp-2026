@@ -132,6 +132,22 @@ def parameter(memory, position, n):
             if n not in range(1, 2):
                 raise ValueError("n is not a parameter of the instruction at position")
 
+        case 5:
+            if n not in range(1, 3):
+                raise ValueError("n is not a parameter of the instruction at position")
+
+        case 6:
+            if n not in range(1, 3):
+                raise ValueError("n is not a parameter of the instruction at position")
+
+        case 7:
+            if n not in range(1, 4):
+                raise ValueError("n is not a parameter of the instruction at position")
+
+        case 7:
+            if n not in range(1, 4):
+                raise ValueError("n is not a parameter of the instruction at position")
+
         # halt
         case 99:
             # has no parameters, so raise an Error

@@ -147,3 +147,11 @@ def test_step_opcode_7_equal():
     memory = [1107, 1, 1, 3]
     assert step(memory, 0, [], []) == 4
     assert memory[3] == 0
+
+
+# input:            step([11101, 1, 1, 0], 0, [], [])
+# expected output:  ValueError
+# case:             parameter the instruction writes to is always in position mode, so this input should raise an error
+def test_step_invalid_parameter_mode():
+    with pytest.raises(ValueError):
+        step([11101, 1, 1, 0], 0, [], [])
