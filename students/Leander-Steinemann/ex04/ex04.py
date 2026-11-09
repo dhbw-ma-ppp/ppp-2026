@@ -97,7 +97,7 @@ def step(memory, position, inputs, outputs):
     """
     opcode, parameter_modes = decode(memory[position])
 
-    next_position_1_or_2 = position + 4
+    next_position_1_2_7_or_8 = position + 4
     next_position_3_or_4 = position + 2
     next_position_5_or_6 = position + 3
 
@@ -108,12 +108,12 @@ def step(memory, position, inputs, outputs):
         case 1:
             result = parameter(memory, position, 1) + parameter(memory, position, 2)
             memory[memory[position + 3]] = result
-            return next_position_1_or_2
+            return next_position_1_2_7_or_8
 
         case 2:
             result = parameter(memory, position, 1) * parameter(memory, position, 2)
             memory[memory[position + 3]] = result
-            return next_position_1_or_2
+            return next_position_1_2_7_or_8
 
         case 3:
             if not inputs:
@@ -150,7 +150,7 @@ def step(memory, position, inputs, outputs):
             else:
                 memory[memory[position + 3]] = 0
 
-            return next_position_1_or_2
+            return next_position_1_2_7_or_8
 
         case 8:
             if parameter(memory, position, 1) == parameter(memory, position, 2):
@@ -158,7 +158,7 @@ def step(memory, position, inputs, outputs):
             else:
                 memory[memory[position + 3]] = 0
 
-            return next_position_1_or_2
+            return next_position_1_2_7_or_8
 
         case _:
             raise ValueError(f"Unknown opcode {opcode} at position {position}")

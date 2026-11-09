@@ -147,3 +147,7 @@ def test_step_jump_if_true_position_mode():
 def test_opcode_3_empty_input():
     with pytest.raises(ValueError):
         step([3, 0, 1, 2, 99], 0, [], [])
+
+
+def test_run_max_of_two_left_is_greater():
+    assert run(MAX_OF_TWO.copy(), [8, 3]) == [8]
