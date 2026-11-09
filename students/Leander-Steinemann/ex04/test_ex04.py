@@ -142,3 +142,8 @@ def test_step_jump_if_true_position_mode():
     memory = [5, 4, 5, 99, 1, 7, 99, 99]
 
     assert step(memory, 0, [], []) == 7
+
+
+def test_opcode_3_empty_input():
+    with pytest.raises(ValueError):
+        step([3, 0, 1, 2, 99], 0, [], [])
