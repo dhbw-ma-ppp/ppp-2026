@@ -85,3 +85,22 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+# Own tests
+def test_lowest_risk_any_direction_use_of_left():
+    EXAMPLE_TEXT2 = """
+    11119
+    99919
+    99119
+    99199
+    99111
+    """
+    grid = parse_grid(EXAMPLE_TEXT2)
+    assert lowest_risk_any_direction(grid) == 10
+
+
+def test_lowest_risk_any_direction_cave():
+    from puzzle_input import CAVE
+    cave = parse_grid(CAVE)
+    assert lowest_risk_any_direction(cave) == 327
