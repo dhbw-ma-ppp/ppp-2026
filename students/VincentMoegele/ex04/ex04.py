@@ -12,13 +12,6 @@ MAX_OF_TWO = [3, 20, 3, 21, 7, 20, 21, 22, 1005, 22, 14, 4, 20, 99, 4, 21, 99, 0
 # ---------------------------------------------------------------- Part 1 (in class)
 
 
-def to_number(text):
-    try:
-        return int(text)
-    except ValueError:
-        return None
-
-
 def parse_program(text):
     """Return the numbers in `text` as a list of ints.
 
@@ -29,11 +22,12 @@ def parse_program(text):
     lines = text.split("\n")
     integers = []
     for line in lines:
-        left = line.split("#")[0]
+        left = line.strip().split("#")[0]
         if left != "":
             numbers = left.split(",")
             for number in numbers:
-                integers.append(to_number(number.strip()))
+                if number != "":
+                    integers.append(int(number.strip()))
     return integers
 
 

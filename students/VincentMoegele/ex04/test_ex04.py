@@ -142,3 +142,8 @@ def test_step_equals_false():
     memory = [1108, 5, 6, 7, 99, 3, 3, -1]
     assert step(memory, 0, [], []) == 4
     assert memory[7] == 0
+
+
+def test_parse_program():
+    text = " # Ein Kommentar\n1, 2\n \n3"
+    assert parse_program(text) == [1, 2, 3]
