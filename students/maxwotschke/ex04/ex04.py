@@ -82,7 +82,7 @@ def step(memory, position, inputs, outputs):
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
-    If inputs is empty, it returns the position of the next instruction, without writing.
+    If inputs is empty, it raises a ValueError.
     """
     if len(memory) < 1:
         raise ValueError("memory is too short")
