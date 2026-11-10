@@ -23,6 +23,7 @@ def parse_program(text):
     for line in text.splitlines():
         leftSide = line.split("#", 1)[0].strip()
         for part in leftSide.split(","):
+            part = part.strip()
             if part != "":
                 numbers.append(int(part))
     return numbers
@@ -44,22 +45,24 @@ def decode(instruction):
     digits = []
     modes = []
     opCodeArr = []
+    if not isinstance(instruction, int) or instruction < 0:
+        raise ValueError("Instruction invalid.")
 
-    if instruction == 99:
-        opCode = 99
+    for digit in str(instruction):
+        digits.append(int(digit))
+
+    opCodeArr.extend(digits[-2:])
+    if len(opCodeArr) == 1:
+        opCode = opCodeArr[0]
     else:
-        for digit in str(instruction):
-            digits.append(int(digit))
-        opCodeArr.extend(digits[-2:])
-        if len(opCodeArr) == 1:
-            opCode = opCodeArr[0]
-        elif opCodeArr[0] == 0:
-            opCode = opCodeArr[1]
-        else:
-            raise ValueError("Opcode invalid.")
-        modes.extend(digits[:-2])
-    while len(modes) != 3:
+        opCode = opCodeArr[0] * 10 + opCodeArr[1]
+
+    modes.extend(digits[:-2])
+    if len(modes) > 3:
+        raise ValueError("Too many digits.")
+    while len(modes) < 3:
         modes.insert(0, 0)
+
     modes.reverse()
     return opCode, modes
 
@@ -72,25 +75,15 @@ def parameter(memory, position, n):
     Any other mode raises a ValueError.
     """
     opCode_Mode = decode(memory[position])
-    # opCode = opCode_Mode[0]
     modes = opCode_Mode[1]
     parameterMode = modes[n - 1]
+    rawValue = memory[position + n]
     if parameterMode == 0:
-        if n == 3:
-            if n < len(memory): #muesste position+n sein?
-                value = memory[position + n]
-            else:
-                value = None
-        else:
-            address = memory[position + n]
-            if address == 99:
-                return 99 #Opcode mit Adresse verwechselt?
-            if address <= len(memory): #eigentlich len-1
-                value = memory[address]
-            else:
-                value = None
+        if rawValue < 0 or rawValue >= len(memory):
+            raise IndexError("Invalid address.")
+        value = memory[rawValue]
     elif parameterMode == 1:
-        value = memory[position + n]
+        value = rawValue
     else:
         raise ValueError("Unknown mode.")
     return value
@@ -103,77 +96,61 @@ def step(memory, position, inputs, outputs):
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError. Empty inputs, invalid starting point raise ValueErrors as well.
     """
-    if len(memory) < position:
-        raise IndexError("No starting point found.")
-    else:
-        opCode_Mode = decode(memory[position])
-        opCode = opCode_Mode[0]
-        if opCode == 99:
-            return None
+    if position < 0 or position >= len(memory):
+        raise ValueError("No starting point found.")
 
-        if opCode == 3:
-            newPosition = memory[position + 1]
-            if len(inputs) >= 1:
-                memory[newPosition] = inputs.pop(0)
-            else:
-                raise ValueError("No inputs found.")
-            return position + 2
+    opCode_Mode = decode(memory[position])
+    opCode = opCode_Mode[0]
 
-        elif opCode == 4:
-            newPosition = memory[position + 1]
-            if newPosition < len(memory):
-                outputs.append(memory[newPosition])
-            else:
-                outputs.append(newPosition)
-            return position + 2
+    if opCode == 99:
+        return None
 
-        if len(memory) >= position + 3:
-            number1 = parameter(memory, position, 1)
-            number2 = parameter(memory, position, 2)
-            result = parameter(memory, position, 3)
-        else:
-            raise IndexError("More information needed.")
-
-        if opCode in (1, 2, 7, 8) and result >= len(memory):
+    if opCode == 3:
+        newPosition = memory[position + 1]
+        if len(inputs) == 0:
+            raise ValueError("No inputs found.")
+        address = memory[position + 1]
+        if address < 0 or address >= len(memory):
             raise IndexError("Invalid result address.")
+        memory[newPosition] = inputs.pop(0)
+        return position + 2
 
-        if number1 is None or number2 is None:
-            raise ValueError("One number is None")
+    if opCode == 4:
+        outputs.append(parameter(memory, position, 1))
+        return position + 2
 
-        else:
-            if opCode == 1:
-                memory[result] = number1 + number2
+    if opCode in (5, 6):
+        number1 = parameter(memory, position, 1)
+        number2 = parameter(memory, position, 2)
+        if opCode == 5 and number1 != 0:
+            return number2
+        if opCode == 6 and number1 == 0:
+            return number2
+        return position + 3
 
-            elif opCode == 2:
-                memory[result] = number1 * number2
-
-            elif opCode == 5:
-                if number1 != 0:
-                    return number2
-                else:
-                    return position + 3
-
-            elif opCode == 6:
-                if number1 == 0:
-                    return number2
-                else:
-                    return position + 3
-
-            elif opCode == 7:
-                if number1 < number2:
-                    memory[result] = 1 #changed number1 to 1
-                else:
-                    memory[result] = 0
-
-            elif opCode == 8:
-                if number1 == number2:
-                    memory[result] = 1
-                else:
-                    memory[result] = 0
-
+    if opCode in (1, 2, 7, 8):
+        number1 = parameter(memory, position, 1)
+        number2 = parameter(memory, position, 2)
+        result = memory[position + 3]
+        if result < 0 or result >= len(memory):
+            raise IndexError("Invalid result address.")
+        if opCode == 1:
+            memory[result] = number1 + number2
+        elif opCode == 2:
+            memory[result] = number1 * number2
+        elif opCode == 7:
+            if number1 < number2:
+                memory[result] = 1  # changed number1 to 1
             else:
-                raise ValueError
-    return position + 4
+                memory[result] = 0
+
+        elif opCode == 8:
+            if number1 == number2:
+                memory[result] = 1
+            else:
+                memory[result] = 0
+        return position + 4
+    raise ValueError(f"Unknown opcode {opCode} at position {position}.")
 
 
 def run(memory, inputs):

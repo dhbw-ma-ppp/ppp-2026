@@ -100,7 +100,7 @@ def test_run_exercise_02_program():
 def test_step_MemoryEmpty():
     memory = []
     inputs = []
-    with pytest.raises(IndexError):
+    with pytest.raises(ValueError):
         step(memory, 0, inputs, [])
 
 
@@ -116,6 +116,11 @@ def test_run_bad_input():
     inputs = []
     with pytest.raises(IndexError, match="Invalid result address."):
         run(memory, inputs)
+
+
+def test_decode_tooManyModes():
+    with pytest.raises(ValueError):
+        decode(111101)
 
 
 def test_step_jump_if_true():
