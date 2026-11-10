@@ -102,5 +102,6 @@ def test_lowest_risk_any_direction_use_of_left():
 
 def test_lowest_risk_any_direction_cave():
     from puzzle_input import CAVE
+
     cave = parse_grid(CAVE)
     assert lowest_risk_any_direction(cave) == 327
