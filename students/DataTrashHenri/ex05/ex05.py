@@ -145,6 +145,39 @@ def lowest_risk_any_direction(grid):
     return costs[len(grid) - 1][len(grid) - 1]
 
 
+def lowest_risk_with_shields(grid, shields):
+    costs = [
+        [[9999999 for col in range(100)] for row in range(100)] for shields in range(shields + 1)
+    ]
+    for i in range(shields + 1):
+        costs[i][0][0] = 0
+    queue = deque([(0, 0, shields)])
+
+    while queue:
+        row, col, shields_left = queue.popleft()
+        neighbour_list = neighbours(grid, row, col)
+        for neighbour in neighbour_list:
+            if shields_left != 0:
+                cost_neighbour = costs[shields_left][row][col]
+                if cost_neighbour < costs[shields_left - 1][neighbour[0]][neighbour[1]]:
+                    queue.append((neighbour[0], neighbour[1], shields_left - 1))
+                    costs[shields_left - 1][neighbour[0]][neighbour[1]] = cost_neighbour
+            # print(neighbour, shields_left)
+            # print(shields_left)
+            cost_neighbour = costs[shields_left][row][col] + grid[neighbour[0]][neighbour[1]]
+            # print(cost_neighbour)
+            if cost_neighbour < costs[shields_left][neighbour[0]][neighbour[1]]:
+                queue.append((neighbour[0], neighbour[1], shields_left))
+                costs[shields_left][neighbour[0]][neighbour[1]] = cost_neighbour
+
+    min_risk = 888888888
+    for i in range(shields + 1):
+        # print(costs[i][len(grid) - 1][len(grid) - 1])
+        if costs[i][len(grid) - 1][len(grid) - 1] < min_risk:
+            min_risk = costs[i][len(grid) - 1][len(grid) - 1]
+    return min_risk
+
+
 # ---------------------------------------------------------------- Answers
 
 if __name__ == "__main__":
@@ -159,3 +192,6 @@ if __name__ == "__main__":
     print("3:", lowest_risk(cave))
     print("4:", lowest_risk_any_direction(example))
     print("5:", lowest_risk_any_direction(cave))
+
+    print("6:", lowest_risk_with_shields(example, 1))
+    print("7:", lowest_risk_with_shields(cave, 3))
