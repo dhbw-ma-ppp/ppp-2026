@@ -141,3 +141,11 @@ def test_step_equals_false():
 def test_step_input_without_input():
     with pytest.raises(IndexError):
         step([3, 0, 99], 0, [], [])
+
+
+def test_parse_program_null():
+    assert parse_program() == []
+
+
+def test_parse_program_empty():
+    assert parse_program("") == []

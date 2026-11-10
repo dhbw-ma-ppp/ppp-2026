@@ -12,7 +12,7 @@ MAX_OF_TWO = [3, 20, 3, 21, 7, 20, 21, 22, 1005, 22, 14, 4, 20, 99, 4, 21, 99, 0
 # ---------------------------------------------------------------- Part 1 (in class)
 
 
-def parse_program(text):
+def parse_program(text=""):
     """Return the numbers in `text` as a list of ints.
 
     Numbers are separated by commas and/or line breaks. A `#` starts a comment that runs to
@@ -46,7 +46,7 @@ def decode(instruction):
     opcode = int(instruction[-2:])
     modes = []
     if opcode not in (1, 2, 3, 4, 5, 6, 7, 8, 99):
-        raise ValueError("Invalid Opcode!")
+        raise ValueError(f"Invalid Opcode: {opcode}")
     match len(instruction):
         case 1:
             for i in range(3):
@@ -63,6 +63,8 @@ def decode(instruction):
         case 5:
             for i in (instruction[2], instruction[1], instruction[0]):
                 modes.append(int(i))
+        case _:
+            raise ValueError(f"Invalid instructions given: {instruction}")
     return (opcode, modes)
 
 
@@ -82,7 +84,7 @@ def parameter(memory, position, n):
         case 1:
             return parameter
         case _:
-            raise ValueError("Invalid Mode!")
+            raise ValueError(f"Invalid Mode: {mode} at position : {position}")
 
 
 def step(memory, position, inputs, outputs):
