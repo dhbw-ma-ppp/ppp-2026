@@ -127,13 +127,12 @@ def test_run_max_of_two():
 
 def test_negative_opcode():
     with pytest.raises(ValueError):
-        run([-102, 2, 3, 4, 99], [])
+        run([-101, 2, 3, 4, 99], [])
 
 
 def test_run_empty_inputs():
-    memory = [3, 1, 4, 0, 99]
-    assert step(memory, 0, [], []) == 2
-    assert memory == [3, 1, 4, 0, 99]
+    with pytest.raises(ValueError):
+        run([3, 1, 4, 0, 99], [])
 
 
 def test_run_without_inputs():

@@ -45,7 +45,8 @@ def decode(instruction):
     decode(1002) == (2, [0, 1, 0]): opcode 2; first parameter in position mode, second in
     immediate mode, third in position mode.
     """
-
+    if instruction < 0:
+        raise ValueError(f"negative instruction {instruction}")
     opcode = instruction % 100
     instruction = instruction // 100
     parameter1 = instruction % 10
@@ -72,7 +73,7 @@ def parameter(memory, position, n):
     elif parameters[n - 1] == 0:
         return memory[memory[position + n]]
     else:
-        raise ValueError
+        raise ValueError(f"invalid parameter at position {position + n}: {memory[position + n]}")
 
 
 def step(memory, position, inputs, outputs):
@@ -84,7 +85,7 @@ def step(memory, position, inputs, outputs):
     If inputs is empty, it returns the position of the next instruction, without writing.
     """
     if len(memory) < 1:
-        raise ValueError
+        raise ValueError("memory is too short")
 
     opcode = decode(memory[position])[0]
 
@@ -111,7 +112,8 @@ def step(memory, position, inputs, outputs):
         if len(inputs) >= 1:
             memory[memory[position + 1]] = inputs[0]
             del inputs[0]
-
+        else:
+            raise ValueError("empty input")
         return position + 2
 
     elif opcode == 5:
@@ -141,7 +143,7 @@ def step(memory, position, inputs, outputs):
         return position + 4
 
     else:
-        raise ValueError("unknown opcode")
+        raise ValueError(f"invalid opcode at position {position}: {opcode}")
 
 
 def run(memory, inputs):
