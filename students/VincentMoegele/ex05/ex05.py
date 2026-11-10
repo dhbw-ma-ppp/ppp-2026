@@ -88,6 +88,7 @@ def lowest_risk(grid, row=0, col=0):
 def neighbours(grid, row, col):
     """Return the positions directly above, below, left and right of (row, col) that are
     inside the grid, as a list of (row, col) pairs, in any order."""
+    
     neighbour_left = (row, col - 1)
     neighbour_right = (row, col + 1)
     neighbour_above = (row - 1, col)
