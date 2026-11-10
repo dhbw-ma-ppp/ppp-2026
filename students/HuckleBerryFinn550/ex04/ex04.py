@@ -140,7 +140,7 @@ def step(memory, position, inputs, outputs):
             memory[result] = number1 * number2
         elif opCode == 7:
             if number1 < number2:
-                memory[result] = 1  # changed number1 to 1
+                memory[result] = 1
             else:
                 memory[result] = 0
 
