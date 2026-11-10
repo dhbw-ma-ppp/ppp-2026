@@ -139,3 +139,8 @@ def test_step_equals_not_equal():
 def test_run_two_inputs():
     memory = [3, 11, 3, 12, 4, 12, 4, 11, 99, 0, 0, 0, 0]
     assert run(memory, [21, 8]) == [8, 21]
+
+
+def test_step_empty_memory():
+    with pytest.raises(IndexError):
+        step([], 0, [], [])
