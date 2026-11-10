@@ -8,9 +8,11 @@ def test_step_add():
     assert step(memory, 0) == 4
     assert memory == [2, 0, 0, 0, 99]
 
+
 def test_step_incomplete_instruction():
     with pytest.raises(IndexError):
         step([1, 0, 0], 0)
+
 
 def test_step_multiply():
     memory = [2, 3, 0, 3, 99]

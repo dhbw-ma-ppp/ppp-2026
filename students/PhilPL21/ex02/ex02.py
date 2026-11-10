@@ -16,8 +16,7 @@ def step(memory, position):
         return None
 
     if position + 3 >= len(memory):
-        raise IndexError(
-            "Can't run opcode 1 because the instruction requires 4 memory positions.")
+        raise IndexError("Can't run opcode 1 because the instruction requires 4 memory positions.")
 
     if memory[position] == 1:
         a = memory[memory[position + 1]]
