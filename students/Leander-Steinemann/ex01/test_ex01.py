@@ -68,7 +68,7 @@ def test_floor_up_and_down():
 
 def test_floor_after():
     assert floor_after("((())", 3) == 3
-    assert floor_after("())((()(()",0)==0
+    assert floor_after("())((()(()", 0) == 0
 
 
 def test_mirrored():
