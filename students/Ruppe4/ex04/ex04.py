@@ -62,11 +62,11 @@ def parameter(memory, position, n):
 
 
 def step(memory, position, inputs, outputs):
-    """Execute the instruction that starts at `position` in memory.
+    """Return the numbers in `text` as a list of ints.
 
-    Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
-    Return the position of the next instruction, or None if the opcode is 99.
-    An unknown opcode raises a ValueError.
+    Numbers are separated by commas and/or line breaks. A `#` starts a comment that runs to
+    the end of its line. Spaces and blank lines don't matter.
+
     """
     opcode, _ = decode(memory[position])
 
@@ -81,6 +81,8 @@ def step(memory, position, inputs, outputs):
         )
         return position + 4
     if opcode == 3:
+        if not inputs:
+            raise ValueError(f"Opcode 3 at position {position} needs an input, but inputs is empty")
         memory[memory[position + 1]] = inputs.pop(0)
         return position + 2
     if opcode == 4:
@@ -106,7 +108,7 @@ def step(memory, position, inputs, outputs):
         return position + 4
     if opcode == 99:
         return None
-    raise ValueError(f"Unknown opcode: {opcode}")
+    raise ValueError(f"Unknown opcode {opcode} at position {position}")
 
 
 def run(memory, inputs):
