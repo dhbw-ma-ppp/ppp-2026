@@ -47,15 +47,12 @@ def decode(instruction):
     reversed_string_opcode = str(instruction)[::-1]
 
     instruction_list = []
-    instructions_added = 0
 
     for index in range(2, len(reversed_string_opcode)):
         instruction_list.append(int(reversed_string_opcode[index]))
-        instructions_added += 1
 
-    while instructions_added < 3:
+    while len(instruction_list) < 3:
         instruction_list.append(0)
-        instructions_added += 1
 
     opcode_decoded = (int(reversed_string_opcode[:2:][::-1]), instruction_list)
 
@@ -72,7 +69,7 @@ def parameter(memory, position, n, relative_base=0):
     """
     if position < 0:
         raise IndexError(f"Can't access negative index {n} at position {position}.")
-    opcode, modes_of_parameters = decode(read(memory, position))
+    modes_of_parameters = decode(read(memory, position))[1]
 
     argument = read(memory, position + n)
 
@@ -98,72 +95,73 @@ def step(memory, position, inputs, outputs):
 
     Trying to read from empty inputs or trying to jump to a negative index results in an IndexError.
     """
-    opcode, modes = decode(memory[position])
+    opcode = decode(read(memory, position))[0]
 
-    match opcode:
-        case 99:
-            return None
-        case 1:
-            first_parameter = parameter(memory, position, 1)
-            second_parameter = parameter(memory, position, 2)
-            target = memory[position + 3]
-            memory[target] = first_parameter + second_parameter
-            return position + 4
-        case 2:
-            first_parameter = parameter(memory, position, 1)
-            second_parameter = parameter(memory, position, 2)
-            target = memory[position + 3]
-            memory[target] = first_parameter * second_parameter
-            return position + 4
-        case 3:
-            if inputs == []:
-                raise IndexError(
-                    f"Can't read from inputs at position {position + 1} as inputs are emtpy."
-                )
-            target = memory[position + 1]
-            memory[target] = inputs.pop(0)
-            return position + 2
-        case 4:
-            outputs.append(parameter(memory, position, 1))
-            return position + 2
-        case 5:
-            first_parameter = parameter(memory, position, 1)
-            if first_parameter != 0:
-                target = parameter(memory, position, 2)
-                if target < 0:
-                    raise IndexError(
-                        f"Can't access negative index {target} at position {position}."
-                    )
-                return target
-            return position + 3
-        case 6:
-            first_parameter = parameter(memory, position, 1)
-            if first_parameter == 0:
-                target = parameter(memory, position, 2)
-                if target < 0:
-                    raise IndexError(
-                        f"Can't access negative index {target} at position {position}."
-                    )
-                return target
-            return position + 3
-        case 7:
-            first_parameter = parameter(memory, position, 1)
-            second_parameter = parameter(memory, position, 2)
-            if first_parameter < second_parameter:
-                memory[memory[position + 3]] = 1
-            else:
-                memory[memory[position + 3]] = 0
-            return position + 4
-        case 8:
-            first_parameter = parameter(memory, position, 1)
-            second_parameter = parameter(memory, position, 2)
-            if first_parameter == second_parameter:
-                memory[memory[position + 3]] = 1
-            else:
-                memory[memory[position + 3]] = 0
-            return position + 4
-        case _:
-            raise ValueError(f"Opcode {opcode} at position {position} is not valid.")
+    if opcode == 99:
+        return None
+
+    # opcodes with no additional parameters
+
+    if opcode == 3:
+        if inputs == []:
+            raise IndexError(
+                f"Can't read from inputs at position {position + 1} as inputs are emtpy."
+            )
+        target = read(memory, position + 1)
+        write(memory, target, inputs.pop(0))
+        return position + 2
+
+    first_parameter = parameter(memory, position, 1)
+
+    if opcode == 4:
+        outputs.append(first_parameter)
+        return position + 2
+
+    if opcode == 6:
+        if first_parameter == 0:
+            target = parameter(memory, position, 2)
+            if target < 0:
+                raise IndexError(f"Can't access negative index {target} at position {position}.")
+            return target
+        return position + 3
+
+    second_parameter = parameter(memory, position, 2)
+
+    # opcodes with 2 parameters
+
+    if opcode == 1:
+        target = read(memory, position + 3)
+        write(memory, target, first_parameter + second_parameter)
+        return position + 4
+
+    if opcode == 2:
+        target = read(memory, position + 3)
+        write(memory, target, first_parameter * second_parameter)
+        return position + 4
+
+    if opcode == 5:
+        if first_parameter != 0:
+            target = parameter(memory, position, 2)
+            if target < 0:
+                raise IndexError(f"Can't access negative index {target} at position {position}.")
+            return target
+        return position + 3
+
+    if opcode == 7:
+        if first_parameter < second_parameter:
+            write(memory, read(memory, position + 3), 1)
+        else:
+            write(memory, read(memory, position + 3), 0)
+        return position + 4
+
+    if opcode == 8:
+        if first_parameter == second_parameter:
+            write(memory, read(memory, position + 3), 1)
+        else:
+            write(memory, read(memory, position + 3), 0)
+        return position + 4
+
+    raise ValueError(f"Opcode {opcode} at position {position} is not valid.")
 
 
 def run(memory, inputs):

@@ -141,3 +141,8 @@ def test_parameter_negative_index():
     memory = [1, 1, 1, 5, 99, 0]
     with pytest.raises(IndexError):
         parameter(memory, -1, 1)
+
+
+def test_step_negative_index():
+    with pytest.raises(IndexError):
+        step([1107, 1, 2, -1, 99], 0, [], [])
