@@ -18,6 +18,10 @@ def test_parse_program_one_line():
     assert parse_program("1,0,0,0,99") == [1, 0, 0, 0, 99]
 
 
+def test_parse_program_spaces_between_digits():
+    assert parse_program("5 5") == [55]
+
+
 def test_parse_program_spaces_and_negative_numbers():
     assert parse_program(" 1101, 100, -1, 4, 0 ") == [1101, 100, -1, 4, 0]
 

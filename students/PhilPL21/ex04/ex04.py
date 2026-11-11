@@ -26,7 +26,7 @@ def parse_program(text):
             continue
 
         for number in program.split(","):
-            result.append(int(number.strip()))
+            result.append(int(number.replace(" ", "")))
 
     return result
 
