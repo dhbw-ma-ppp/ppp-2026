@@ -2,6 +2,7 @@
 # Replace each `pass` line with your code, ending with `return`.
 
 from puzzle_input import CAVE
+import heapq
 
 EXAMPLE_TEXT = """
 19999
@@ -40,16 +41,16 @@ def parse_grid(text):
         while i < len(row_string):
             i += 1
             if row_int % 10 == 0:
-
                 continue
             row.insert(0, row_int % 10)
             row_int = row_int // 10
 
         grid.append(row)
 
-
     return grid
-#print(parse_grid(CAVE))
+
+
+# print(parse_grid(CAVE))
 def path_risk(grid, path):
     """Return the total risk of following `path`, a list of (row, col) positions.
 
@@ -63,20 +64,16 @@ def path_risk(grid, path):
     return risk
 
 
-
-
-
 def lowest_risk(grid, row=0, col=0):
     """Return the lowest total risk from (row, col) to the bottom-right corner.
 
-        Moves go only right or down. The risk of (row, col) itself doesn't count.
-        """
+    Moves go only right or down. The risk of (row, col) itself doesn't count.
+    """
     first_call = not getattr(lowest_risk, "running", False)
     if first_call:
         lowest_risk.cache = {}
         lowest_risk.running = True
     try:
-
         if row == len(grid) - 1 and col == len(grid[0]) - 1:
             return 0
         right = float("inf")
@@ -84,20 +81,18 @@ def lowest_risk(grid, row=0, col=0):
         if (row, col) in lowest_risk.cache:
             return lowest_risk.cache[(row, col)]
         if col < len(grid[0]) - 1:
-            right = lowest_risk(grid, row, col +1) + grid[row][col + 1]
+            right = lowest_risk(grid, row, col + 1) + grid[row][col + 1]
 
         if row < len(grid) - 1:
             down = lowest_risk(grid, row + 1, col) + grid[row + 1][col]
-        lowest_risk.cache[(row, col)] = min(right,down)
+        lowest_risk.cache[(row, col)] = min(right, down)
         return min(right, down)
     finally:
         if first_call:
             lowest_risk.running = False
-#print(lowest_risk([[1, 9, 9, 9, 9], [1, 9, 1, 1, 1], [1, 9, 1, 9, 1], [1, 1, 1, 9, 1], [9, 9, 9, 9, 1]]))
 
 
-
-
+# print(lowest_risk([[1, 9, 9, 9, 9], [1, 9, 1, 1, 1], [1, 9, 1, 9, 1], [1, 1, 1, 9, 1], [9, 9, 9, 9, 1]]))
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -109,27 +104,41 @@ def neighbours(grid, row, col):
     neighbour_positions = []
     if row - 1 >= 0:
         neighbour_positions.append((row - 1, col))
-    if row + 1 < len(grid[0]) - 1:
+    if row + 1 < len(grid):
         neighbour_positions.append((row + 1, col))
     if col - 1 >= 0:
         neighbour_positions.append((row, col - 1))
-    if col + 1 < len(grid) - 1:
+    if col + 1 < len(grid[0]):
         neighbour_positions.append((row, col + 1))
     return neighbour_positions
+
 
 def lowest_risk_any_direction(grid):
     """Return the lowest total risk from the top-left to the bottom-right corner.
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    optimal = {}
-    optimal[(0, 0)] = 0
-    to_be_checked = {}
-    for row in grid:
-        for col in row:
-            to_be_checked[(row, col)] = row[col]
 
-#[[1, 9, 9, 9, 9], [1, 9, 1, 1, 1], [1, 9, 1, 9, 1], [1, 1, 1, 9, 1], [9, 9, 9, 9, 1]]
+    queue = [(0, (0, 0))]
+    risks = {(0, 0): 0}
+    optimal = []
+    while len(queue) > 0:
+        risk, (row, col) = heapq.heappop(queue)
+        if (row, col) in optimal:
+            continue
+        optimal.append((row, col))
+        field_neighbours = neighbours(grid, row, col)
+        for neighbour in field_neighbours:
+            neighbour_risk = grid[neighbour[0]][neighbour[1]]
+            if not isinstance(neighbour_risk, int) or neighbour_risk < 0:
+                raise ValueError(f"invalid risk at {neighbour}: {neighbour_risk}")
+            if neighbour not in risks or risks[(row, col)] + neighbour_risk < risks[neighbour]:
+                risks[neighbour] = risks[(row, col)] + neighbour_risk
+                heapq.heappush(queue, (risks[neighbour], neighbour))
+    return risks[(len(grid) - 1, len(grid[0]) - 1)]
+
+
+# [[1, 9, 9, 9, 9], [1, 9, 1, 1, 1], [1, 9, 1, 9, 1], [1, 1, 1, 9, 1], [9, 9, 9, 9, 1]]
 
 # ---------------------------------------------------------------- Answers
 
@@ -137,11 +146,11 @@ if __name__ == "__main__":
     example = parse_grid(EXAMPLE_TEXT)
     cave = parse_grid(CAVE)
 
-    #print("Part 1")
-    #print("1:", lowest_risk(example))
-    #print("2:", path_risk(example, EXAMPLE_PATH))
+    print("Part 1")
+    print("1:", lowest_risk(example))
+    print("2:", path_risk(example, EXAMPLE_PATH))
 
-    #print("Part 2")
+    print("Part 2")
     print("3:", lowest_risk(cave))
-    #print("4:", lowest_risk_any_direction(example))
-    #print("5:", lowest_risk_any_direction(cave))
+    print("4:", lowest_risk_any_direction(example))
+    print("5:", lowest_risk_any_direction(cave))

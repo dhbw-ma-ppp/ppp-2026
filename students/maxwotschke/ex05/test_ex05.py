@@ -7,7 +7,7 @@ from ex05 import (
     parse_grid,
     path_risk,
 )
-
+import pytest
 # ---------------------------------------------------------------- Part 1
 
 
@@ -85,3 +85,15 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+def test_lowest_risk_any_direction_not_right_down():
+    grid = [[1, 1, 1, 1, 1], [9, 9, 9, 9, 1], [1, 1, 1, 1, 1], [9, 9, 2, 9, 9], [1, 1, 1, 1, 1]]
+    assert lowest_risk_any_direction(grid) == 13
+
+
+def test_lowest_risk_any_direction_invalid_grid():
+    with pytest.raises(ValueError):
+        lowest_risk_any_direction(
+            [[1, 1, 1, 1, 1], [9, 9, 9, 9, 1], [1, 1, "y", 1, 1], [9, 9, 2, 9, 9], [1, 1, 1, 1, 1]]
+        )
