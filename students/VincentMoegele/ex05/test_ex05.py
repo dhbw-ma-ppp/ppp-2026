@@ -85,3 +85,16 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+# ----------------------------------------------------------------- My own tests
+
+
+def test_any_direction_cheaper_right_down():
+    grid = parse_grid(EXAMPLE_TEXT)
+    assert lowest_risk_any_direction(grid) < lowest_risk(grid)
+
+
+def test_neighbours_position_upper_right_corner():
+    grid = parse_grid(EXAMPLE_TEXT)
+    assert neighbours(grid, 0, 4) == [(0, 3), (1, 4)]

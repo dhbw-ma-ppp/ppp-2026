@@ -31,7 +31,7 @@ def parse_grid(text):
     input_rows = text.splitlines()
     grid = []
     for row in input_rows:
-        row.strip("")
+        row = row.strip()
         if row != "":
             grid.append([int(digit) for digit in row])
     return grid
@@ -44,9 +44,8 @@ def path_risk(grid, path):
     """
     total_risk = 0
     for row, col in path[1:]:
-        total_risk = total_risk + grid[col][row]
+        total_risk = total_risk + grid[row][col]
     return total_risk
-
 
 
 def lowest_risk(grid, row=0, col=0):
@@ -58,14 +57,18 @@ def lowest_risk(grid, row=0, col=0):
     max_row_count = len(grid) - 1
     max_col_count = len(grid[0]) - 1
     visited = {}
+    counter = 0
+
     def from_here(row, col):
+        nonlocal counter
+        counter += 1
 
         if (row, col) in visited:
             return visited[(row, col)]
-        
+
         if row == max_row_count and col == max_col_count:
             return 0
-        
+
         values = []
         if row < max_row_count:
             values.append(from_here(row + 1, col) + grid[row + 1][col])
@@ -75,11 +78,17 @@ def lowest_risk(grid, row=0, col=0):
 
         visited[(row, col)] = min(values)
         return visited[(row, col)]
- 
 
-
-    return from_here(row, col)
-
+    risk = from_here(row, col)
+    print(
+        "counter:",
+        counter,
+        "max_row_count:",
+        max_row_count + 1,
+        "max_col_count:",
+        max_col_count + 1,
+    )
+    return risk
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -88,7 +97,7 @@ def lowest_risk(grid, row=0, col=0):
 def neighbours(grid, row, col):
     """Return the positions directly above, below, left and right of (row, col) that are
     inside the grid, as a list of (row, col) pairs, in any order."""
-    
+
     neighbour_left = (row, col - 1)
     neighbour_right = (row, col + 1)
     neighbour_above = (row - 1, col)
@@ -109,9 +118,7 @@ def neighbours(grid, row, col):
     if row != max_row_count:
         results.append(neighbour_below)
 
-    return results                       
-
-
+    return results
 
 
 def lowest_risk_any_direction(grid):
@@ -119,7 +126,19 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    pass  # replace this line with your code
+    goal = (len(grid) - 1, len(grid[0]) - 1)
+    lowest = {(0, 0): 0}
+    changed = True
+    while changed:
+        changed = False
+        for position in list(lowest):
+            next_row, next_col = position
+            for row, col in neighbours(grid, next_row, next_col):
+                risk = lowest[position] + grid[row][col]
+                if (row, col) not in lowest or risk < lowest[(row, col)]:
+                    lowest[(row, col)] = risk
+                    changed = True
+    return lowest[goal]
 
 
 # ---------------------------------------------------------------- Answers
@@ -130,19 +149,15 @@ if __name__ == "__main__":
     two_two = parse_grid("12\n34")
     three_three = parse_grid("123\n456\n789")
     ten_ten = [[i * 10 + j for j in range(10)] for i in range(10)]
-    
 
     print("Part 1")
     print("1:", lowest_risk(example))
     print("2:", path_risk(example, EXAMPLE_PATH))
 
     print("Part 2")
-    print("3a")
-    print(lowest_risk(two_two))
-    print("3b")
-    print(lowest_risk(three_three))
-    print("3c")
-    print(lowest_risk(ten_ten))
     print("3:", lowest_risk(cave))
-    #print("4:", lowest_risk_any_direction(example))
-    #print("5:", lowest_risk_any_direction(cave))
+    print("3a:", lowest_risk(two_two))
+    print("3b:", lowest_risk(three_three))
+    print("3c:", lowest_risk(ten_ten))
+    print("4:", lowest_risk_any_direction(example))
+    print("5:", lowest_risk_any_direction(cave))
