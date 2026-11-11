@@ -189,3 +189,19 @@ def test_step_equals_false():
     memory = [8, 5, 6, 7, 99, 3, 4, -1]
     assert step(memory, 0, [], []) == 4
     assert memory[7] == 0
+
+
+# --- TEST 4 --- (Review)
+
+# Input:
+# run([104, 1, 104, 2, 104, 3, 99], [])
+
+# Expected result:
+# [1, 2, 3]
+
+# Test case:
+# runs the program until position is "None"
+
+
+def test_run_to_none():
+    assert run([104, 1, 104, 2, 104, 3, 99], []) == [1, 2, 3]
