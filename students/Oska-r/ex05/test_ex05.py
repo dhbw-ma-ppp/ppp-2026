@@ -85,3 +85,16 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+def test_lowest_risk_any_direction_not_only_moving_down_and_right():
+    grid = [
+        [1, 9, 1, 1, 1],
+        [1, 9, 1, 9, 1],
+        [1, 1, 1, 9, 1],
+    ]
+    assert lowest_risk_any_direction(grid) == 10
+
+
+def test_neighbours_single_cell():
+    assert neighbours([[0]], 0, 0) == []

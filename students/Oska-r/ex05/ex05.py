@@ -95,11 +95,11 @@ def neighbours(grid, row, col):
     grid_count_columns = len(grid[0])
 
     neighbours = []
-    if col - 1 > 0:
+    if col > 0:
         neighbours.append((row, col - 1))
     if col + 1 < grid_count_columns:
         neighbours.append((row, col + 1))
-    if row - 1 > 0:
+    if row > 0:
         neighbours.append((row - 1, col))
     if row + 1 < grid_count_rows:
         neighbours.append((row + 1, col))
@@ -137,6 +137,7 @@ def lowest_risk_any_direction(grid):
             if adjacent_cell not in seen or new_cost < seen[adjacent_cell]:
                 seen[adjacent_cell] = new_cost
                 heapq.heappush(heap, (new_cost, adjacent_cell))
+    raise ValueError("No possible path was found.")
 
 
 # ---------------------------------------------------------------- Answers
