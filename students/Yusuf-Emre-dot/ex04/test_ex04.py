@@ -147,9 +147,9 @@ Output: 5
 
 def test_run_max_of_two_same():
     assert run(MAX_OF_TWO.copy(), [3, 3]) == [3]
-    
+
+
 def test_wrong_opcode():
-    memory=[2001,5,6,0,99,10,20]
+    memory = [2001, 5, 6, 0, 99, 10, 20]
     with pytest.raises(ValueError):
-        parameter(memory,0,2)
-        
+        parameter(memory, 0, 2)
