@@ -65,15 +65,31 @@ def path_risk(grid, path):
     return risk
 
 
-def lowest_risk(grid, row=0, col=0):
+def lowest_risk(grid, row=0, col=0, start=True):
     """Return the lowest total risk from (row, col) to the bottom-right corner.
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
     """
-    low_risk = 0
-    if row == 0 and col == 0:
-        return low_risk
 
+    rows = len(grid)
+    cols = len(grid[0])
+    #return lowest_risk_rec(grid, row, col, rows, cols)
+
+    if row == rows -1 and col == cols - 1:
+        return 0 if start else grid[row][col]
+
+    risk = 0 if start else grid[row][col]
+
+    if row == rows - 1:
+        return risk + lowest_risk(grid, row, col + 1, False)
+
+    if col == cols - 1:
+        return risk + lowest_risk(grid, row + 1, col, False)
+
+    move_right = lowest_risk(grid, row, col+1, False)
+    move_down = lowest_risk(grid, row+1, col, False)
+
+    return risk + min(move_right, move_down)
 
 
 
