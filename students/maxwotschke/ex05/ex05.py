@@ -50,7 +50,6 @@ def parse_grid(text):
     return grid
 
 
-# print(parse_grid(CAVE))
 def path_risk(grid, path):
     """Return the total risk of following `path`, a list of (row, col) positions.
 
@@ -90,9 +89,6 @@ def lowest_risk(grid, row=0, col=0):
     finally:
         if first_call:
             lowest_risk.running = False
-
-
-# print(lowest_risk([[1, 9, 9, 9, 9], [1, 9, 1, 1, 1], [1, 9, 1, 9, 1], [1, 1, 1, 9, 1], [9, 9, 9, 9, 1]]))
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -137,8 +133,6 @@ def lowest_risk_any_direction(grid):
                 heapq.heappush(queue, (risks[neighbour], neighbour))
     return risks[(len(grid) - 1, len(grid[0]) - 1)]
 
-
-# [[1, 9, 9, 9, 9], [1, 9, 1, 1, 1], [1, 9, 1, 9, 1], [1, 1, 1, 9, 1], [9, 9, 9, 9, 1]]
 
 # ---------------------------------------------------------------- Answers
 
