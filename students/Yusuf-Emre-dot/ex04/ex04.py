@@ -70,10 +70,14 @@ def parameter(memory, position, n):
     Any other mode raises a ValueError.
     """
     mode = decode(memory[position])[1][n - 1]
+    print(mode,'mode')
     # nimmt nur die Liste und der index ist -n weil sie von rechts zu links gelesen wird
     if mode == 1:
         return memory[position + n]
-    return memory[memory[position + n]]
+    elif mode == 0:
+        return memory[memory[position + n]]
+    else:
+        raise ValueError("Wrong Mode",mode)
 
 
 def step(memory, position, inputs, outputs):
