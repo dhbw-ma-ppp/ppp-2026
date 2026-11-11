@@ -123,3 +123,7 @@ def test_step_equals():
 
 def test_run_max_of_two():
     assert run(MAX_OF_TWO.copy(), [3, 8]) == [8]
+
+
+def test_run_multiple_outputs():
+    assert run([104, 1, 104, 2, 104, 3, 99], []) == [1, 2, 3]

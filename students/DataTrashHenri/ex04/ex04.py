@@ -30,7 +30,7 @@ def parse_program(text):
 def load_program(path):
     """Read the file at `path` and return the program in it as a list of ints."""
     full_string = ""
-    with open(PROGRAM_FILE, "r") as file:
+    with open(path, "r") as file:
         for line in file:
             full_string += line
 
