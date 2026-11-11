@@ -3,6 +3,8 @@
 
 from puzzle_input import CAVE
 
+import heapq
+
 EXAMPLE_TEXT = """
 19999
 19111
@@ -56,27 +58,31 @@ def path_risk(grid, path):
     return total_risk
 
 
-def lowest_risk(grid, row=0, col=0):
+def lowest_risk(grid, row=0, col=0, seen=None):
     """Return the lowest total risk from (row, col) to the bottom-right corner.
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
     """
-    # There is no risk when going from the bottom-right corner to the bottom-right corner
+    if seen is None:
+        seen = {}
+
+    if (row, col) in seen:
+        return seen[(row, col)]
+
     if row == len(grid) - 1 and col == len(grid[0]) - 1:
         return 0
 
     if row >= len(grid) - 1:
-        # We've arrived at the last row, we can only go right from here
-        return grid[row][col + 1] + lowest_risk(grid, row, col + 1)
-    if col >= len(grid[0]) - 1:
-        # We've arrived at the last column, we can only go down from here
-        return grid[row + 1][col] + lowest_risk(grid, row + 1, col)
+        result = grid[row][col + 1] + lowest_risk(grid, row, col + 1, seen)
+    elif col >= len(grid[0]) - 1:
+        result = grid[row + 1][col] + lowest_risk(grid, row + 1, col, seen)
+    else:
+        cost_down = grid[row + 1][col] + lowest_risk(grid, row + 1, col, seen)
+        cost_right = grid[row][col + 1] + lowest_risk(grid, row, col + 1, seen)
+        result = min(cost_down, cost_right)
 
-    # Add the risk of taking the next step to the lowest risk to the bottom-right corner from there
-    cost_of_right_path = grid[row + 1][col] + lowest_risk(grid, row + 1, col)
-    cost_of_left_path = grid[row][col + 1] + lowest_risk(grid, row, col + 1)
-
-    return min(cost_of_right_path, cost_of_left_path)
+    seen[(row, col)] = result
+    return result
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -106,10 +112,31 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    # Dijkstra or A*
 
-    row = 0
-    col = 0
+    seen = {(0, 0): 0}
+    heap = [(0, (0, 0))]
+
+    target = (len(grid) - 1, len(grid[0]) - 1)
+
+    while heap:
+        cost, current_cell = heapq.heappop(heap)
+
+        if current_cell == target:
+            return cost
+
+        if cost > seen[current_cell]:
+            continue
+
+        adjacent_cells = neighbours(grid, current_cell[0], current_cell[1])
+
+        for adjacent_cell in adjacent_cells:
+            new_cost = (
+                seen[(current_cell[0], current_cell[1])] + grid[adjacent_cell[0]][adjacent_cell[1]]
+            )
+
+            if adjacent_cell not in seen or new_cost < seen[adjacent_cell]:
+                seen[adjacent_cell] = new_cost
+                heapq.heappush(heap, (new_cost, adjacent_cell))
 
 
 # ---------------------------------------------------------------- Answers
