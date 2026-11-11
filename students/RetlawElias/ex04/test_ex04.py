@@ -136,3 +136,19 @@ def test_run_multiple_inputs_outputs():
     memory = [3, 0, 3, 1, 4, 0, 4, 1, 99]
 
     assert run(memory, [12, 34]) == [12, 34]
+
+
+def test_parameter_outOfBounce():
+    with pytest.raises(IndexError):
+        parameter([2, 5, 1], 0, 1)
+
+
+def test_parameter_value_outOfBounce():
+    with pytest.raises(IndexError):
+        parameter([1], 0, 1)
+
+
+def test_step_empty_input():
+    with pytest.raises(ValueError):
+        memory = [3, 5, 6, 7, 99, 3, 3, -1]
+        step(memory, 0, [], [])

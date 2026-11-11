@@ -79,6 +79,8 @@ def step(memory, position, inputs, outputs):
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
     Return the position of the next instruction, or None if the opcode is 99.
     An unknown opcode raises a ValueError.
+
+    If the input is empty on opcode 3 an ValueError is returned.
     """
     opcode, modes = decode(memory[position])
 
