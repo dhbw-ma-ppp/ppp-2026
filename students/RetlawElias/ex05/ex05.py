@@ -32,7 +32,7 @@ def parse_grid(text):
     result = []
     for row in text:
         row = row.strip()
-        if row == '':
+        if row == "":
             continue
 
         ResultingRow = []
@@ -41,6 +41,7 @@ def parse_grid(text):
         result.append(ResultingRow)
 
     return result
+
 
 def path_risk(grid, path):
     """Return the total risk of following `path`, a list of (row, col) positions.
@@ -56,7 +57,7 @@ def path_risk(grid, path):
     return risk
 
 
-def lowest_risk(grid, row=0, col=0, memory = None):
+def lowest_risk(grid, row=0, col=0, memory=None):
     """Return the lowest total risk from (row, col) to the bottom-right corner.
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
@@ -64,23 +65,21 @@ def lowest_risk(grid, row=0, col=0, memory = None):
     # Avoid IndexOutOfBounds and reiterating memory and grid errors
     if not grid or not grid[0]:
         raise ValueError("Grid cannot be empty")
-    
+
     if memory is None:
         memory = {}
 
-    if not (0 <= row < len(grid) and
-            0 <= col < len(grid[0])):
+    if not (0 <= row < len(grid) and 0 <= col < len(grid[0])):
         raise ValueError("Starting position out of bounds")
-    
-    if row == len(grid)-1 and col == len(grid[row])-1:
+
+    if row == len(grid) - 1 and col == len(grid[row]) - 1:
         return 0
-    
+
     if (row, col) in memory:
         return memory[(row, col)]
 
-
-    down = float('inf')
-    right = float('inf')
+    down = float("inf")
+    right = float("inf")
 
     if row < len(grid) - 1:
         down = grid[row + 1][col] + lowest_risk(grid, row + 1, col, memory)
@@ -91,8 +90,6 @@ def lowest_risk(grid, row=0, col=0, memory = None):
     memory[(row, col)] = min(down, right)
 
     return memory[(row, col)]
-        
-
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -103,12 +100,7 @@ def neighbours(grid, row, col):
     inside the grid, as a list of (row, col) pairs, in any order."""
     result = []
 
-    possible_moves = [
-        (row - 1, col),  
-        (row + 1, col), 
-        (row, col - 1), 
-        (row, col + 1)  
-    ]
+    possible_moves = [(row - 1, col), (row + 1, col), (row, col - 1), (row, col + 1)]
 
     for rows, cols in possible_moves:
         if 0 <= rows < len(grid) and 0 <= cols < len(grid[0]):
@@ -129,9 +121,8 @@ def lowest_risk_any_direction(grid):
     visited = set()
 
     while True:
-
         current = None
-        lowest = float('inf')
+        lowest = float("inf")
 
         for position, risk in distances.items():
             if position not in visited and risk < lowest:
@@ -139,7 +130,7 @@ def lowest_risk_any_direction(grid):
                 lowest = risk
 
         if current is None:
-            return float('inf')
+            return float("inf")
 
         row, col = current
 
@@ -149,13 +140,12 @@ def lowest_risk_any_direction(grid):
         visited.add(current)
 
         for nr, nc in neighbours(grid, row, col):
-
             if (nr, nc) in visited:
                 continue
 
             new_risk = lowest + grid[nr][nc]
 
-            if new_risk < distances.get((nr, nc), float('inf')):
+            if new_risk < distances.get((nr, nc), float("inf")):
                 distances[(nr, nc)] = new_risk
 
 

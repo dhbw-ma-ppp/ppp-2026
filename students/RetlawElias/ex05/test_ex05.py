@@ -85,3 +85,23 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+def test_lowest_risk_any_direction_single_row():
+    grid = [[1, 5, 2, 3]]
+    assert lowest_risk_any_direction(grid) == 10
+
+
+def test_lowest_risk_any_direction_single_column():
+    grid = [[1], [5], [2], [3]]
+    assert lowest_risk_any_direction(grid) == 10
+
+
+def test_lowest_risk_any_direction_backtracking():
+    grid = [[1, 9, 9], [1, 1, 9], [9, 1, 1]]
+    assert lowest_risk_any_direction(grid) == 4
+
+
+def test_lowest_risk_any_direction_zeros():
+    grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    assert lowest_risk_any_direction(grid) == 0
