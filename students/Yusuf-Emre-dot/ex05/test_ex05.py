@@ -85,3 +85,45 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+"""
+    input grid 1313
+               9913
+               9144
+               9195
+               9113
+    
+    expected: 19>16==True
+    Test covers: Das lowest_risk any direction in manchen Faällen besser ist als lowest risk
+    """
+
+
+def test_owngrid():
+    grid = """
+            1313
+            9913
+            9144
+            9195
+            9113
+            """
+    grid = parse_grid(grid)
+    assert lowest_risk(grid) > lowest_risk_any_direction(grid)
+
+    """
+    input grid 122
+               119
+    
+    expected: Bei beiden 11
+    Test covers: Den Fall das man row und col vertauscht 
+    """
+
+
+def test_not_square_grid():
+    grid = """
+        122
+        119
+        """
+    grid = parse_grid(grid)
+    assert lowest_risk_any_direction(grid)
+    assert lowest_risk(grid)

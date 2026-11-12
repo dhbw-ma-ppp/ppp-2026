@@ -61,7 +61,7 @@ def lowest_risk(grid, row=0, col=0, Lookup_tabelle=0):
     colmax = len(grid[0]) - 1
     # erste iteration macht erste Zeile und spalte und initialisiert den lookup
     if Lookup_tabelle == 0:
-        Lookup_tabelle = [[0 for _ in range(rowmax + 1)] for _ in range(colmax + 1)]
+        Lookup_tabelle = [[0 for _ in range(colmax + 1)] for _ in range(rowmax + 1)]
         for i in range(row + 1, rowmax + 1):
             Lookup_tabelle[i][col] = grid[i][col] + Lookup_tabelle[i - 1][col]
         for i in range(col + 1, colmax + 1):
@@ -75,12 +75,14 @@ def lowest_risk(grid, row=0, col=0, Lookup_tabelle=0):
         )
     if col >= colmax:
         return Lookup_tabelle[rowmax][colmax]
+    a["counter"] += 1
     return lowest_risk(grid, row, col + 1, Lookup_tabelle)
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
 
+# gibt anzahl an rekursionen an pro funktion f
 def complex(lenght, f):
     a["counter"] = 0
     # macht ein grid n X n
@@ -118,7 +120,7 @@ def lowest_risk_any_direction(grid, row=0, col=0, minimalrisk=0, prio=0, already
     if minimalrisk == 0:
         prio = []
         heapq.heapify(prio)  # macht aus der Liste ein heap
-        minimalrisk = [[float("inf") for _ in range(rowmax + 1)] for _ in range(colmax + 1)]
+        minimalrisk = [[float("inf") for _ in range(colmax + 1)] for _ in range(rowmax + 1)]
         minimalrisk[row][col] = 0
         already_looked = {}
 
