@@ -115,48 +115,46 @@ def lowest_risk(grid, row=0, col=0):
             if type(item) is not int:
                 raise_grid_TypeError()
 
-    grid_h = [[None] * len(grid_row) for grid_row in grid]
+    grid_lowest_risk = [[None] * len(grid_row) for grid_row in grid]
 
-    def lowest_risk_h(row_h, col_h):
-        risk_down = None
-        risk_right = None
+    def lowest_risk_helper(row_helper, col_helper):
+        if grid_lowest_risk[row_helper][col_helper] is None:
+            grid_lowest_risk[row_helper][col_helper] = grid[row_helper][col_helper]
 
-        if row_h + 1 == len(grid) and col_h + 1 == len(grid[-1]):
-            return 0
+        if (
+            0 <= row_helper - 1 < len(grid)
+            and col_helper < len(grid[row_helper - 1])
+            and (
+                grid_lowest_risk[row_helper - 1][col_helper] is None
+                or (
+                    grid_lowest_risk[row_helper - 1][col_helper]
+                    > grid_lowest_risk[row_helper][col_helper] + grid[row_helper][col_helper]
+                )
+            )
+        ):
+            grid_lowest_risk[row_helper - 1][col_helper] = (
+                grid_lowest_risk[row_helper][col_helper] + grid[row_helper][col_helper]
+            )
+            lowest_risk_helper(row_helper - 1, col_helper)
 
-        if row_h + 1 < len(grid) and col_h < len(grid[row_h + 1]):
-            if grid_h[row_h + 1][col_h] is None:
-                lowest_risk_down = lowest_risk_h(row_h + 1, col_h)
-                if type(lowest_risk_down) is int:
-                    grid_h[row_h + 1][col_h] = lowest_risk_down + grid[row_h + 1][col_h]
+        if 0 <= col_helper - 1 < len(grid[row_helper]) and (
+            grid_lowest_risk[row_helper][col_helper - 1] is None
+            or (
+                grid_lowest_risk[row_helper][col_helper - 1]
+                > grid_lowest_risk[row_helper][col_helper] + grid[row_helper][col_helper]
+            )
+        ):
+            grid_lowest_risk[row_helper][col_helper - 1] = (
+                grid_lowest_risk[row_helper][col_helper] + grid[row_helper][col_helper]
+            )
+            lowest_risk_helper(row_helper, col_helper - 1)
 
-            risk_down = grid_h[row_h + 1][col_h]
+    lowest_risk_helper(len(grid) - 1, len(grid[-1]) - 1)
 
-        if col_h + 1 < len(grid_h[row_h]):
-            if grid_h[row_h][col_h + 1] is None:
-                lowest_risk_right = lowest_risk_h(row_h, col_h + 1)
-                if type(lowest_risk_right) is int:
-                    grid_h[row_h][col_h + 1] = lowest_risk_right + grid[row_h][col_h + 1]
+    if grid_lowest_risk[row][col] is None:
+        raise ValueError("no valid path from the given position to the bottom right of grid exists")
 
-            risk_right = grid_h[row_h][col_h + 1]
-
-        if risk_down is None:
-            risk_down = risk_right
-
-        if risk_right is None:
-            risk_right = risk_down
-
-        if risk_down is None:
-            return None
-
-        return min(risk_down, risk_right)
-
-    lowest_risk_int = lowest_risk_h(row, col)
-
-    if lowest_risk_int is None:
-        raise ValueError("grid must not have any empty rows")
-
-    return lowest_risk_int
+    return grid_lowest_risk[row][col]
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -183,14 +181,28 @@ def neighbours(grid, row, col):
     def raise_row_col_ValueError():
         raise ValueError("(row, col) must be a valid position in grid")
 
-    if row < 0 or len(grid) <= row:
+    if not 0 <= row < len(grid):
         raise_row_col_ValueError()
 
     for grid_row in grid:
-        if col < 0 or len(grid_row) <= col:
+        if not 0 <= col <= len(grid[row]):
             raise_row_col_ValueError()
 
     neighbours_list = []
+
+    if 0 <= col - 1:
+        neighbours_list.append((row, col - 1))
+
+    if row + 1 < len(grid) and col < len(grid[row + 1]):
+        neighbours_list.append((row + 1, col))
+
+    if col + 1 < len(grid[row]):
+        neighbours_list.append((row, col + 1))
+
+    if 0 <= row - 1 and col < len(grid[row - 1]):
+        neighbours_list.append((row - 1, col))
+
+    return neighbours_list
 
 
 def lowest_risk_any_direction(grid):
@@ -198,7 +210,46 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    pass  # replace this line with your code
+
+    def raise_grid_TypeError():
+        raise TypeError("grid must be of type list and only contain lists of integers")
+
+    if type(grid) is not list:
+        raise_grid_TypeError()
+
+    for grid_row in grid:
+        if type(grid_row) is not list:
+            raise_grid_TypeError()
+
+        for item in grid_row:
+            if type(item) is not int:
+                raise_grid_TypeError()
+
+    grid_lowest_risk = [[None] * len(grid_row) for grid_row in grid]
+
+    def lowest_risk_helper(row, col):
+        if grid_lowest_risk[row][col] is None:
+            grid_lowest_risk[row][col] = grid[row][col]
+
+        neighbours_list = neighbours(grid, row, col)
+
+        for neighbour_row, neighbour_col in neighbours_list:
+            if grid_lowest_risk[neighbour_row][neighbour_col] is None or (
+                grid_lowest_risk[neighbour_row][neighbour_col]
+                > grid_lowest_risk[row][col] + grid[neighbour_row][neighbour_col]
+            ):
+                grid_lowest_risk[neighbour_row][neighbour_col] = (
+                    grid_lowest_risk[row][col] + grid[neighbour_row][neighbour_col]
+                )
+                lowest_risk_helper(neighbour_row, neighbour_col)
+
+        return
+
+    lowest_risk_helper(len(grid) - 1, len(grid[-1]) - 1)
+
+    risk = grid_lowest_risk[0][0] - grid[0][0]
+
+    return risk
 
 
 # ---------------------------------------------------------------- Answers
