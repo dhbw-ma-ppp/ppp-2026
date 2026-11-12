@@ -85,3 +85,32 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+def test_lowest_risk_any_direction_avoids_expensive_fields():
+    grid = [
+        [1, 9, 9],
+        [1, 1, 9],
+        [9, 1, 1],
+    ]
+    assert lowest_risk_any_direction(grid) == 4
+
+
+def test_any_direction_can_be_better_than_part1():
+    grid = [
+        [1, 1, 9, 9],
+        [9, 1, 9, 1],
+        [9, 1, 1, 1],
+        [9, 9, 9, 1],
+    ]
+
+    assert lowest_risk_any_direction(grid) == 6
+
+
+def test_neighbours_bottom_right_corner():
+    grid = parse_grid(EXAMPLE_TEXT)
+
+    assert sorted(neighbours(grid, 4, 4)) == [
+        (3, 4),
+        (4, 3),
+    ]
