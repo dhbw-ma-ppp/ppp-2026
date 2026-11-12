@@ -44,9 +44,6 @@ def path_risk(grid, path):
 
     The risk of the first position doesn't count: you're already there.
     """
-    # fuer jede position in path die risk, also value an der Koordinate ausgeben
-    # input sind Koordinaten, also Tupel, in Liste
-    # grid ist listOfRows
     risk_sum = 0
     for step in path[1:]:
         x = step[0]
@@ -98,7 +95,6 @@ def lowest_risk_rekursion(grid, row, col, cache):
 for n in (2, 3, 10):
     grid = [[1] * n for _ in range(n)]
     lowest_risk(grid)
-    print(f"n: {n}, counter: {counter}")
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
