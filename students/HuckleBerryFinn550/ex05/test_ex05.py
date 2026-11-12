@@ -9,6 +9,7 @@ from ex05 import (
 )
 
 # ---------------------------------------------------------------- Part 1
+import pytest
 
 
 def test_parse_grid():
@@ -85,3 +86,26 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+def test_lowest_risk_any_directions_noInput():
+    with pytest.raises(IndexError, match="No input given"):
+        lowest_risk_any_direction([])
+
+
+def test_neighbours_incorrectInput():
+    with pytest.raises(IndexError):
+        neighbours([[0, 2], [0, 1], [1, 4]], -1, 2)
+
+
+gridOwn = [
+    [0, 20, 1, 1, 1],
+    [1, 20, 1, 20, 1],
+    [1, 1, 1, 20, 1],
+    [20, 20, 20, 20, 1],
+    [20, 1, 1, 1, 0],
+]
+
+
+def test_lowest_risk_any_direction_goingUp():
+    assert lowest_risk_any_direction(gridOwn) == 11

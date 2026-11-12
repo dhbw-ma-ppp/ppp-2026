@@ -1,7 +1,7 @@
 # Exercise 05. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-
 from puzzle_input import CAVE
+import heapq
 
 EXAMPLE_TEXT = """
 19999
@@ -33,7 +33,6 @@ def parse_grid(text):
     for line in text.splitlines():
         if line:
             for digit in line.strip().replace("'", " "):
-                print(digit)
                 listOfDigits.append(int(digit))
             listOfRows.append(listOfDigits.copy())
             listOfDigits.clear()
@@ -45,18 +44,19 @@ def path_risk(grid, path):
 
     The risk of the first position doesn't count: you're already there.
     """
-    #fuer jede position in path die risk, also value an der Koordinate ausgeben
-#input sind Koordinaten, also Tupel, in Liste
-    #grid ist listOfRows
+    # fuer jede position in path die risk, also value an der Koordinate ausgeben
+    # input sind Koordinaten, also Tupel, in Liste
+    # grid ist listOfRows
     risk_sum = 0
     for step in path[1:]:
         x = step[0]
         y = step[1]
         risk = grid[x][y]
-        risk_sum+=risk
+        risk_sum += risk
     return risk_sum
 
 
+counter = 0
 
 
 def lowest_risk(grid, row=0, col=0):
@@ -64,67 +64,41 @@ def lowest_risk(grid, row=0, col=0):
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
     """
-    #entweder ist klar, dass rechts oder nach unten weniger risk ist
-    #oder beide Wege sind als Liste im PathPlanning
-    #directions = [(0,1), (1,0)]
-    # x, y = row, col
-    # current = (x, y)
-    # #currentRisk = grid[row][col]
-    # last_coordinate = grid[len(grid)-1]
-    # x_final, y_final = last_coordinate
-    # lowest_risk_final = 0
-    # path_planning = []
-    #
-    # while current != last_coordinate:
-    #     candidates = []
-    #     if y+1 <= y_final:
-    #         candidates.append((x, y+1))
-    #     if x+1 <= x_final:
-    #         candidates.append((x+1, y))
-    #     lowestRisk = min(grid[nextX][nextY] for nextX, nextY in candidates)
-    #     for c in candidates:
-    #         if grid[c[0], c[1]] == lowestRisk:
-    #             path_planning.append(c)
-    #
-    #
-    # for path in path_planning:
-    #     if isinstance(path, list):
-    #
-    #         #thoughts:
-    #         #falls zwei Kandidaten, doppelt rekursiver Aufruf
-    #         #waehrend Aufruf Summe mit risks erhoehen
-    #         #rekursiverAufruf mit Kanidaten als neue row, col
-    # #zweiter Ansatz
-    # while current != last_coordinate:
-    #     riskRight = grid[x+1][y]
-    #     riskDown = grid[x][y+1]
-    #     if x + 1 <= x_final:
-    #         lowest_risk(grid, row+1, col)
-    #
-    #     if y + 1 <= y_final:
-    #         lowest_risk(grid, row, col+1)
-    #     if riskRight <= riskDown:
-    #         #wie speicher ich "ergebnis" des rekursiven Aufrufs?
-    if len(grid) == 1:
-        return 0
+    global counter
+    counter = 0
+    cache = [[None] * len(grid[0]) for _ in range(len(grid))]
+    return lowest_risk_rekursion(grid, row, col, cache)
+
+
+def lowest_risk_rekursion(grid, row, col, cache):
+    global counter
+    counter += 1
+    lastRow = len(grid) - 1
+    lastCol = len(grid[0]) - 1
+
+    if cache[row][col] is not None:
+        return cache[row][col]
+
+    if col < lastCol and row < lastRow:
+        result = min(
+            (grid[row + 1][col] + lowest_risk_rekursion(grid, row + 1, col, cache)),
+            (grid[row][col + 1] + lowest_risk_rekursion(grid, row, col + 1, cache)),
+        )
+    elif col < lastCol:
+        result = grid[row][col + 1] + lowest_risk_rekursion(grid, row, col + 1, cache)
+    elif row < lastRow:
+        result = grid[row + 1][col] + lowest_risk_rekursion(grid, row + 1, col, cache)
     else:
-        x, y = row, col
-        current = (x, y)
-        x_final = len(grid) - 1  # letzte Zeile
-        y_final = len(grid[0]) - 1  # letzte Spalte
-        last_coordinate = (x_final, y_final)
-        path_planning = []
-        path_risks = []
-        if current == last_coordinate:
-            path_risks.append(path_risk(path_planning))
-        else:
-            if x + 1 <= x_final:
-                path_planning.append(lowest_risk(grid, row + 1, col))
-            if y + 1 <= y_final:
-                path_planning.append(lowest_risk(grid, row, col + 1))
+        result = 0
 
-    return min(path_risks)
+    cache[row][col] = result
+    return result
 
+
+for n in (2, 3, 10):
+    grid = [[1] * n for _ in range(n)]
+    lowest_risk(grid)
+    print(f"n: {n}, counter: {counter}")
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
@@ -132,7 +106,16 @@ def lowest_risk(grid, row=0, col=0):
 def neighbours(grid, row, col):
     """Return the positions directly above, below, left and right of (row, col) that are
     inside the grid, as a list of (row, col) pairs, in any order."""
-    pass  # replace this line with your code
+    listOfPairs = []
+    lastRow = len(grid)
+    lastCol = len(grid[0])
+    if (row < 0 or row > lastRow) or (col < 0 or col > lastCol):
+        raise IndexError("Row: {row}, or Column: {col} are not valid")
+    directions = [(row - 1, col), (row + 1, col), (row, col + 1), (row, col - 1)]
+    for r, c in directions:
+        if r in range(0, lastRow) and c in range(0, lastCol):
+            listOfPairs.append((r, c))
+    return listOfPairs
 
 
 def lowest_risk_any_direction(grid):
@@ -140,7 +123,27 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    pass  # replace this line with your code
+    if not grid:
+        raise IndexError("No input given")
+    rows = len(grid)
+    cols = len(grid[0])
+    goal = (rows - 1, cols - 1)
+    minHeap = [(0, 0, 0)]
+    distanceTable = [[float("inf")] * cols for _ in range(rows)]
+    distanceTable[0][0] = 0
+
+    while minHeap:
+        cost, row, col = heapq.heappop(minHeap)
+        if cost > distanceTable[row][col]:
+            continue
+        if row == goal[0] and col == goal[1]:
+            return cost
+        for r, c in neighbours(grid, row, col):
+            new_cost = cost + grid[r][c]
+            if new_cost < distanceTable[r][c]:
+                distanceTable[r][c] = new_cost
+                heapq.heappush(minHeap, (new_cost, r, c))
+    return None
 
 
 # ---------------------------------------------------------------- Answers
