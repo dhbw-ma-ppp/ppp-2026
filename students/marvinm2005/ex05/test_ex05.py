@@ -130,7 +130,6 @@ def test_any_direction_is_cheaper():
 # sorted(neighbours(grid, 1, 1))
 
 # Expected result:
-# step(memory, 0, [], []) == 4
 # [(0, 1), (1, 0)]
 
 # Test case:
