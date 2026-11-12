@@ -85,3 +85,14 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+def test_neighbours_edges_example():
+    grid = parse_grid(EXAMPLE_TEXT)
+    assert sorted(neighbours(grid, 2, 4)) == [(1, 4), (2, 3), (3, 4)]
+    assert sorted(neighbours(grid, 4, 0)) == [(3, 0), (4, 1)]
+
+
+def test_any_direction_cheaper_than_right_and_down_example():
+    grid = parse_grid(EXAMPLE_TEXT)
+    assert lowest_risk_any_direction(grid) < lowest_risk(grid)

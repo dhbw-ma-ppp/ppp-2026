@@ -1,9 +1,10 @@
 # Exercise 05. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
-#from exercises.ex01.ex01 import count_letter
-from os import WCONTINUED, path
+# from exercises.ex01.ex01 import count_letter
+
 
 from puzzle_input import CAVE
+import heapq
 
 EXAMPLE_TEXT = """
 19999
@@ -45,10 +46,8 @@ def parse_grid(text):
             list_of_row.append(int(digit))
 
         list_of_result.append(list_of_row)
-        #print(list_of_result)
+        # print(list_of_result)
     return list_of_result
-
-
 
 
 def path_risk(grid, path):
@@ -61,11 +60,11 @@ def path_risk(grid, path):
         return risk
     for row, col in path[1:]:
         risk += grid[row][col]
-    #print(risk)
+    # print(risk)
     return risk
 
 
-def lowest_risk(grid, row=0, col=0, start=True):
+def lowest_risk(grid, row=0, col=0, start=True, cache=None):
     """Return the lowest total risk from (row, col) to the bottom-right corner.
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
@@ -73,25 +72,34 @@ def lowest_risk(grid, row=0, col=0, start=True):
 
     rows = len(grid)
     cols = len(grid[0])
-    #return lowest_risk_rec(grid, row, col, rows, cols)
 
-    if row == rows -1 and col == cols - 1:
-        return 0 if start else grid[row][col]
+    # return lowest_risk_rec(grid, row, col, rows, cols)
+    if cache is None:
+        cache = {}
+
+    if (row, col) in cache:
+        return cache[(row, col)]
+
+    if row == rows - 1 and col == cols - 1:
+        if start:
+            return 0
+        else:
+            return grid[row][col]
 
     risk = 0 if start else grid[row][col]
 
     if row == rows - 1:
-        return risk + lowest_risk(grid, row, col + 1, False)
+        return risk + lowest_risk(grid, row, col + 1, False, cache)
 
-    if col == cols - 1:
-        return risk + lowest_risk(grid, row + 1, col, False)
+    elif col == cols - 1:
+        return risk + lowest_risk(grid, row + 1, col, False, cache)
+    else:
+        move_right = lowest_risk(grid, row, col + 1, False, cache)
+        move_down = lowest_risk(grid, row + 1, col, False, cache)
 
-    move_right = lowest_risk(grid, row, col+1, False)
-    move_down = lowest_risk(grid, row+1, col, False)
-
-    return risk + min(move_right, move_down)
-
-
+        result = risk + min(move_right, move_down)
+    cache[(row, col)] = result
+    return result
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -100,7 +108,16 @@ def lowest_risk(grid, row=0, col=0, start=True):
 def neighbours(grid, row, col):
     """Return the positions directly above, below, left and right of (row, col) that are
     inside the grid, as a list of (row, col) pairs, in any order."""
-    pass  # replace this line with your code
+    neighbours = []
+    if row > 0:
+        neighbours.append((row - 1, col))
+    if row < len(grid) - 1:
+        neighbours.append((row + 1, col))
+    if col > 0:
+        neighbours.append((row, col - 1))
+    if col < len(grid[0]) - 1:
+        neighbours.append((row, col + 1))
+    return neighbours
 
 
 def lowest_risk_any_direction(grid):
@@ -108,7 +125,30 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    pass  # replace this line with your code
+    distances = {(0, 0): 0}
+    visited = set()
+    queue = [(0, (0, 0))]
+
+    while len(queue) > 0:
+        risk, (row, col) = heapq.heappop(queue)
+        if (row, col) in visited:
+            continue
+        visited.add((row, col))
+
+        if (row, col) == (len(grid) - 1, len(grid[0]) - 1):
+            return risk
+
+        for neighbour in neighbours(grid, row, col):
+            if neighbour in visited:
+                continue
+
+            neighbour_risk = grid[neighbour[0]][neighbour[1]]
+            new_risk = risk + neighbour_risk
+            if neighbour not in distances or new_risk < distances[neighbour]:
+                distances[neighbour] = new_risk
+                heapq.heappush(queue, (new_risk, neighbour))
+
+    return distances[(len(grid) - 1, len(grid[0]) - 1)]
 
 
 # ---------------------------------------------------------------- Answers
