@@ -133,3 +133,14 @@ def test_run_multi_outputs():  # Own Test 1, tests if multiple outputs work
 def test_run_multi_inputs():  # Own Test 2, tests the same but for inputs
     memory = [3, 0, 3, 1, 4, 0, 4, 1, 99]
     assert run(memory, [10, 20]) == [10, 20]
+
+    def test_run_reads_inputs_in_order():
+        # absteigend, damit Vertauschung auffällt
+        memory = [3, 0, 3, 1, 4, 0, 4, 1, 99]
+        assert run(memory, [99, 1]) == [99, 1]
+
+
+def test_run_does_not_mutate_inputs():
+    inputs = [10, 20]
+    run([3, 0, 3, 1, 4, 0, 4, 1, 99], inputs)
+    assert inputs == [10, 20]
