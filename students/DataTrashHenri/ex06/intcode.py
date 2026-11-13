@@ -91,7 +91,7 @@ def step(memory, position, inputs, outputs, base):
     `inputs`, and raises a ValueError if there is none; opcode 4 appends to `outputs`.
     """
     opcode, _ = decode(memory[position])
-    print(f"detected op: {opcode}")
+    # print(f"detected op: {opcode}")
     match opcode:
         case 1 | 2 | 7 | 8:
             a = value_of(memory, position, 1, base)
@@ -100,7 +100,7 @@ def step(memory, position, inputs, outputs, base):
             return position + 4, base
         case 3:
             if len(inputs) == 0:
-                print("op 3 and no inputs")
+                # print("op 3 and no inputs")
                 raise ValueError(f"no input left at position {position}")
             write(memory, address_of(memory, position, 1, base), inputs.pop(0))
             return position + 2, base
