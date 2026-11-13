@@ -1,3 +1,4 @@
+import pytest
 from ex05 import (
     EXAMPLE_PATH,
     EXAMPLE_TEXT,
@@ -85,3 +86,20 @@ def test_lowest_risk_any_direction_example():
 def test_lowest_risk_any_direction_small():
     assert lowest_risk_any_direction([[5]]) == 0
     assert lowest_risk_any_direction([[1, 2], [3, 4]]) == 6
+
+
+# input:            parse_grid("0 0")
+# expected output:  ValueError
+# case:             There is whitespace inbetween values in the string given to parse_grid().
+def test_parse_grid_whitespace_inbetween_values():
+    with pytest.raises(ValueError):
+        parse_grid("0 0")
+
+
+# input:            lowest_risk_no_path([[0, 0], [0], [0, 0]], 0, 1)
+# expected output:  ValueError
+# case:             there is no valid path from the given position to the lower right corner of the given grid.
+def test_lowest_risk_no_path():
+    grid = [[0, 0], [0], [0, 0]]
+    with pytest.raises(ValueError):
+        lowest_risk(grid, 0, 1)

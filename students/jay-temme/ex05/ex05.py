@@ -37,7 +37,7 @@ def parse_grid(text):
     for line in text.split("\n"):
         if line.strip() == "":
             continue
-        elif line.split()[0] is not line.strip():
+        elif line.split()[0] != line.strip():
             raise ValueError("text contains spaces inbetween values")
         else:
             grid_line = list()
@@ -88,7 +88,7 @@ def path_risk(grid, path):
                 raise_path_TypeError()
 
     try:
-        risks = [grid[position[0]][position[1]] for position in path]
+        risks = [grid[row][col] for row, col in path[1:]]
     except IndexError:
         raise ValueError("path must only contain valid positions in grid")
 
@@ -119,7 +119,7 @@ def lowest_risk(grid, row=0, col=0):
 
     def lowest_risk_helper(row_helper, col_helper):
         if grid_lowest_risk[row_helper][col_helper] is None:
-            grid_lowest_risk[row_helper][col_helper] = grid[row_helper][col_helper]
+            grid_lowest_risk[row_helper][col_helper] = 0
 
         if (
             0 <= row_helper - 1 < len(grid)
@@ -164,43 +164,19 @@ def neighbours(grid, row, col):
     """Return the positions directly above, below, left and right of (row, col) that are
     inside the grid, as a list of (row, col) pairs, in any order."""
 
-    def raise_grid_TypeError():
-        raise TypeError("grid must be of type list and only contain lists of integers")
-
-    if type(grid) is not list:
-        raise_grid_TypeError()
-
-    for grid_row in grid:
-        if type(grid_row) is not list:
-            raise_grid_TypeError()
-
-        for item in grid_row:
-            if type(item) is not int:
-                raise_grid_TypeError()
-
-    def raise_row_col_ValueError():
-        raise ValueError("(row, col) must be a valid position in grid")
-
-    if not 0 <= row < len(grid):
-        raise_row_col_ValueError()
-
-    for grid_row in grid:
-        if not 0 <= col <= len(grid[row]):
-            raise_row_col_ValueError()
-
     neighbours_list = []
 
     if 0 <= col - 1:
         neighbours_list.append((row, col - 1))
 
-    if row + 1 < len(grid) and col < len(grid[row + 1]):
-        neighbours_list.append((row + 1, col))
+    if 0 <= row - 1 and col < len(grid[row - 1]):
+        neighbours_list.append((row - 1, col))
 
     if col + 1 < len(grid[row]):
         neighbours_list.append((row, col + 1))
 
-    if 0 <= row - 1 and col < len(grid[row - 1]):
-        neighbours_list.append((row - 1, col))
+    if row + 1 < len(grid) and col < len(grid[row + 1]):
+        neighbours_list.append((row + 1, col))
 
     return neighbours_list
 
@@ -225,31 +201,42 @@ def lowest_risk_any_direction(grid):
             if type(item) is not int:
                 raise_grid_TypeError()
 
-    grid_lowest_risk = [[None] * len(grid_row) for grid_row in grid]
+    grid_graph = dict()
 
-    def lowest_risk_helper(row, col):
-        if grid_lowest_risk[row][col] is None:
-            grid_lowest_risk[row][col] = grid[row][col]
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            grid_graph[(row, col)] = dict()
 
-        neighbours_list = neighbours(grid, row, col)
+            for neighbour in neighbours(grid, row, col):
+                grid_graph[(row, col)][neighbour] = grid[neighbour[0]][neighbour[1]]
 
-        for neighbour_row, neighbour_col in neighbours_list:
-            if grid_lowest_risk[neighbour_row][neighbour_col] is None or (
-                grid_lowest_risk[neighbour_row][neighbour_col]
-                > grid_lowest_risk[row][col] + grid[neighbour_row][neighbour_col]
+    optimal = {}
+
+    risks = {}
+    risks[(len(grid) - 1, len(grid[-1]) - 1)] = grid[-1][-1]
+
+    while risks != {}:
+        position_min_risk = next(
+            (position, risk) for position, risk in risks.items() if risk == min(risks.values())
+        )
+
+        risks.pop(position_min_risk[0])
+
+        if position_min_risk[0] not in optimal:
+            optimal[position_min_risk[0]] = position_min_risk[1]
+
+        for neighbour, risk in grid_graph[position_min_risk[0]].items():
+            if (neighbour not in optimal) and (
+                neighbour not in risks or risks[neighbour] > position_min_risk[1] + risk
             ):
-                grid_lowest_risk[neighbour_row][neighbour_col] = (
-                    grid_lowest_risk[row][col] + grid[neighbour_row][neighbour_col]
-                )
-                lowest_risk_helper(neighbour_row, neighbour_col)
+                risks[neighbour] = position_min_risk[1] + risk
 
-        return
+    risk = optimal.get((0, 0))
 
-    lowest_risk_helper(len(grid) - 1, len(grid[-1]) - 1)
+    if risk is None:
+        raise ValueError("No valid path exists")
 
-    risk = grid_lowest_risk[0][0] - grid[0][0]
-
-    return risk
+    return risk - grid[0][0]
 
 
 # ---------------------------------------------------------------- Answers
