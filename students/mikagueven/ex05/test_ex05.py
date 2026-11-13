@@ -105,3 +105,8 @@ def test_any_direction_beats_right_down():
     ]
     assert lowest_risk(grid) == 16
     assert lowest_risk_any_direction(grid) == 12
+
+
+# Review Test case
+def test_parse_grid_empty():
+    assert parse_grid("") == []

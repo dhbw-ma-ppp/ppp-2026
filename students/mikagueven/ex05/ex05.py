@@ -48,9 +48,7 @@ def path_risk(grid, path):
     """
     total_risk = 0
     for instruction in path:
-        if instruction[0] == 0 and instruction[1] == 0 and len(path) == 1:
-            return 0
-        elif instruction[0] == 0 and instruction[1] == 0:
+        if instruction[0] == 0 and instruction[1] == 0:
             continue
         else:
             total_risk += grid[instruction[0]][instruction[1]]
@@ -79,14 +77,10 @@ def lowest_risk(grid, row=0, col=0, cache=None):
     # last row
     elif row == len(grid) - 1:
         result = grid[row][col + 1] + lowest_risk(grid, row, col + 1, cache)
-        cache[(row, col)] = result
-        return result
 
     # last col
     elif col == len(grid[0]) - 1:
         result = grid[row + 1][col] + lowest_risk(grid, row + 1, col, cache)
-        cache[(row, col)] = result
-        return result
 
     # normal (in between grid)
     else:
@@ -95,8 +89,8 @@ def lowest_risk(grid, row=0, col=0, cache=None):
         cost_down = grid[row + 1][col] + lowest_risk(grid, row + 1, col, cache)
 
         result = min(cost_right, cost_down)
-        cache[(row, col)] = result
-        return result
+    cache[(row, col)] = result
+    return result
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
