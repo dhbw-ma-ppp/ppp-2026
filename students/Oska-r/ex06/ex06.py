@@ -33,19 +33,38 @@ class Computer:
     """An IntCode computer that can pause when it needs input, and carry on later."""
 
     def __init__(self, program):
-        pass  # replace this line with your code
+        self.program = program.copy()
+        self.halted = False
+        self.inputs = []
 
     def run(self, inputs):
         """Add `inputs`, then run until the program halts or needs an input it doesn't have.
 
         Return the numbers output during this call.
         """
-        pass  # replace this line with your code
+        self.halted = False
+        self.inputs.append(inputs)
+        outputs = []
+        index = 0
+
+        relative_base = [0]
+
+        while index is not None:
+            opcode = decode(self.program[index])[0]
+            if not self.inputs and opcode == 3:
+                break
+            index = step(self.program, index, self.inputs, outputs, relative_base)
+        self.halted = True
+        return outputs
 
 
 def count_tiles(outputs, tile):
     """How many (x, y, tile) triples in `outputs` have this tile. Score triples don't count."""
-    pass  # replace this line with your code
+    counter = 0
+    for output in outputs:
+        if output[2] == tile and tile != "s":
+            counter += 1
+    return counter
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
