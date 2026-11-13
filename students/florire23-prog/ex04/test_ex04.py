@@ -172,5 +172,8 @@ def test_opcode_4():
 
 def test_unknown_opcode():
     memory = [42]
-    with pytest.raises(ValueError):
+    try:
         step(memory, 0, [], [])
+        assert False
+    except ValueError:
+        pass
