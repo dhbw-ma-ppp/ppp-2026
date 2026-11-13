@@ -31,17 +31,13 @@ def parse_grid(text):
     start or end of a line don't matter.
     """
     grid = []
-    counter = 0
     for line in text.splitlines():
         line = line.strip()
-        if not line:
-            continue
-
-        grid.append([])
-        for character in line:
-            grid[counter].append(int(character))
-        counter += 1
-
+        if line:
+            row = []
+            for character in line:
+                row.append(int(character))
+            grid.append(row)
     return grid
 
 
@@ -94,17 +90,17 @@ def neighbours(grid, row, col):
     grid_count_rows = len(grid)
     grid_count_columns = len(grid[0])
 
-    neighbours = []
+    adjacent_cells = []
     if col > 0:
-        neighbours.append((row, col - 1))
+        adjacent_cells.append((row, col - 1))
     if col + 1 < grid_count_columns:
-        neighbours.append((row, col + 1))
+        adjacent_cells.append((row, col + 1))
     if row > 0:
-        neighbours.append((row - 1, col))
+        adjacent_cells.append((row - 1, col))
     if row + 1 < grid_count_rows:
-        neighbours.append((row + 1, col))
+        adjacent_cells.append((row + 1, col))
 
-    return neighbours
+    return adjacent_cells
 
 
 def lowest_risk_any_direction(grid):
