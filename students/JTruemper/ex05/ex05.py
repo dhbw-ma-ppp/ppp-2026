@@ -54,18 +54,31 @@ def path_risk(grid, path):
     return risk
 
 
-def lowest_risk(grid, row=0, col=0):
+def lowest_risk(grid, row=0, col=0, memo=None):
+    if memo is None:
+        memo = {}
+
     rows = len(grid)
     cols = len(grid[0])
+
     if row == rows - 1 and col == cols - 1:
         return 0
+
+    if (row, col) in memo:
+        return memo[(row, col)]
+
     right = float("inf")
     down = float("inf")
+
     if col + 1 < cols:
-        right = grid[row][col + 1] + lowest_risk(grid, row, col + 1)
+        right = grid[row][col + 1] + lowest_risk(grid, row, col + 1, memo)
+
     if row + 1 < rows:
-        down = grid[row + 1][col] + lowest_risk(grid, row + 1, col)
-    return min(right, down)
+        down = grid[row + 1][col] + lowest_risk(grid, row + 1, col, memo)
+
+    memo[(row, col)] = min(right, down)
+
+    return memo[(row, col)]
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
