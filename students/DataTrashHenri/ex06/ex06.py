@@ -94,59 +94,61 @@ class Game:
     scores = []
     ball = None
     paddle = None
+
     def __init__(self):
         self.tiles = dict()
         self.score = 0
         self.scores = []
         self.ball = None
         self.paddle = None
-    def update(self,outputs):
-        for i in range(len(outputs)//3):
-            x,y,tile_type = outputs[i*3],outputs[i*3+1],outputs[i*3+2]
+
+    def update(self, outputs):
+        for i in range(len(outputs) // 3):
+            x, y, tile_type = outputs[i * 3], outputs[i * 3 + 1], outputs[i * 3 + 2]
 
             if x == -1:
-                self.score = outputs[3*i+2]
+                self.score = outputs[3 * i + 2]
             elif tile_type == 3:  # paddle
                 self.paddle = (x, y)
-            elif tile_type == 4:#ball
-                self.ball = (x,y)
+            elif tile_type == 4:  # ball
+                self.ball = (x, y)
 
             if x != -1:
-                self.tiles[(x,y)] = tile_type
-
-
-
+                self.tiles[(x, y)] = tile_type
 
         self.scores.append(self.score)
         pass
-    def count(self,tile):
+
+    def count(self, tile):
         counter = 0
         for value in self.tiles.values():
             if value == tile:
-                counter+=1
+                counter += 1
         return counter
+
 
 def screen_rows(game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
     tiles = game.tiles
     width = 0
     height = 0
-    #WIDTH NEEDED
+    # WIDTH NEEDED
     for k, _ in tiles.items():
         if k[0] > width:
             width = k[0]
-    #HEIGHT NEEDED
-    for k,_ in tiles.items():
+    # HEIGHT NEEDED
+    for k, _ in tiles.items():
         if k[1] > height:
             height = k[1]
-    width+=1
-    height+=1
+    width += 1
+    height += 1
 
     map = []
     for y in range(height):
-        map.append([tiles[(x,y)] for x in range(width)])
+        map.append([tiles[(x, y)] for x in range(width)])
     # print(map)
     return map
+
 
 def draw(game) -> str:
     """The screen as text: one line per row, one character per tile (see SYMBOLS)."""
@@ -155,20 +157,21 @@ def draw(game) -> str:
     for row in rows:
         # print(f"row{row}")
         for tile in row:
-            #SYMBOLS = {EMPTY: " ", WALL: "#", BLOCK: "=", PADDLE: "-", BALL: "o"}
+            # SYMBOLS = {EMPTY: " ", WALL: "#", BLOCK: "=", PADDLE: "-", BALL: "o"}
             match tile:
                 case 0:
-                    full_str+= " "
+                    full_str += " "
                 case 1:
-                    full_str+= "#"
+                    full_str += "#"
                 case 2:
-                    full_str+= "="
+                    full_str += "="
                 case 3:
-                    full_str+= "-"
+                    full_str += "-"
                 case 4:
-                    full_str+= "o"
+                    full_str += "o"
         full_str += "\n"
     return full_str[:-1]
+
 
 class Controller:
     """Chooses the joystick input: -1 left, 0 stay, 1 right."""
@@ -190,14 +193,15 @@ class Autopilot(Controller):
     def choose(self, game) -> int:
         paddle = game.paddle
         ball = game.ball
-        if ball[0] > paddle[0]:#ball is right of paddle
+        if ball[0] > paddle[0]:  # ball is right of paddle
             # print("move right")
             return 1
-        elif ball[0] < paddle[0]:#ball is left of paddle
+        elif ball[0] < paddle[0]:  # ball is left of paddle
             # print("move left")
             return -1
         else:
             return 0
+
 
 def play(program: list[int], controller: Controller):
     """Play the game in `program` until it halts, asking `controller` for every input.
@@ -207,7 +211,7 @@ def play(program: list[int], controller: Controller):
     game = Game()
     com = Computer(program)
 
-    outputs = com.run([]) # init run, now inputs required
+    outputs = com.run([])  # init run, now inputs required
     game.update(outputs)
     # print(com.needs_input)
 
@@ -217,6 +221,7 @@ def play(program: list[int], controller: Controller):
         game.update(outputs)
 
     return game
+
 
 # ---------------------------------------------------------------- Answers
 
