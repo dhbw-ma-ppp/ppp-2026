@@ -41,8 +41,7 @@ class Computer:
 
     def __init__(self, program):
         self.own_program = program.copy()
-        # print(self.own_program)
-        pass  # replace this line with your code
+        pass
 
     def run(self, inputs):
         """Add `inputs`, then run until the program halts or needs an input it doesn't have.
@@ -58,19 +57,14 @@ class Computer:
                 pos, rel = step(
                     self.own_program, self.position, self.input_list, output, self.relative_base
                 )
-                # print(pos, rel)
             except ValueError:
-                # input needed
-                # print("value Error")
                 self.needs_input = True
             else:
-                # input sufficient
                 self.relative_base = rel
                 if pos is not None:
                     self.position = pos
                 else:  # finished
                     self.halted = True
-                # print(self.position, self.relative_base)
         return output
 
 
@@ -132,11 +126,9 @@ def screen_rows(game) -> list[list[int]]:
     tiles = game.tiles
     width = 0
     height = 0
-    # WIDTH NEEDED
     for k, _ in tiles.items():
         if k[0] > width:
             width = k[0]
-    # HEIGHT NEEDED
     for k, _ in tiles.items():
         if k[1] > height:
             height = k[1]
@@ -146,7 +138,6 @@ def screen_rows(game) -> list[list[int]]:
     map = []
     for y in range(height):
         map.append([tiles[(x, y)] for x in range(width)])
-    # print(map)
     return map
 
 
@@ -155,9 +146,7 @@ def draw(game) -> str:
     rows = screen_rows(game)
     full_str = ""
     for row in rows:
-        # print(f"row{row}")
         for tile in row:
-            # SYMBOLS = {EMPTY: " ", WALL: "#", BLOCK: "=", PADDLE: "-", BALL: "o"}
             match tile:
                 case 0:
                     full_str += " "
@@ -194,10 +183,8 @@ class Autopilot(Controller):
         paddle = game.paddle
         ball = game.ball
         if ball[0] > paddle[0]:  # ball is right of paddle
-            # print("move right")
             return 1
         elif ball[0] < paddle[0]:  # ball is left of paddle
-            # print("move left")
             return -1
         else:
             return 0
@@ -211,9 +198,8 @@ def play(program: list[int], controller: Controller):
     game = Game()
     com = Computer(program)
 
-    outputs = com.run([])  # init run, now inputs required
+    outputs = com.run([])  # init run
     game.update(outputs)
-    # print(com.needs_input)
 
     while not com.halted:
         move = controller.choose(game)
