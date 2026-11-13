@@ -115,7 +115,7 @@ def read(memory, index):
     return memory[index]
 
 
-def step(memory, position, inputs, outputs, relative_base):
+def step(memory, position, inputs, outputs, relative_base=None):
     """Execute the instruction that starts at `position` in memory.
 
     Opcode 3 takes the first number out of `inputs`; opcode 4 appends a number to `outputs`.
@@ -124,6 +124,9 @@ def step(memory, position, inputs, outputs, relative_base):
 
     Trying to read from empty inputs or trying to jump to a negative index results in an IndexError.
     """
+    if relative_base is None:
+        relative_base = [0]
+
     opcode, modes = decode(read(memory, position))
 
     match opcode:

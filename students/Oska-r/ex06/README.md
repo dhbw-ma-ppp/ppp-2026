@@ -1,12 +1,12 @@
 # Exercise 06: Breakout
 
-|  |  |
-|---|---|
-| **AI level** | **1**: AI may **explain**, it may not write code for you (as in exercise 5). Inline completion stays off. |
-| **Part 1** | in class, Fri Nov 13, **no AI**. Anything you finish at home falls under level 1. |
-| **Part 2** | at home, AI level 1 |
-| **Due** | Thu Nov 19, 17:00, as a pull request |
-| **Review due** | Tue Nov 24, 17:00 (author answers before the Wednesday session on Nov 25) |
+|                |                                                                                                           |
+| -------------- | --------------------------------------------------------------------------------------------------------- |
+| **AI level**   | **1**: AI may **explain**, it may not write code for you (as in exercise 5). Inline completion stays off. |
+| **Part 1**     | in class, Fri Nov 13, **no AI**. Anything you finish at home falls under level 1.                         |
+| **Part 2**     | at home, AI level 1                                                                                       |
+| **Due**        | Thu Nov 19, 17:00, as a pull request                                                                      |
+| **Review due** | Tue Nov 24, 17:00 (author answers before the Wednesday session on Nov 25)                                 |
 
 ## Getting started
 
@@ -41,13 +41,13 @@ functions instead: copy them into `intcode.py`, keeping the names and what they 
 The program **outputs** three numbers per tile: `x`, `y` and the tile. `x` counts from the
 left, `y` from the top, both from 0. The tiles are
 
-| Tile | Meaning |
-|---|---|
-| 0 | empty |
-| 1 | wall (the ball bounces off it) |
-| 2 | block (the ball bounces off it and destroys it) |
-| 3 | paddle (the ball bounces off it) |
-| 4 | ball |
+| Tile | Meaning                                         |
+| ---- | ----------------------------------------------- |
+| 0    | empty                                           |
+| 1    | wall (the ball bounces off it)                  |
+| 2    | block (the ball bounces off it and destroys it) |
+| 3    | paddle (the ball bounces off it)                |
+| 4    | ball                                            |
 
 Three numbers `-1, 0, s` aren't a tile: they set the **score** display to `s`.
 
@@ -97,6 +97,7 @@ first asks for input, and count.
    - `count(tile)`: how many positions show that tile.
 
    Give every field and method type annotations.
+
 2. `screen_rows(game)`: the screen as a list of rows, so that `screen_rows(game)[y][x]` is the
    tile at `(x, y)`. The screen is as wide and as tall as the positions in `tiles` need.
 
@@ -104,6 +105,7 @@ first asks for input, and count.
    `SYMBOLS` (`#` wall, `=` block, `-` paddle, `o` ball, a space for empty). The lines are
    joined with `"\n"`, without one at the end. `ex06.py` prints the screen at the start and at
    the end of the game.
+
 3. **Controllers.** A controller decides the joystick input from the game: a class with a
    method `choose(self, game)` that returns -1, 0 or 1. `Controller` and `Stay` are given.
    Fill in `Autopilot`'s `choose`, so that it plays the game for you: it keeps the ball in
@@ -115,6 +117,7 @@ first asks for input, and count.
    Answer 2: the score at the end with `Stay`. Answer 3: the score at the end with
    `Autopilot`, and how many frames it took. If your game never ends, find out why: is the
    ball stuck, or is your controller?
+
 5. **Add at least two more tests of your own** at the end of `test_ex06.py`. Write each test
    case down first: which input, which expected result, and which case it covers.
 

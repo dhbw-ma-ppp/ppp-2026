@@ -14,6 +14,8 @@ from ex06 import (
     load_program,
 )
 
+import pytest
+
 # Part 2's `Game` doesn't exist until you write it, so its tests use `ex06.Game`: they fail
 # one by one instead of all at once.
 
@@ -175,3 +177,14 @@ def test_autopilot_clears_all_blocks():
 
 
 # ---------------------------------------------------------------- your tests (Part 2)
+def test_two_paddles():
+    game = ex06.Game()
+    with pytest.raises(ValueError):
+        game.update([0, 0, 3, 1, 1, 3])
+
+
+def test_computer_keeps_input():
+    computer = ex06.Computer([99])
+    computer.run([5])
+    computer.run([6])
+    assert sorted(computer.inputs) == [5, 6]
