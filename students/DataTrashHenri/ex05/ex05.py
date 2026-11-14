@@ -1,0 +1,197 @@
+# Exercise 05. See README.md for the full task.
+# Replace each `pass` line with your code, ending with `return`.
+from puzzle_input import CAVE
+from collections import deque
+
+EXAMPLE_TEXT = """
+19999
+19111
+19191
+11191
+99991
+"""
+
+# A path through EXAMPLE_TEXT's grid (see README.md, answer 2).
+# fmt: off
+EXAMPLE_PATH = [
+    (0, 0), (1, 0), (2, 0), (3, 0), (3, 1), (3, 2), (2, 2), (1, 2), (1, 3), (1, 4),
+    (2, 4), (3, 4), (4, 4),
+]
+# fmt: on
+
+# ---------------------------------------------------------------- Part 1 (in class)
+
+
+def parse_grid(text):
+    """Return the grid in `text` as a list of rows, each a list of ints.
+
+    `text` has one row per line and one digit per position. Blank lines and spaces at the
+    start or end of a line don't matter.
+    """
+    rows = text.split("\n")
+    risk_list = []
+    for row in rows:
+        row_strip = row.strip()
+        if row_strip == "":
+            continue
+        risk_row = []
+        current_row_list = list(row_strip)
+        for num in current_row_list:
+            risk_row.append(int(num))
+        risk_list.append(risk_row)
+    # print(risk_list)
+    return risk_list
+
+
+def path_risk(grid, path):
+    """Return the total risk of following `path`, a list of (row, col) positions.
+
+    The risk of the first position doesn't count: you're already there.
+    """
+    risk = 0
+    if len(path) == 1:
+        return risk
+    for row, col in path[1:]:
+        risk += grid[row][col]
+    return risk
+
+
+def lowest_risk(grid, row=0, col=0):
+    """Return the lowest total risk from (row, col) to the bottom-right corner.
+
+    Moves go only right or down. The risk of (row, col) itself doesn't count.
+    """
+    srow = row
+    scol = col
+    known_risks = [[-1 for col in range(100)] for row in range(100)]
+    return lowest_risk_rec(grid, row, col, srow, scol, known_risks)
+
+
+def lowest_risk_rec(grid, row, col, srow, scol, known_risks):
+    size = len(grid)  # must be square grid nxn
+    if size == 1:
+        return 0
+    if row == size - 1 and col == size - 1:
+        return grid[row][col]
+
+    move_options = []
+    if col + 1 < size:
+        move_options.append([1, 0])
+    if row + 1 < size:
+        move_options.append([0, 1])
+
+    all_risks = []
+    for option in move_options:
+        next_row = row + option[1]
+        next_col = col + option[0]
+        if known_risks[next_row][next_col] == -1:
+            known_risks[next_row][next_col] = lowest_risk_rec(
+                grid, next_row, next_col, srow, scol, known_risks
+            )
+            all_risks.append(known_risks[next_row][next_col])
+        else:
+            all_risks.append(known_risks[next_row][next_col])
+    # print(all_risks)
+    lowest_index = 0
+    for i in range(0, len(all_risks)):
+        if all_risks[i] < all_risks[lowest_index]:
+            lowest_index = i
+
+    if srow == row and scol == col:
+        return all_risks[lowest_index]
+    else:
+        return all_risks[lowest_index] + grid[row][col]
+
+
+# ---------------------------------------------------------------- Part 2 (at home)
+
+
+def neighbours(grid, row, col):
+    """Return the positions directly above, below, left and right of (row, col) that are
+    inside the grid, as a list of (row, col) pairs, in any order."""
+    neighbours_list = []
+    size = len(grid)
+    if row - 1 > 0:
+        neighbours_list.append((row - 1, col))
+    if col + 1 < size:
+        neighbours_list.append((row, col + 1))
+    if row + 1 < size:
+        neighbours_list.append((row + 1, col))
+    if col - 1 > 0:
+        neighbours_list.append((row, col - 1))
+    return neighbours_list
+
+    pass  # replace this line with your code
+
+
+def lowest_risk_any_direction(grid):
+    """Return the lowest total risk from the top-left to the bottom-right corner.
+
+    Moves go up, down, left or right. The risk of the top-left position doesn't count.
+    """
+    costs = [[9999999 for col in range(100)] for row in range(100)]
+    costs[0][0] = 0
+    queue = deque([(0, 0)])
+
+    while queue:
+        row, col = queue.popleft()
+        neighbour_list = neighbours(grid, row, col)
+        for neighbor in neighbour_list:
+            cost_n = costs[row][col] + grid[neighbor[0]][neighbor[1]]
+            if cost_n < costs[neighbor[0]][neighbor[1]]:
+                costs[neighbor[0]][neighbor[1]] = cost_n
+                queue.append(neighbor)
+
+    return costs[len(grid) - 1][len(grid) - 1]
+
+
+def lowest_risk_with_shields(grid, shields):
+    costs = [
+        [[9999999 for col in range(100)] for row in range(100)] for shields in range(shields + 1)
+    ]
+    for i in range(shields + 1):
+        costs[i][0][0] = 0
+    queue = deque([(0, 0, shields)])
+
+    while queue:
+        row, col, shields_left = queue.popleft()
+        neighbour_list = neighbours(grid, row, col)
+        for neighbour in neighbour_list:
+            if shields_left != 0:
+                cost_neighbour = costs[shields_left][row][col]
+                if cost_neighbour < costs[shields_left - 1][neighbour[0]][neighbour[1]]:
+                    queue.append((neighbour[0], neighbour[1], shields_left - 1))
+                    costs[shields_left - 1][neighbour[0]][neighbour[1]] = cost_neighbour
+            # print(neighbour, shields_left)
+            # print(shields_left)
+            cost_neighbour = costs[shields_left][row][col] + grid[neighbour[0]][neighbour[1]]
+            # print(cost_neighbour)
+            if cost_neighbour < costs[shields_left][neighbour[0]][neighbour[1]]:
+                queue.append((neighbour[0], neighbour[1], shields_left))
+                costs[shields_left][neighbour[0]][neighbour[1]] = cost_neighbour
+
+    min_risk = 888888888
+    for i in range(shields + 1):
+        # print(costs[i][len(grid) - 1][len(grid) - 1])
+        if costs[i][len(grid) - 1][len(grid) - 1] < min_risk:
+            min_risk = costs[i][len(grid) - 1][len(grid) - 1]
+    return min_risk
+
+
+# ---------------------------------------------------------------- Answers
+
+if __name__ == "__main__":
+    example = parse_grid(EXAMPLE_TEXT)
+    cave = parse_grid(CAVE)
+
+    print("Part 1")
+    print("1:", lowest_risk(example))
+    print("2:", path_risk(example, EXAMPLE_PATH))
+
+    print("Part 2")
+    print("3:", lowest_risk(cave))
+    print("4:", lowest_risk_any_direction(example))
+    print("5:", lowest_risk_any_direction(cave))
+
+    print("6:", lowest_risk_with_shields(example, 1))
+    print("7:", lowest_risk_with_shields(cave, 3))
