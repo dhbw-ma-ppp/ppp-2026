@@ -175,3 +175,15 @@ def test_autopilot_clears_all_blocks():
 
 
 # ---------------------------------------------------------------- your tests (Part 2)
+
+
+def test_choose_paddle_ball_None():
+    game = ex06.Game()
+    game.update([5, 3, 2, 2, 9, 2])
+    assert Autopilot().choose(game) == 0
+
+
+def test_paddle_moves_right():
+    game = ex06.Game()
+    game.update([5, 9, 4, 2, 1, 3])
+    assert Autopilot().choose(game) == 1
