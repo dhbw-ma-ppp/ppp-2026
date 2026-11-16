@@ -60,7 +60,8 @@ def lowest_risk(grid, row=0, col=0):
 
     rows = len(grid)
     cols = len(grid[0])
-    sys.setrecursionlimit(rows * cols)
+    if rows * cols > 100:
+        sys.setrecursionlimit(rows * cols)
     memo = {}
 
     def find_min(row, col):
@@ -114,7 +115,8 @@ def lowest_risk_any_direction(grid):
     """
     rows = len(grid)
     cols = len(grid[0])
-    sys.setrecursionlimit(rows * cols)
+    if rows * cols > 100:
+        sys.setrecursionlimit(rows * cols)
 
     def lowest_risk(pos, already_visited_positions, cost, lowest_cost):
         if pos == (len(grid) - 1, len(grid[-1]) - 1):
