@@ -2,6 +2,7 @@
 # Replace each `pass` line with your code, ending with `return`.
 
 from puzzle_input import CAVE
+import sys
 
 EXAMPLE_TEXT = """
 19999
@@ -56,11 +57,10 @@ def lowest_risk(grid, row=0, col=0):
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
     """
-    import sys
 
-    sys.setrecursionlimit(50000)
     rows = len(grid)
     cols = len(grid[0])
+    sys.setrecursionlimit(rows * cols)
     memo = {}
 
     def find_min(row, col):
@@ -112,6 +112,9 @@ def lowest_risk_any_direction(grid):
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
+    rows = len(grid)
+    cols = len(grid[0])
+    sys.setrecursionlimit(rows * cols)
 
     def lowest_risk(pos, already_visited_positions, cost, lowest_cost):
         if pos == (len(grid) - 1, len(grid[-1]) - 1):
@@ -121,7 +124,7 @@ def lowest_risk_any_direction(grid):
         possible_ways = neighbours(grid, pos[0], pos[1])
         possible_ways.sort(
             key=lambda step: grid[step[0]][step[1]]
-        )  # Es werden zuerst die Nachbarn mit dem kleinsten Weg untersucht
+        )  # Es werden zuerst die Nachbarn mit dem kleinsten Weg untersucht.
         for step in possible_ways:
             new_cost = cost + grid[step[0]][step[1]]
             if new_cost >= lowest_cost:
