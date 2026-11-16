@@ -98,3 +98,8 @@ def test_any_direction_cheaper_right_down():
 def test_neighbours_position_upper_right_corner():
     grid = parse_grid(EXAMPLE_TEXT)
     assert neighbours(grid, 0, 4) == [(0, 3), (1, 4)]
+
+
+def test_neighbours_out_of_grid():
+    grid = parse_grid(EXAMPLE_TEXT)
+    assert neighbours(grid, -1, 0) == []

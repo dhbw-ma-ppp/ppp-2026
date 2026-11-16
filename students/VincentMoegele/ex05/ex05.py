@@ -63,11 +63,11 @@ def lowest_risk(grid, row=0, col=0):
         nonlocal counter
         counter += 1
 
-        if (row, col) in visited:
-            return visited[(row, col)]
-
         if row == max_row_count and col == max_col_count:
             return 0
+
+        if (row, col) in visited:
+            return visited[(row, col)]
 
         values = []
         if row < max_row_count:
@@ -106,16 +106,19 @@ def neighbours(grid, row, col):
     max_col_count = len(grid[0]) - 1
     results = []
 
-    if col != 0:
+    if row < 0 or col < 0 or row > max_row_count or col > max_col_count:
+        return results
+
+    if col > 0:
         results.append(neighbour_left)
 
-    if col != max_col_count:
+    if col < max_col_count:
         results.append(neighbour_right)
 
-    if row != 0:
+    if row > 0:
         results.append(neighbour_above)
 
-    if row != max_row_count:
+    if row < max_row_count:
         results.append(neighbour_below)
 
     return results
