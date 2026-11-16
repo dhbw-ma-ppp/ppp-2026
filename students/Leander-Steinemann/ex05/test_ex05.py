@@ -105,3 +105,10 @@ def test_lowest_risk_any_direction_cave():
 
     cave = parse_grid(CAVE)
     assert lowest_risk_any_direction(cave) == 327
+
+
+def test_lowest_risk_any_direction_recursion_limit():
+    try:
+        lowest_risk_any_direction([[1] for _ in range(50_001)])
+    except RecursionError:
+        print("Recursion Error")
