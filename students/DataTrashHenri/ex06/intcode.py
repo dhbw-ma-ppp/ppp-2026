@@ -174,7 +174,7 @@ def step_bonus(memory, position, inputs, outputs, relative_base):
         first = memory[parameter_bonus(memory, position, 1, relative_base)]
         second = memory[parameter_bonus(memory, position, 2, relative_base)]
         index = parameter_bonus(memory, position, 3, relative_base)
-        print("ADD", first, second, index)
+        # print("ADD", first, second, index)
         memory[index] = first + second
 
     elif opcode == 2:  # MUL
