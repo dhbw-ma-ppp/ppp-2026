@@ -100,3 +100,9 @@ def test_any_direction_cheaper_than_lowest():  # Own Test 1
 def test_no_neighbors():
     grid = [[1]]
     assert neighbours(grid, 0, 0) == []
+
+
+def test_same_position_multiple():
+    grid = [[1, 9, 9], [1, 1, 1]]
+    path = [(0, 0), (1, 0), (1, 1), (0, 1), (0, 0), (1, 0), (1, 1), (1, 2)]
+    assert path_risk(grid, path) == 15

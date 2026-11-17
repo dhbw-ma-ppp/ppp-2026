@@ -46,11 +46,8 @@ def path_risk(grid, path):
     The risk of the first position doesn't count: you're already there.
     """
     total_risk = 0
-    entered_positions = path[1:]
-    for row in range(len(grid)):
-        for col in range(len(grid[row])):
-            if (row, col) in entered_positions:
-                total_risk += grid[row][col]
+    for row, col in path[1:]:
+        total_risk += grid[row][col]
     return total_risk
 
 
