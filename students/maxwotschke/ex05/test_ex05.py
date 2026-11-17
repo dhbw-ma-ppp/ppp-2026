@@ -97,5 +97,7 @@ def test_lowest_risk_any_direction_invalid_grid():
         lowest_risk_any_direction(
             [[1, 1, 1, 1, 1], [9, 9, 9, 9, 1], [1, 1, "y", 1, 1], [9, 9, 2, 9, 9], [1, 1, 1, 1, 1]]
         )
+
+
 def test_parse_grid_new_lines():
     assert parse_grid("\r 12 \r34\n") == [[1, 2], [3, 4]]
