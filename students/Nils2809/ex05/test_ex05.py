@@ -113,3 +113,5 @@ def test_lowest_risk_any_direction_cheap_grid():
 
 
 # Test 2 testet, ob er auch den kürzesten Weg wählt
+def test_review():
+    assert lowest_risk_any_direction([[1, 3, 3, 3, 3, 3, 3]]) == 18
