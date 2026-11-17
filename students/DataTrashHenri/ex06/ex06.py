@@ -4,7 +4,7 @@
 from dataclasses import dataclass, field  # noqa: F401  (you'll need `field` in Part 2)
 from pathlib import Path
 
-from intcode import decode, load_program, step  # noqa: F401
+from intcode import decode, load_program, step_bonus  # noqa: F401
 
 PROGRAM_FILE = Path(__file__).parent / "breakout.txt"
 
@@ -54,7 +54,7 @@ class Computer:
         output = []
         while not self.halted and not self.needs_input:
             try:
-                pos, rel = step(
+                pos, rel = step_bonus(
                     self.own_program, self.position, self.input_list, output, self.relative_base
                 )
             except ValueError:
