@@ -97,3 +97,8 @@ def test_path_risk_back_to_start():
     grid = [[5, 2], [3, 4]]
     path = [(0, 0), (0, 1), (0, 0)]
     assert path_risk(grid, path) == 7
+
+
+def test_neighbours_single_cell():
+    grid = [[1]]
+    assert neighbours(grid, 0, 0) == []
