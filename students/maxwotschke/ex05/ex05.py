@@ -30,8 +30,9 @@ def parse_grid(text):
     start or end of a line don't matter.
     """
     grid = []
-    maze_string = text.split("\n")
+    maze_string = text.splitlines()
     for row_string in maze_string:
+        row_string = row_string.strip()
         row = []
         if row_string != "":
             row_int = int(row_string)
@@ -40,8 +41,6 @@ def parse_grid(text):
         i = 0
         while i < len(row_string):
             i += 1
-            if row_int % 10 == 0:
-                continue
             row.insert(0, row_int % 10)
             row_int = row_int // 10
 
