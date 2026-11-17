@@ -121,15 +121,13 @@ def neighbours(grid, row, col):
         neighbours_list.append((row, col - 1))
     return neighbours_list
 
-    pass  # replace this line with your code
-
 
 def lowest_risk_any_direction(grid):
     """Return the lowest total risk from the top-left to the bottom-right corner.
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    costs = [[9999999 for col in range(100)] for row in range(100)]
+    costs = [[float("inf") for col in range(len(grid))] for row in range(len(grid))]
     costs[0][0] = 0
     queue = deque([(0, 0)])
 
@@ -146,8 +144,14 @@ def lowest_risk_any_direction(grid):
 
 
 def lowest_risk_with_shields(grid, shields):
+    """
+    :param grid: the provided cave-plan
+    :param shields: shields can be used to skip any risk at any field to find an even shorter path. Not usable on (0,0)
+    :return: the lowest risk to reach the bottom right corner
+    """
     costs = [
-        [[9999999 for col in range(100)] for row in range(100)] for shields in range(shields + 1)
+        [[float("inf") for col in range(len(grid))] for row in range(len(grid))]
+        for shields in range(shields + 1)
     ]
     for i in range(shields + 1):
         costs[i][0][0] = 0
