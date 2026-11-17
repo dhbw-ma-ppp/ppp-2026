@@ -43,18 +43,18 @@ def parse_grid(text):
     return grid
 
 
-def path_risk(grid, path):
+def path_risk(gitter, weg):
     """Return the total risk of following `path`, a list of (row, col) positions.
 
     The risk of the first position doesn't count: you're already there.
     """
-    totalrisk = 0
-    for row, col in path[1:]:  # Erste Position nicht gewertet da wir schon dort sind
-        totalrisk += grid[row][col]
-    return totalrisk
+    totales_risiko = 0
+    for reihe, spalte in weg[1:]:  # Erste Position nicht gewertet da wir schon dort sind
+        totales_risiko += gitter[reihe][spalte]
+    return totales_risiko
 
 
-def lowest_risk(grid, row=0, col=0, _memo=None):
+def lowest_risk(gitter, reihe=0, spalte=0, _memo=None):
     """Return the lowest total risk from (row, col) to the bottom-right corner.
 
     Moves go only right or down. The risk of (row, col) itself doesn't count.
@@ -64,62 +64,62 @@ def lowest_risk(grid, row=0, col=0, _memo=None):
     if _memo is None:
         _memo = {}
 
-    if (row, col) in _memo:
-        return _memo[(row, col)]
+    if (reihe, spalte) in _memo:
+        return _memo[(reihe, spalte)]
 
     aufrufe += 1
 
-    letzte_zeile = len(grid) - 1
-    letzte_spalte = len(grid[0]) - 1
+    letzte_zeile = len(gitter) - 1
+    letzte_spalte = len(gitter[0]) - 1
 
-    if row == letzte_zeile and col == letzte_spalte:
+    if reihe == letzte_zeile and spalte == letzte_spalte:
         ergebnis = 0
 
     # Nach RECHTS, da es nach unten keine Zeile mehr gibt
-    elif row == letzte_zeile:
-        ergebnis = grid[row][col + 1] + lowest_risk(grid, row, col + 1, _memo)
+    elif reihe == letzte_zeile:
+        ergebnis = gitter[reihe][spalte + 1] + lowest_risk(gitter, reihe, spalte + 1, _memo)
 
     # Nach UNTEN, da es nach rechts keine Spalte mehr gibt
-    elif col == letzte_spalte:
-        ergebnis = grid[row + 1][col] + lowest_risk(grid, row + 1, col, _memo)
+    elif spalte == letzte_spalte:
+        ergebnis = gitter[reihe + 1][spalte] + lowest_risk(gitter, reihe + 1, spalte, _memo)
 
     else:
         # Mitten im Gitter: beide Richtungen sind möglich
         # RECHTS = gleiche Zeile, nächste Spalte
-        rechts = grid[row][col + 1] + lowest_risk(grid, row, col + 1, _memo)
+        rechts = gitter[reihe][spalte + 1] + lowest_risk(gitter, reihe, spalte + 1, _memo)
         # UNTEN = nächste Zeile, gleiche Spalte
-        unten = grid[row + 1][col] + lowest_risk(grid, row + 1, col, _memo)
+        unten = gitter[reihe + 1][spalte] + lowest_risk(gitter, reihe + 1, spalte, _memo)
         # Den günstigeren der beiden Wege nehmen
         ergebnis = min(rechts, unten)
 
-    _memo[(row, col)] = ergebnis
+    _memo[(reihe, spalte)] = ergebnis
     return ergebnis
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
 
-def neighbours(grid, row, col):
+def neighbours(gitter, reihe, spalte):
     """Return the positions directly above, below, left and right of (row, col) that are
     inside the grid, as a list of (row, col) pairs, in any order."""
     ergebnis = []
-    if row > 0:
-        ergebnis.append((row - 1, col))
-    if row < len(grid) - 1:
-        ergebnis.append((row + 1, col))
-    if col > 0:
-        ergebnis.append((row, col - 1))
-    if col < len(grid[0]) - 1:
-        ergebnis.append((row, col + 1))
+    if reihe > 0:
+        ergebnis.append((reihe - 1, spalte))
+    if reihe < len(gitter) - 1:
+        ergebnis.append((reihe + 1, spalte))
+    if spalte > 0:
+        ergebnis.append((reihe, spalte - 1))
+    if spalte < len(gitter[0]) - 1:
+        ergebnis.append((reihe, spalte + 1))
     return ergebnis
 
 
-def lowest_risk_any_direction(grid):
+def lowest_risk_any_direction(gitter):
     """Return the lowest total risk from the top-left to the bottom-right corner.
 
     Moves go up, down, left or right. The risk of the top-left position doesn't count.
     """
-    ziel = (len(grid) - 1, len(grid[0]) - 1)
+    ziel = (len(gitter) - 1, len(gitter[0]) - 1)
     beste = {(0, 0): 0}  # bisher bestes Risiko je Position
     offen = [(0, 0)]  # Positionen, die noch bearbeitet werden muessen
 
@@ -134,13 +134,13 @@ def lowest_risk_any_direction(grid):
         if aktuelle == ziel:
             return beste[aktuelle]
 
-        row, col = aktuelle
-        for r, c in neighbours(grid, row, col):
-            neues_risiko = beste[aktuelle] + grid[r][c]
-            if (r, c) not in beste or neues_risiko < beste[(r, c)]:
-                beste[(r, c)] = neues_risiko
-                if (r, c) not in offen:
-                    offen.append((r, c))
+        reihe, spalte = aktuelle
+        for r, s in neighbours(gitter, reihe, spalte):
+            neues_risiko = beste[aktuelle] + gitter[r][s]
+            if (r, s) not in beste or neues_risiko < beste[(r, s)]:
+                beste[(r, s)] = neues_risiko
+                if (r, s) not in offen:
+                    offen.append((r, s))
     return None
 
 
