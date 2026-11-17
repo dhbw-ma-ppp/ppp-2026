@@ -109,3 +109,7 @@ gridOwn = [
 
 def test_lowest_risk_any_direction_goingUp():
     assert lowest_risk_any_direction(gridOwn) == 11
+
+def test_neighbours_outside_grid():
+    with pytest.raises(IndexError):
+        neighbours([[1, 2], [3, 4]], 2, 0)

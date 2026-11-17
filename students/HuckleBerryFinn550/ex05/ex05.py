@@ -31,8 +31,9 @@ def parse_grid(text):
     listOfRows = []
     listOfDigits = []
     for line in text.splitlines():
+        line = line.strip()
         if line:
-            for digit in line.strip().replace("'", " "):
+            for digit in line.replace("'", " "):
                 listOfDigits.append(int(digit))
             listOfRows.append(listOfDigits.copy())
             listOfDigits.clear()
@@ -92,10 +93,6 @@ def lowest_risk_rekursion(grid, row, col, cache):
     return result
 
 
-for n in (2, 3, 10):
-    grid = [[1] * n for _ in range(n)]
-    lowest_risk(grid)
-
 # ---------------------------------------------------------------- Part 2 (at home)
 
 
@@ -105,8 +102,8 @@ def neighbours(grid, row, col):
     listOfPairs = []
     lastRow = len(grid)
     lastCol = len(grid[0])
-    if (row < 0 or row > lastRow) or (col < 0 or col > lastCol):
-        raise IndexError("Row: {row}, or Column: {col} are not valid")
+    if (row < 0 or row >= lastRow) or (col < 0 or col >= lastCol):
+        raise IndexError(f"Row: {row}, or Column: {col} are not valid")
     directions = [(row - 1, col), (row + 1, col), (row, col + 1), (row, col - 1)]
     for r, c in directions:
         if r in range(0, lastRow) and c in range(0, lastCol):
@@ -147,6 +144,9 @@ def lowest_risk_any_direction(grid):
 if __name__ == "__main__":
     example = parse_grid(EXAMPLE_TEXT)
     cave = parse_grid(CAVE)
+    for n in (2, 3, 10):
+        testGrid = [[1] * n for _ in range(n)]
+        print(f"n={n}:", lowest_risk(testGrid))
 
     print("Part 1")
     print("1:", lowest_risk(example))
