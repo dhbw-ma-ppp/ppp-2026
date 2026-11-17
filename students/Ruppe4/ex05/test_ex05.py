@@ -104,13 +104,15 @@ def test_nur_eine_spalte():
     assert lowest_risk([[1], [2], [3]]) == 5
     assert lowest_risk_any_direction([[1], [2], [3]]) == 5
 
+
 def test_lowest_risk_any_direction_single_cell():
     assert lowest_risk_any_direction([[7]]) == 0
+
 
 def test_lowest_risk_avoids_high_risk_cells():
     gitter = [
         [1, 9, 1],
         [1, 9, 1],
         [1, 1, 1],
-]
+    ]
     assert lowest_risk_any_direction(gitter) == 4
