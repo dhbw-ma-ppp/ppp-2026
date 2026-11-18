@@ -174,4 +174,18 @@ def test_autopilot_clears_all_blocks():
     assert game.count(BLOCK) == 0
 
 
+def test_only_one_ball_and_paddle():
+    game = ex06.Game()
+    game.update([1, 1, 4, 2, 2, 3])
+    game.update([2, 1, 4, 3, 2, 3])
+    assert game.count(BALL) == 1
+    assert game.count(PADDLE) == 1
+
+
+def test_draw_empty_game():
+    game = ex06.Game()
+    assert ex06.screen_rows(game) == []
+    assert ex06.draw(game) == ""
+
+
 # ---------------------------------------------------------------- your tests (Part 2)

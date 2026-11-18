@@ -38,29 +38,31 @@ class Computer:
         self.position = 0
         self.base = 0
         self.inputs = []
+
     def run(self, inputs):
         """Add `inputs`, then run until the program halts or needs an input it doesn't have.
 
         Return the numbers output during this call.
         """
         self.inputs.extend(inputs)
-        outputs =[]
+        outputs = []
         while not self.halted:
-
             if decode(self.program[self.position])[0] == 3 and len(self.inputs) < 1:
                 break
 
-            self.position, self.base = step(self.program, self.position, self.inputs, outputs, self.base)
+            self.position, self.base = step(
+                self.program, self.position, self.inputs, outputs, self.base
+            )
 
             if self.position is None:
                 self.halted = True
                 break
 
-
         return outputs
 
-#computer = Computer([104, 7, 104, 8, 99])
-#print(computer.run([]))
+
+# computer = Computer([104, 7, 104, 8, 99])
+# print(computer.run([]))
 
 
 def count_tiles(outputs, tile):
@@ -80,17 +82,21 @@ def count_tiles(outputs, tile):
 @dataclass
 class Game:
     scores: list[int] = field(default_factory=list)
-    x : int = 0
-    y : int = 0
+    x: int = 0
+    y: int = 0
     tiles: dict[tuple[int, int], int] = field(default_factory=dict)
-    score : int = 0
+    score: int = 0
     ball: tuple[int, int] | None = None
     paddle: tuple[int, int] | None = None
 
     def update(self, outputs):
         for i in range(len(outputs) // 3):
             current_triple = i * 3
-            x, y, tile = outputs[current_triple], outputs[current_triple + 1], outputs[current_triple + 2]
+            x, y, tile = (
+                outputs[current_triple],
+                outputs[current_triple + 1],
+                outputs[current_triple + 2],
+            )
 
             if x == -1:
                 self.score = tile
@@ -100,8 +106,7 @@ class Game:
                 self.ball = (x, y)
 
             if x != -1:
-
-                if tile in self.tiles.values() and ( tile == 3 or tile == 4 ) :
+                if tile in self.tiles.values() and (tile == 3 or tile == 4):
                     for key in self.tiles.copy().keys():
                         if self.tiles[key] == tile:
                             del self.tiles[key]
@@ -117,8 +122,11 @@ class Game:
                 counter += 1
         return counter
 
+
 def screen_rows(game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
+    if game.tiles == {}:
+        return []
     height = 0
     width = 0
     for tile, _ in game.tiles.items():
@@ -129,7 +137,7 @@ def screen_rows(game) -> list[list[int]]:
 
     screen_as_list = []
     for y in range(height + 1):
-            screen_as_list.append([game.tiles[(x, y)] for x in range(width + 1) ])
+        screen_as_list.append([game.tiles[(x, y)] for x in range(width + 1)])
     return screen_as_list
 
 
@@ -179,25 +187,20 @@ class Autopilot(Controller):
         return 0
 
 
-
-
 def play(program: list[int], controller: Controller):
     """Play the game in `program` until it halts, asking `controller` for every input.
 
     Return the Game at the end.
     """
-    inputs = []
     computer = Computer(program)
-    first_run = computer.run(inputs)
-    game = Game(program)
-    game.update(first_run)
+    game = Game()
+    game.update(computer.run([]))
 
     while not computer.halted:
-        run = computer.run(inputs)
-        game.update(run)
-        game.screen_rows
-        choose()
+        controls = controller.choose(game)
+        game.update(computer.run([controls]))
 
+    return game
 
 
 # ---------------------------------------------------------------- Answers
@@ -208,13 +211,13 @@ if __name__ == "__main__":
     print("Part 1")
     print("1:", count_tiles(Computer(program).run([]), BLOCK))
 
-    #Part 2: uncomment once you get there.
+    # Part 2: uncomment once you get there.
     print("Part 2")
     start = Game()
     start.update(Computer(program).run([]))
     print(draw(start))
-    # lost = play(program, Stay())
-    # print("2:", lost.score)
-    # won = play(program, Autopilot())
-    # print("3:", won.score, "after", len(won.scores) - 1, "frames")
-    # print(draw(won))
+    lost = play(program, Stay())
+    print("2:", lost.score)
+    won = play(program, Autopilot())
+    print("3:", won.score, "after", len(won.scores) - 1, "frames")
+    print(draw(won))
