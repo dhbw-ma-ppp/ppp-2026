@@ -56,6 +56,8 @@ def path_risk(grid, path):
     The risk of the first position doesn't count: you're already there.
     """
     risk = 0
+    if not path:
+        raise IndexError("Path cannot be empty")
     if path == [(0, 0)]:
         return risk
     for row, col in path[1:]:

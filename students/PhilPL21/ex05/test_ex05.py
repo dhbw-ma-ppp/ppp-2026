@@ -7,7 +7,7 @@ from ex05 import (
     parse_grid,
     path_risk,
 )
-
+import pytest
 # ---------------------------------------------------------------- Part 1
 
 
@@ -96,3 +96,8 @@ def test_neighbours_edges_example():
 def test_any_direction_cheaper_than_right_and_down_example():
     grid = parse_grid(EXAMPLE_TEXT)
     assert lowest_risk_any_direction(grid) < lowest_risk(grid)
+
+
+def test_path_risk_empty_path():
+    with pytest.raises(IndexError):
+        path_risk(None, [])
