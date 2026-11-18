@@ -1,55 +1,66 @@
-# Exercise 02. See README.md for the full task.
-# Replace each `pass` line with your code, ending with `return`.
-
 from puzzle_input import PROGRAM, TARGET
 
-# ---------------------------------------------------------------- Part 1 (in class)
+
+# --------------------------------------------------------------- Part 1 (in class)
+
 
 HUNDRED_NOUN_PLUS_VERB = [1, 0, 0, 3, 2, 1, 13, 13, 1, 13, 2, 0, 99, 100] + [0] * 86
 
 
 def step(memory, position):
-    """Execute the instruction that starts at `position` in memory.
+    """Execute the instruction that starts at position in memory.
 
     Opcode 1 adds, opcode 2 multiplies, opcode 99 halts (see README.md).
     Return the position of the next instruction, or None if the opcode is 99.
-    When the Opcode isn't 1,2 or 99, then it wouldn't retourn anything. I think it should raise a Value Error.
     """
+
     opcode = memory[position]
+
     if opcode == 99:
         return None
+
     elif opcode == 1:
-        addposition = memory[opcode + 1] + memory[opcode + 2]
-        memory[opcode + 3] = addposition
+        addposition = memory[memory[position + 1]] + memory[memory[position + 2]]
+        memory[memory[position + 3]] = addposition
+
     elif opcode == 2:
-        mulposition = memory[opcode + 1] * memory[opcode + 2]
-        memory[opcode + 3] = mulposition
+        mulposition = memory[memory[position + 1]] * memory[memory[position + 2]]
+        memory[memory[position + 3]] = mulposition
+
     else:
         raise ValueError
+
     return position + 4
 
 
-def run(memory):
+def run(memory=None):
     """Execute instructions, starting at position 0, until the program halts.
 
     Return the value at position 0 after the program has halted.
     """
+
     position = 0
+
     if memory is None:
         return None
+
     while position is not None:
         position = step(memory, position)
+
     return memory[0]
 
 
-# ---------------------------------------------------------------- Part 2 (at home)
+# --------------------------------------------------------------- Part 2 (at home)
 
 
 def run_with(program, noun, verb):
     """Return the result of program with noun at position 1 and verb at position 2."""
+
+    program = program.copy()
     program[1] = noun
     program[2] = verb
-    return run(program.copy())
+
+    return run(program)
 
 
 def find_noun_verb(program, target):
@@ -60,12 +71,14 @@ def find_noun_verb(program, target):
 
     for noun in range(0, 100):
         for verb in range(0, 100):
-            if run_with(program.copy(), noun, verb) == target:
+            if run_with(program, noun, verb) == target:
                 return noun, verb
+
     return None
 
 
-# ---------------------------------------------------------------- Answers
+# --------------------------------------------------------------- Answers
+
 
 if __name__ == "__main__":
     print("Part 1")
