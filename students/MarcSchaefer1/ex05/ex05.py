@@ -55,6 +55,7 @@ def path_risk(grid, path):
 
 
 def cheapestPath(grid, paths, best, any_direction=False):
+    """Returns the cost of the cheapest Path from start to end as well as the entire path and the end coordinates as a tuple"""
     Options = []
 
     for path in paths:
