@@ -127,6 +127,18 @@ class Controller:
     """Chooses the joystick input: -1 left, 0 stay, 1 right."""
 
     def choose(self, game) -> int:
+        raise NotImplementedError
+
+
+class Stay(Controller):
+    """Never moves the paddle."""
+
+    def choose(self, game) -> int:
+        return 0
+
+
+class Joystick(Controller):  # Habs gemacht aus Spaß
+    def choose(self, game) -> int:
         """Invalid Inputs werden wie in einem echten Game ignoriert statt einen Crash zu machen"""
         zahl = -2
         while zahl not in (-1, 0, 1):
@@ -135,13 +147,6 @@ class Controller:
             except ValueError:
                 pass
         return zahl
-
-
-class Stay(Controller):
-    """Never moves the paddle."""
-
-    def choose(self, game) -> int:
-        return 0
 
 
 class Autopilot(Controller):
