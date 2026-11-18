@@ -127,3 +127,12 @@ def test_not_square_grid():
     grid = parse_grid(grid)
     assert lowest_risk_any_direction(grid)
     assert lowest_risk(grid)
+
+
+def test_lowest_risk_any_direction_equal_paths():
+    grid = [
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+    ]
+    assert lowest_risk_any_direction(grid) == 4
