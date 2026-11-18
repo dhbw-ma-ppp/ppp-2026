@@ -140,3 +140,33 @@ def test_neighbours_bottom_right():
     grid = [[1, 2], [3, 4]]
 
     assert sorted(neighbours(grid, 1, 1)) == [(0, 1), (1, 0)]
+
+
+# --- TEST 3 --- (Review)
+
+# Input:
+# grid = (see below)
+# lowest_risk(grid)
+# lowest_risk_any_direction(grid)
+
+# Expected result:
+# 28
+# 22
+
+# Test case:
+# same as TEST 1, just with a bigger grid (you also need to go up)
+
+
+def test_improved_grid():
+    grid = [
+        [1, 1, 1, 1, 1, 9],
+        [9, 9, 9, 9, 1, 9],
+        [9, 9, 9, 9, 1, 9],
+        [1, 1, 1, 9, 1, 9],
+        [1, 9, 1, 1, 1, 9],
+        [1, 9, 9, 9, 9, 9],
+        [1, 9, 9, 9, 9, 9],
+        [1, 1, 1, 1, 1, 1],
+    ]
+    assert lowest_risk(grid) == 28
+    assert lowest_risk_any_direction(grid) == 22

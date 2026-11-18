@@ -70,25 +70,25 @@ def lowest_risk(grid, row=0, col=0):  # recursion needed, best path is not clear
     @lru_cache(
         maxsize=None
     )  # caching makes the recursion faster: remaining paths don't need to be calculated multiple times
-    def solve(r, c):
-        # print("Currently:", r, c)
-        if r == rows - 1 and c == cols - 1:  # goal is reached
+    def solve(current_row, current_col):
+        # print("Currently:", current_row, current_col)
+        if current_row == rows - 1 and current_col == cols - 1:  # goal is reached
             return 0
 
         risks = []  # every risk stored here
 
         # Option 1 - go down
-        if r + 1 < rows:
-            down = grid[r + 1][c] + solve(
-                r + 1, c
+        if current_row + 1 < rows:
+            down = grid[current_row + 1][current_col] + solve(
+                current_row + 1, current_col
             )  # add the risk and solve for the other paths using recursion
             risks.append(down)
 
         # Option 2 - go right (same implementation, just with columns)
-        if c + 1 < cols:
-            right = grid[r][c + 1] + solve(r, c + 1)
+        if current_col + 1 < cols:
+            right = grid[current_row][current_col + 1] + solve(current_row, current_col + 1)
             risks.append(right)
-        # print(r, c)
+        # print(current_row, current_col)
         # print(risks)
         return min(risks)  # best option
 
@@ -110,9 +110,9 @@ def neighbours(grid, row, col):
         (0, 1),  # right
     ]
 
-    for dr, dc in directions:  # for row and column changes
-        new_row = row + dr
-        new_col = col + dc
+    for offset_row, offset_col in directions:  # for row and column changes
+        new_row = row + offset_row
+        new_col = col + offset_col
 
         if 0 <= new_row < len(grid) and 0 <= new_col < len(grid[0]):  # check if positions are valid
             result.append((new_row, new_col))  # append new (row, col) pair for one direction
@@ -167,6 +167,6 @@ if __name__ == "__main__":
     print("2:", path_risk(example, EXAMPLE_PATH))
 
     print("Part 2")
-    # print("3:", lowest_risk(cave))
+    print("3:", lowest_risk(cave))
     print("4:", lowest_risk_any_direction(example))
     print("5:", lowest_risk_any_direction(cave))
