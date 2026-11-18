@@ -69,10 +69,12 @@ def lowest_risk(grid, row=0, col=0, Lookup_tabelle=0):
         row += 1
         col += 1
 
+    # Geht durch alle restlichen gridreihen pro spalte und fügt den kleinsten Wert von links und oben hinzu
     for i in range(row, rowmax + 1):
         Lookup_tabelle[i][col] = grid[i][col] + min(
             Lookup_tabelle[i - 1][col], Lookup_tabelle[i][col - 1]
         )
+    # stoppt bei der letzten spalte
     if col >= colmax:
         return Lookup_tabelle[rowmax][colmax]
     a["counter"] += 1
