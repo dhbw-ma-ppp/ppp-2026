@@ -1,6 +1,7 @@
 # Exercise 05. See README.md for the full task.
 # Replace each `pass` line with your code, ending with `return`.
 
+
 from puzzle_input import CAVE
 
 EXAMPLE_TEXT = """
@@ -95,6 +96,9 @@ def neighbours(grid, row, col):
     result = []
     rows = len(grid)
     cols = len(grid[0])
+
+    if row < 0 or row >= rows or col < 0 or col >= cols:
+        raise IndexError("Position outside grid")
 
     # oben
     if row > 0:

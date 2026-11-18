@@ -7,6 +7,7 @@ from ex05 import (
     parse_grid,
     path_risk,
 )
+import pytest
 
 # ---------------------------------------------------------------- Part 1
 
@@ -114,3 +115,14 @@ def test_neighbours_bottom_right_corner():
         (3, 4),
         (4, 3),
     ]
+
+
+def test_neighbours():
+    grid = parse_grid(EXAMPLE_TEXT)
+    with pytest.raises(IndexError):
+        neighbours(grid, -1, 0)
+
+
+def test_lowest_risk_any_direction():
+    with pytest.raises(IndexError):
+        lowest_risk_any_direction([])
