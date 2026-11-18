@@ -173,7 +173,9 @@ def test_autopilot_clears_all_blocks():
     game = ex06.play(load_program(PROGRAM_FILE), Autopilot())
     assert game.count(BLOCK) == 0
 
+
 # ---------------------------------------------------------------- your tests (Part 2)
+
 
 def test_count_mutiple_paddles():
     game = ex06.Game()
