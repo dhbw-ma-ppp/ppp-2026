@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Ex 7: the DWD data file is 4.8 MB; every student copy stays local
+students/*/ex07/mannheim.txt
