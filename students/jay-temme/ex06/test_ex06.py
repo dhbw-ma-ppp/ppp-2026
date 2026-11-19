@@ -1,3 +1,4 @@
+import pytest
 import ex06
 from ex06 import (
     BALL,
@@ -175,3 +176,18 @@ def test_autopilot_clears_all_blocks():
 
 
 # ---------------------------------------------------------------- your tests (Part 2)
+
+
+def test_autopilot_stays_when_under_ball():
+    game = ex06.Game()
+    game.update([0, 0, BALL, 0, 10, PADDLE])
+    assert Autopilot().choose(game) == 0
+    assert game.ball == (0, 0)
+    assert game.paddle == (0, 10)
+
+
+def test_screen_rows_negative_coordinate():
+    game = ex06.Game()
+    game.update([0, -1, BLOCK])
+    with pytest.raises(ValueError):
+        ex06.screen_rows(game)

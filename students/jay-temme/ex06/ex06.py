@@ -120,6 +120,9 @@ def screen_rows(game: Game) -> list[list[int]]:
     screen = []
 
     for (x, y), tile in game.tiles.items():
+        if x < 0 or y < 0:
+            raise ValueError(f"negative coordinate for tile {tile} at ({x}, {y}).")
+
         if len(screen) <= y:
             screen.extend([[]] * (y - (len(screen) - 1)))
 
@@ -226,7 +229,7 @@ if __name__ == "__main__":
     print("3:", won.score, "after", len(won.scores) - 1, "frames")
     print(draw(won))
 
-    print("Bonus")
+    # print("Bonus")
     # playing = play(program, Keyboard())
     # print("Score: ", playing.score)
     # print(draw(playing))
