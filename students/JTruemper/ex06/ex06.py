@@ -1,8 +1,7 @@
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from intcode import decode, load_program, step
-import time
+from intcode import load_program, step
 
 
 PROGRAM_FILE = Path(__file__).parent / "breakout.txt"
