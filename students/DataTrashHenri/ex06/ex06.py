@@ -48,7 +48,7 @@ class Computer:
 
         Return the numbers output during this call.
         """
-        if len(inputs) != 0 and self.needs_input:
+        if len(inputs) != 0 and self.needs_input:  # inputs were just provided
             self.needs_input = False
         self.input_list.extend(inputs)
         output = []
@@ -57,7 +57,7 @@ class Computer:
                 pos, rel = step_bonus(
                     self.own_program, self.position, self.input_list, output, self.relative_base
                 )
-            except ValueError:
+            except ValueError:  # input needed
                 self.needs_input = True
             else:
                 self.relative_base = rel
@@ -73,7 +73,9 @@ def count_tiles(outputs, tile):
     counter = 0
     for i in range(len(outputs) // 3):
         cur_tuple = i * 3
-        if outputs[cur_tuple + 2] == tile and outputs[cur_tuple] != -1:
+        if (
+            outputs[cur_tuple + 2] == tile and outputs[cur_tuple] != -1
+        ):  # check that it's not a score tuple
             counter += 1
     return counter
 
@@ -100,7 +102,7 @@ class Game:
         for i in range(len(outputs) // 3):
             x, y, tile_type = outputs[i * 3], outputs[i * 3 + 1], outputs[i * 3 + 2]
 
-            if x == -1:
+            if x == -1:  # is a score
                 self.score = outputs[3 * i + 2]
             elif tile_type == 3:  # paddle
                 self.paddle = (x, y)
@@ -111,7 +113,6 @@ class Game:
                 self.tiles[(x, y)] = tile_type
 
         self.scores.append(self.score)
-        pass
 
     def count(self, tile):
         counter = 0
