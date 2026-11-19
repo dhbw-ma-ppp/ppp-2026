@@ -111,13 +111,13 @@ def neighbours(grid, row, col):
     inside the grid, as a list of (row, col) pairs, in any order."""
     neighbours_list = []
     size = len(grid)
-    if row - 1 > 0:
+    if row - 1 >= 0:
         neighbours_list.append((row - 1, col))
     if col + 1 < size:
         neighbours_list.append((row, col + 1))
     if row + 1 < size:
         neighbours_list.append((row + 1, col))
-    if col - 1 > 0:
+    if col - 1 >= 0:
         neighbours_list.append((row, col - 1))
     return neighbours_list
 

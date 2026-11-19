@@ -73,6 +73,20 @@ def test_neighbours_corner():
     assert sorted(neighbours(grid, 0, 0)) == [(0, 1), (1, 0)]
 
 
+def test_neighbour_edge():
+    grid = [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+    ]
+    assert sorted(neighbours(grid, 1, 1)) == [
+        (0, 1),
+        (1, 0),
+        (1, 2),
+        (2, 1),
+    ]
+
+
 def test_neighbours_middle():
     grid = parse_grid(EXAMPLE_TEXT)
     assert sorted(neighbours(grid, 2, 2)) == [(1, 2), (2, 1), (2, 3), (3, 2)]
