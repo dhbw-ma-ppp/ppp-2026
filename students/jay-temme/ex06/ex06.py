@@ -93,9 +93,8 @@ class Game:
         for x, y, tile in [
             (outputs[i], outputs[i + 1], outputs[i + 2]) for i in range(0, len(outputs), 3)
         ]:
-            if x == -1:
+            if x == -1 and y == 0:
                 self.score = tile
-                self.scores.append(self.score)
                 continue
 
             if tile == BALL:
@@ -105,6 +104,8 @@ class Game:
                 self.paddle = (x, y)
 
             self.tiles[(x, y)] = tile
+
+        self.scores.append(self.score)
 
     def count(self, input_tile: int) -> int:
         """How many (x, y, tile) triples in `outputs` have this tile. Score triples don't count."""
@@ -140,7 +141,7 @@ def draw(game: Game) -> str:
 
         screen_string += "\n"
 
-    return screen_string
+    return screen_string[:-1]
 
 
 class Controller:
@@ -161,13 +162,35 @@ class Autopilot(Controller):
     """Plays the game: keeps the ball in play until every block is gone."""
 
     def choose(self, game: Game) -> int:
-        if game.ball[0] < game.paddle[0]:
+        if game.paddle[0] < game.ball[0]:
+            return 1
+        if game.paddle[0] > game.ball[0]:
             return -1
+        return 0
 
-        if game.ball[0] == game.paddle[0]:
-            return 0
 
-        return 1
+class Keyboard(Controller):
+    """Reads input from the user to play the game."""
+
+    def draw_game(self, game: Game):
+        print("score: ", game.score)
+        print(draw(game))
+
+    def get_next_input(self) -> int:
+        next_input = input("Enter next input (a: left, d: right, nothing: stay): ")
+        while next_input not in ["a", "d", ""]:
+            next_input = input("Enter a valid input (a: left, d: right, nothing: stay):")
+
+        if next_input == "a":
+            return -1
+        if next_input == "d":
+            return 1
+        return 0
+
+    def choose(self, game: Game) -> int:
+        self.draw_game(game)
+
+        return self.get_next_input()
 
 
 def play(program: list[int], controller: Controller) -> Game:
@@ -202,3 +225,8 @@ if __name__ == "__main__":
     won = play(program, Autopilot())
     print("3:", won.score, "after", len(won.scores) - 1, "frames")
     print(draw(won))
+
+    print("Bonus")
+    # playing = play(program, Keyboard())
+    # print("Score: ", playing.score)
+    # print(draw(playing))
