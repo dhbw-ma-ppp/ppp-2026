@@ -51,18 +51,21 @@ class Computer:
 
         while not self.halted:
             try:
-                pos, base = step(self.program, self.position, self.inputs, outputs, self.relative_base)
+                pos, base = step(
+                    self.program, self.position, self.inputs, outputs, self.relative_base
+                )
                 if pos is None:
                     self.halted = True
                 else:
                     self.position = pos
                     self.relative_base = base
-            except ValueError : #if inputs are empty
+            except ValueError:  # if inputs are empty
                 if self.program[self.position] % 100 == 3:  # waiting for input
                     return outputs
                 else:
                     raise
-        return  outputs
+        return outputs
+
 
 def count_tiles(outputs, tile):
     """How many (x, y, tile) triples in `outputs` have this tile. Score triples don't count."""
@@ -78,9 +81,10 @@ def count_tiles(outputs, tile):
         if t[0] == -1 and t[1] == 0:
             continue
         elif t[2] == tile:
-            counter+=1
+            counter += 1
 
     return counter
+
 
 # ---------------------------------------------------------------- Part 2 (at home)
 
@@ -93,7 +97,6 @@ class Game:
     scores: list[int] = field(default_factory=list)
     ball: tuple[int, int] | None = None
     paddle: tuple[int, int] | None = None
-
 
     def update(self, outputs: list[int]) -> None:
         """Applies the outputs of one run call to the screen. If output is ball,
@@ -113,7 +116,6 @@ class Game:
             if tile_outputs == 4:
                 self.ball = (x, y)
 
-
         self.scores.append(self.score)
 
     def count(self, tile: int) -> int:
@@ -121,8 +123,9 @@ class Game:
         counter = 0
         for t in self.tiles.values():
             if t == tile:
-                counter+=1
+                counter += 1
         return counter
+
 
 def screen_rows(game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
@@ -133,8 +136,8 @@ def screen_rows(game) -> list[list[int]]:
     height = max(y for (x, y) in game.tiles) + 1
     list_of_rows = [[0] * width for _ in range(height)]
 
-    for (x,y), tile in game.tiles.items():
-            list_of_rows[y][x] = tile
+    for (x, y), tile in game.tiles.items():
+        list_of_rows[y][x] = tile
     return list_of_rows
 
 
@@ -169,7 +172,7 @@ class Autopilot(Controller):
     def choose(self, game) -> int:
         x_ball, _ = game.ball
         x_paddle, _ = game.paddle
-        if x_ball > x_paddle: 
+        if x_ball > x_paddle:
             return 1
         elif x_ball < x_paddle:
             return -1
@@ -185,7 +188,7 @@ def play(program: list[int], controller: Controller):
     new_computer = Computer(program)
     new_game = Game()
 
-    #first call without any inputs
+    # first call without any inputs
     outputs = new_computer.run([])
     new_game.update(outputs)
     while not new_computer.halted:
@@ -193,14 +196,6 @@ def play(program: list[int], controller: Controller):
         outputs = new_computer.run([inputs_from_controller])
         new_game.update(outputs)
     return new_game
-
-
-
-
-
-
-
-
 
 
 # ---------------------------------------------------------------- Answers
@@ -211,7 +206,7 @@ if __name__ == "__main__":
     print("Part 1")
     print("1:", count_tiles(Computer(program).run([]), BLOCK))
 
-    #Part 2: uncomment once you get there.
+    # Part 2: uncomment once you get there.
     print("Part 2")
     start = Game()
     start.update(Computer(program).run([]))
