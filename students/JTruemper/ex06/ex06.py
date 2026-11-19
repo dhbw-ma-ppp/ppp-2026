@@ -199,26 +199,28 @@ def play(
     computer = Computer(program)
     game = Game()
 
+    # Run until the first input is needed.
+    outputs = computer.run([])
+    game.update(outputs)
+
     while not computer.halted:
-        outputs = computer.run([])
-        game.update(outputs)
 
         if display:
             print("\033[H\033[J", end="")
             print(draw(game))
             print("Score:", game.score)
-            time.sleep(0.015)
 
-
-        if computer.halted:
-            break
-
+        # Ask the controller for the next joystick input.
         joystick = controller.choose(game)
 
+        # Continue the computer with that input.
         outputs = computer.run([joystick])
+
+        # Update the game with the new output.
         game.update(outputs)
 
     return game
+
 
 
 # ----------------------------------------------------------------

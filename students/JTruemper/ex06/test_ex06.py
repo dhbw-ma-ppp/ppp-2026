@@ -65,6 +65,18 @@ def test_relative_mode():
     # outputs its own first number: base = 1, then output the value at base - 1
     assert Computer([109, 1, 204, -1, 99]).run([]) == [109]
 
+def test_autopilot_moves_towards_ball():
+    game = ex06.Game()
+
+    game.update([5, 3, BALL, 2, 9, PADDLE])
+    assert Autopilot().choose(game) == 1
+
+    game.update([1, 3, BALL])
+    assert Autopilot().choose(game) == -1
+
+    game.update([2, 3, BALL])
+    assert Autopilot().choose(game) == 0
+
 
 def test_relative_base_survives_a_pause():
     # base = 10, read an input into address base + 0, then output the value at address 10
@@ -86,6 +98,14 @@ def test_count_tiles_ignores_the_score():
 
 # ---------------------------------------------------------------- Part 2
 
+def test_score_stays_the_same_without_score_update():
+    game = ex06.Game()
+
+    game.update([-1, 0, 50])
+    game.update([2, 3, BLOCK])
+
+    assert game.score == 50
+    assert game.scores == [50, 50]
 
 def test_game_starts_empty():
     game = ex06.Game()
