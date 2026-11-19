@@ -21,12 +21,49 @@ SYMBOLS = {
 RUNNING_TOTAL = [3, 13, 1, 12, 13, 12, 4, 12, 1105, 1, 0, 0, 0, 0]
 
 TINY_GAME = [
-    104, 0, 104, 0, 104, 3,
-    104, 5, 104, 0, 104, 4,
-    104, -1, 104, 0, 104, 0,
-    3, 40, 1, 41, 40, 41, 104, -1, 104, 0, 4, 41,
-    1001, 42, -1, 42, 1005, 42, 18, 99,
-    0, 0, 0, 0, 3,
+    104,
+    0,
+    104,
+    0,
+    104,
+    3,
+    104,
+    5,
+    104,
+    0,
+    104,
+    4,
+    104,
+    -1,
+    104,
+    0,
+    104,
+    0,
+    3,
+    40,
+    1,
+    41,
+    40,
+    41,
+    104,
+    -1,
+    104,
+    0,
+    4,
+    41,
+    1001,
+    42,
+    -1,
+    42,
+    1005,
+    42,
+    18,
+    99,
+    0,
+    0,
+    0,
+    0,
+    3,
 ]
 
 
@@ -74,11 +111,7 @@ class Computer:
 def count_tiles(outputs: list[int], tile: int) -> int:
     """Count how many output triples contain the given tile."""
 
-    return sum(
-        1
-        for i in range(0, len(outputs), 3)
-        if outputs[i] != -1 and outputs[i + 2] == tile
-    )
+    return sum(1 for i in range(0, len(outputs), 3) if outputs[i] != -1 and outputs[i + 2] == tile)
 
 
 # ----------------------------------------------------------------
@@ -99,7 +132,7 @@ class Game:
         """Update the game using IntCode output."""
 
         for i in range(0, len(outputs), 3):
-            x, y, value = outputs[i:i + 3]
+            x, y, value = outputs[i : i + 3]
 
             if x == -1 and y == 0:
                 self.score = value
@@ -118,10 +151,7 @@ class Game:
     def count(self, tile: int) -> int:
         """Count how many positions contain the given tile."""
 
-        return sum(
-            value == tile
-            for value in self.tiles.values()
-        )
+        return sum(value == tile for value in self.tiles.values())
 
 
 def screen_rows(game: Game) -> list[list[int]]:
@@ -133,19 +163,13 @@ def screen_rows(game: Game) -> list[list[int]]:
     width = max(x for x, y in game.tiles) + 1
     height = max(y for x, y in game.tiles) + 1
 
-    return [
-        [game.tiles.get((x, y), EMPTY) for x in range(width)]
-        for y in range(height)
-    ]
+    return [[game.tiles.get((x, y), EMPTY) for x in range(width)] for y in range(height)]
 
 
 def draw(game: Game) -> str:
     """Draw the screen as text."""
 
-    return "\n".join(
-        "".join(SYMBOLS[tile] for tile in row)
-        for row in screen_rows(game)
-    )
+    return "\n".join("".join(SYMBOLS[tile] for tile in row) for row in screen_rows(game))
 
 
 # ----------------------------------------------------------------
@@ -204,7 +228,6 @@ def play(
     game.update(outputs)
 
     while not computer.halted:
-
         if display:
             print("\033[H\033[J", end="")
             print(draw(game))
@@ -220,7 +243,6 @@ def play(
         game.update(outputs)
 
     return game
-
 
 
 # ----------------------------------------------------------------
@@ -244,7 +266,6 @@ if __name__ == "__main__":
     print("2:", lost.score)
 
     won = play(program, Autopilot(), display=True)
-
 
     print("3:", won.score, "after", len(won.scores) - 1, "frames")
     print(draw(won))
