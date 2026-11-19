@@ -1,4 +1,5 @@
 import ex06
+import pytest
 from ex06 import (
     BALL,
     BLOCK,
@@ -175,3 +176,19 @@ def test_autopilot_clears_all_blocks():
 
 
 # ---------------------------------------------------------------- your tests (Part 2)
+#run not only throws an error when input is None
+# but also if step in intcode throws an error because of false opcodes
+def test_run_unknown_opcode():
+    computer = Computer([42, 0, 0, 0])
+    with pytest.raises(ValueError):
+        Computer.run(computer, [1, 1, 0])
+
+#computer halts when opcode is 99
+#while not self.halted works and returns a new empty list
+def test_run_after_halt_returns_nothing():
+    computer = Computer([104, 7, 99])
+    assert computer.run([]) == [7]
+    assert computer.halted
+
+    assert computer.run([]) == []
+    assert computer.halted
