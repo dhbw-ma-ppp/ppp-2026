@@ -67,7 +67,7 @@ def hot_days(weather, threshold=30.0):
     A year with no such day has 0; a year without any max_temp isn't in the result.
     """
     label = weather.columns
-    weather = weather.loc[not weather["max_temp"].isna(), label]
+    weather = weather.loc[weather["max_temp"].notna(), label]
     weather["max_temp"] = weather["max_temp"] >= threshold
     hot = weather.groupby("year")["max_temp"].agg("sum")
     return hot
@@ -79,7 +79,7 @@ def hot_days(weather, threshold=30.0):
 def monthly_rain(weather, first_year, last_year):
     """The average total rain of each month (1 to 12), over the years first_year..last_year."""
     label = weather.columns
-    weather = weather.loc[not weather["rain"].isna(), label]
+    weather = weather.loc[weather["rain"].notna(), label]
     weather_years = weather[(weather["year"] >= first_year) & (weather["year"] <= last_year)]
     rain_per_year = weather_years.groupby(["year", "month"])["rain"].agg("sum")
     weather_years = rain_per_year.groupby("month").agg("mean")
