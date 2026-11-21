@@ -144,7 +144,7 @@ def parameter(memory, position, n):
             if n not in range(1, 4):
                 raise ValueError("n is not a parameter of the instruction at position")
 
-        case 7:
+        case 8:
             if n not in range(1, 4):
                 raise ValueError("n is not a parameter of the instruction at position")
 
