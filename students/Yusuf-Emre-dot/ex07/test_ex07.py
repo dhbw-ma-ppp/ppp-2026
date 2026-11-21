@@ -137,14 +137,14 @@ def test_model_table():
         assert 0.5 < train_score <= 1
         assert 0.5 < test_score < 0.8
 
-
+@needs_data
 def test_split_doesnt_change_weather():
     weather = load_weather(DATA_FILE)
     cop = weather.copy()
     split_by_year(weather, 2000)
     assert weather.equals(cop)
 
-
+@needs_data
 def test_model_better_baseline():
     weather = load_weather(DATA_FILE)
     data = add_rainy(weather)
