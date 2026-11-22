@@ -159,32 +159,32 @@ def model_table(weather, features, depths):
 
 if __name__ == "__main__":
     weather = load_weather(DATA_FILE)
-print("Answer 1:")
-print(len(weather))
-print(weather["year"].min(), weather["year"].max())
-print("Answer 2:")
-missing = missing_per_year(weather, "max_temp")
-print(missing[missing >= 200])
-mean_temp = missing_per_year(weather, "mean_temp")
-print(mean_temp[missing >= 350])
-# The Station didn't pick up any temperatures until the year 1973.
-print("Answer 3:")
-hot = hot_days(weather)
-print(hot[hot == hot.max()])
-print("Answer 4:")
-print("1951–1980: ", hot.loc[1951:1980].mean())
-print("1996-2025: ", hot.loc[1996:2025].mean())
-print("Answer 5:")
-rain = monthly_rain(weather, 1947, 2025)
-print(rain.idxmax(), rain.max())
-print(rain.idxmin(), rain.min())
-plot_hot_days(weather, "hot_days.png")
-print("Answer 6:")
-rows, base = model_table(
-    weather,
-    ["rainy", "humidity"],
-    [1, 2, 3, 5, 10, None],
-)
-print("Baselines:", base)
-for row in rows:
-    print(row)
+    print("Answer 1:")
+    print(len(weather))
+    print(weather["year"].min(), weather["year"].max())
+    print("Answer 2:")
+    missing = missing_per_year(weather, "max_temp")
+    print(missing[missing >= 200])
+    mean_temp = missing_per_year(weather, "mean_temp")
+    print(mean_temp[missing >= 350])
+    # The Station didn't pick up any temperatures until the year 1973.
+    print("Answer 3:")
+    hot = hot_days(weather)
+    print(hot[hot == hot.max()])
+    print("Answer 4:")
+    print("1951–1980: ", hot.loc[1951:1980].mean())
+    print("1996-2025: ", hot.loc[1996:2025].mean())
+    print("Answer 5:")
+    rain = monthly_rain(weather, 1947, 2025)
+    print(rain.idxmax(), rain.max())
+    print(rain.idxmin(), rain.min())
+    plot_hot_days(weather, "hot_days.png")
+    print("Answer 6:")
+    rows, base = model_table(
+        weather,
+        ["rainy", "humidity"],
+        [1, 2, 3, 5, 10, None],
+    )
+    print("Baselines:", base)
+    for row in rows:
+        print(row)
