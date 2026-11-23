@@ -186,7 +186,7 @@ class Autopilot(Controller):
     """Plays the game: keeps the ball in play until every block is gone."""
 
     def choose(self, game) -> int:
-        if game.paddle is None and game.ball is None:
+        if game.paddle is None or game.ball is None:
             return 0
 
         if game.paddle[0] < game.ball[0]:

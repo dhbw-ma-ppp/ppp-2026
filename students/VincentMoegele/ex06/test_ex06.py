@@ -1,3 +1,4 @@
+import pytest
 import ex06
 from ex06 import (
     BALL,
@@ -187,3 +188,21 @@ def test_paddle_moves_right():
     game = ex06.Game()
     game.update([5, 9, 4, 2, 1, 3])
     assert Autopilot().choose(game) == 1
+
+
+def test_run_unknown_opcode():
+    computer = Computer([42, 0, 0, 0])
+    with pytest.raises(ValueError):
+        Computer.run(computer, [1, 1, 0])
+
+
+def test_choose_ball_None():
+    game = ex06.Game()
+    game.update([5, 3, 3, 2, 9, 2])
+    assert Autopilot().choose(game) == 0
+
+
+def test_choose_paddle_None():
+    game = ex06.Game()
+    game.update([5, 3, 2, 2, 9, 4])
+    assert Autopilot().choose(game) == 0
