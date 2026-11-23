@@ -88,16 +88,13 @@ class Game:
     paddle: tuple[int, int] = None
 
     def update(self, outputs: list[int]) -> None:
-        score_updated = False
         paddle_found = False
         for tile_index in range(2, len(outputs), 3):
             tile = outputs[tile_index]
             position = (outputs[tile_index - 2], outputs[tile_index - 1])
 
             if position[0] == -1:
-                self.scores.append(tile)
                 self.score = tile
-                score_updated = True
                 continue
 
             self.tiles[position] = tile
@@ -112,8 +109,7 @@ class Game:
                     self.ball = position
                 case _:
                     pass
-        if not score_updated:
-            self.scores.append(0)
+        self.scores.append(self.score)
 
     def count(self, tile: int) -> None:
         counter = 0

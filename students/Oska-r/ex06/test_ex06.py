@@ -111,6 +111,10 @@ def test_game_update_overwrites():
     assert game.tiles == {(1, 2): 0, (2, 2): 4}
     assert game.scores == [0, 0]
 
+    game.update([-1, 0, 12])
+    game.update([1, 2, 4])
+    assert game.scores == [0, 0, 12, 12]
+
 
 def test_two_games_are_independent():
     first = ex06.Game()
