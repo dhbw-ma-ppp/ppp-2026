@@ -2,6 +2,7 @@ import math
 
 import pandas as pd
 import pytest
+import numpy as np
 
 from ex07 import (
     COLUMNS,
@@ -136,3 +137,27 @@ def test_model_table():
     for _, train_score, test_score in rows:
         assert 0.5 < train_score <= 1
         assert 0.5 < test_score < 0.8
+
+def test_add_rainy_with_nan():
+    # Input: rain is NaN.
+    # Expected: NaN stays NaN and rainy_tomorrow is shifted by one row correctly.
+    # Covers: missing rain, and rainy_tomorrow NaN.
+    weather = pd.DataFrame({
+        "rain": [0.0, 1.0, np.nan, 3.0]
+    })
+    result = add_rainy(weather)
+    assert pd.isna(result["rainy"].iloc[2])
+    assert pd.isna(result["rainy_tomorrow"].iloc[1])
+    assert pd.isna(result["rainy_tomorrow"].iloc[3])
+
+def test_monthly_rain_missing_month_in_one_year():
+    # Input: January exists in both years, February only in 2001.
+    # Expected: 5.0 for January and 8.0 for February.
+    # Covers: a month that is not present in every year.
+    weather = pd.DataFrame({
+        "year": [2001, 2001, 2002],
+        "month": [1, 2, 1],
+        "rain": [4.0, 8.0, 6.0]
+    })
+    result = monthly_rain(weather, 2001, 2002)
+    assert result.to_dict() == {1: 5.0, 2: 8.0}    
