@@ -193,3 +193,10 @@ def test_run_after_halt_returns_nothing():
 
     assert computer.run([]) == []
     assert computer.halted
+
+
+def test_score_does_not_update_ball_or_paddle():
+    game = ex06.Game()
+    game.update([-1, 0, 4])
+    assert game.score == 4
+    assert game.ball is None

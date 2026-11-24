@@ -110,11 +110,10 @@ class Game:
                 self.score = tile_outputs
             else:
                 self.tiles[(x, y)] = tile_outputs
-
-            if tile_outputs == 3:
-                self.paddle = (x, y)
-            if tile_outputs == 4:
-                self.ball = (x, y)
+                if tile_outputs == 3:
+                    self.paddle = (x, y)
+                elif tile_outputs == 4:
+                    self.ball = (x, y)
 
         self.scores.append(self.score)
 
