@@ -68,7 +68,16 @@ def hot_days(weather: pd.DataFrame, threshold: int = 30.0) -> pd.Series:
 
     A year with no such day has 0; a year without any max_temp isn't in the result.
     """
-    pass  # replace this line with your code
+    return (
+        pd.merge(
+            weather.loc[weather["max_temp"].notna()]["year"].value_counts(),
+            weather.loc[weather["max_temp"] >= threshold]["year"].value_counts(),
+            how="left",
+            on="year",
+        )["count_y"]
+        .fillna(0)
+        .convert_dtypes()  # makes values ints rather than floats
+    )
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -123,8 +132,16 @@ if __name__ == "__main__":
         f"1:\n"
         f"\tThe file has {weather['date'].count()} days and goes from the year {weather['year'].min()} to the year {weather['year'].max()}."
     )
+    missing_max_temp = missing_per_year(weather, "max_temp")
+    missing_mean_temp = missing_per_year(weather, "mean_temp")
     print(
         f"2:\n"
-        f"\t`max_temp` was missing on almost every day of the years {missing_per_year(weather, 'max_temp').keys().to_numpy()} while `mean_temp` is missing from {missing_per_year(weather, 'mean_temp').to_numpy()}.\n"
-        f"\tThis tells us that the weather station was not recording the maximum temperature until {missing_per_year(weather, 'max_temp').keys().to_numpy().max() + 1}."
+        f"\t`max_temp` was missing on almost every day of the year{'' if missing_max_temp.size == 1 else 's'} {missing_max_temp.keys().to_numpy()} while `mean_temp` is missing from {missing_mean_temp.to_numpy()}.\n"
+        f"\tThis tells us that the weather station was not recording the maximum temperature until {missing_max_temp.keys().to_numpy().max() + 1}."
+    )
+    hot_days_series = hot_days(weather)
+    hot_years = hot_days_series.loc[hot_days_series == hot_days_series.max()].index.to_numpy()
+    print(
+        f"3:\n"
+        f"\tThe year{'' if hot_years.size == 1 else 's'} {hot_years} had the most hot days with {hot_days_series.max()} hot days."
     )
