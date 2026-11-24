@@ -189,3 +189,8 @@ def test_large_number():
 # Erwartet: 0
 def test_count_tiles_empty():
     assert count_tiles([], BLOCK) == 0
+
+def test_count_tiles_score_in_the_middle():
+    # Eingabe: Score-Tripel (-1, 0, 2) steht in der Mitte | Erwartet: 1 | Fall: Score darf nicht als Kachel zählen
+    output = [1, 0, 2, -1, 0, 2, 3, 0, 4]
+    assert count_tiles(output, 2) == 1
