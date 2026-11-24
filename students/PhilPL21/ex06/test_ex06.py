@@ -190,3 +190,9 @@ def test_game_update_score_history():
     game.update([-1, 0, 40])
     assert game.score == 40
     assert game.scores == [10, 25, 40]
+
+
+def test_game_update_score_history_once():
+    game = ex06.Game()
+    game.update([-1, 0, 3, -1, 0, 4])
+    assert game.scores == [4]
