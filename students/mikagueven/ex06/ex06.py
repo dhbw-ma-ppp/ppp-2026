@@ -114,6 +114,8 @@ class Game:
 
 def screen_rows(game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
+    if not game.tiles:
+        return []
     max_x = max(x for x, y in game.tiles)
     max_y = max(y for x, y in game.tiles)
     rows = []

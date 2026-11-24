@@ -201,3 +201,9 @@ def test_autopilot_stays_still():
     game.paddle = (5, 10)
 
     assert Autopilot().choose(game) == 0
+
+
+# Review Testcase
+def test_screen_rows_empty_game():
+    game = ex06.Game()
+    assert ex06.screen_rows(game) == []
