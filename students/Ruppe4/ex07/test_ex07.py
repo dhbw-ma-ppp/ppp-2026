@@ -138,11 +138,13 @@ def test_model_table():
         assert 0.5 < test_score < 0.8
 
 
+# Eingabe: max_temp 30.0 und 29.9 | Erwartet: {2000: 1} | Fall: Grenzwert zählt mit (>=)
 def test_hot_days_threshold_is_inclusive():
     weather = pd.DataFrame({"year": [2000, 2000], "max_temp": [30.0, 29.9]})
     assert hot_days(weather).to_dict() == {2000: 1}  # genau 30.0 zählt mit
 
 
+# Eingabe: rain [0.4, 0.5, 2.0], threshold=0.5 | Erwartet: [0, 1, 1] | Fall: eigener Schwellenwert + Grenzwert
 def test_add_rainy_custom_threshold_and_boundary():
     weather = pd.DataFrame({"rain": [0.4, 0.5, 2.0]})
     result = add_rainy(weather, threshold=0.5)
