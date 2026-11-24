@@ -131,25 +131,25 @@ class Game:
     ball: tuple | None = None
     paddle: tuple | None = None
 
-    def update(self, outputs):
-        """Die Tripel aus `outputs` einarbeiten."""
-        self.scores.append(0)
+    def update(self, outputs: list[int]) -> None:
+        """Die Tripel aus outputs einarbeiten."""
         for i in range(0, len(outputs) - 2, 3):
             x = outputs[i]
             y = outputs[i + 1]
             tile_id = outputs[i + 2]
 
             if x == -1 and y == 0:
-                self.score = tile_id
-                self.scores[-1] += tile_id
+                self.score = tile_id  # Score setzen, nicht addieren
                 continue
 
             self.tiles[(x, y)] = tile_id
 
-            if tile_id == 4:
+            if tile_id == BALL:
                 self.ball = (x, y)
-            elif tile_id == 3:
+            elif tile_id == PADDLE:
                 self.paddle = (x, y)
+
+        self.scores.append(self.score)  # aktueller Stand nach diesem update
 
     def count(self, tile):
         """Wie viele Kacheln dieser Art liegen auf dem Bildschirm?"""

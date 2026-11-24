@@ -185,3 +185,17 @@ def test_paddle_moves_left():
     game = ex06.Game()
     game.update([2, 9, 4, 5, 1, 3])
     assert Autopilot().choose(game) == -1
+
+
+def test_autopilot_stays_when_aligned():
+    game = ex06.Game()
+    game.update([4, 3, 4, 4, 9, 3])
+    assert Autopilot().choose(game) == 0
+
+
+def test_pause_in_the_middle_with_memory_beyond_the_program():
+    computer = Computer([3, 100, 4, 100, 3, 100, 4, 100, 99])
+    assert computer.run([5]) == [5]
+    assert not computer.halted
+    assert computer.run([6]) == [6]
+    assert computer.halted
