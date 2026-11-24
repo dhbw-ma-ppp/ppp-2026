@@ -87,20 +87,19 @@ class Game:
     scores: list[int] = field(default_factory=list)
 
     def update(self, outputs: list[int]) -> None:
-        self.scores.append(0)
         for i in range(0, len(outputs), 3):
             x = outputs[i]
             y = outputs[i + 1]
             t = outputs[i + 2]
             if x == -1 and y == 0:
                 self.score = t
-                self.scores[-1] += self.score
             else:
                 self.tiles[(x, y)] = t
                 if t == BALL:
                     self.ball = (x, y)
                 elif t == PADDLE:
                     self.paddle = (x, y)
+        self.scores.append(self.score)
 
     def count(self, tile):
         count = 0
@@ -112,6 +111,8 @@ class Game:
 
 def screen_rows(game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
+    if not game.tiles:
+        return []
     xMax, yMax = max(x for x, y in game.tiles), max(y for x, y in game.tiles)
     reihen = []
     for y in range(yMax + 1):
@@ -126,6 +127,8 @@ def screen_rows(game) -> list[list[int]]:
 
 def draw(game) -> str:
     """The screen as text: one line per row, one character per tile (see SYMBOLS)."""
+    if not game.tiles:
+        return ""
     reihen = screen_rows(game)
     zeilen = ""
     for reihe in reihen:

@@ -184,3 +184,8 @@ def test_autopilot_doesnt_move():
     game.ball = (3, 6)
     game.paddle = (3, 10)
     assert Autopilot().choose(game) == 0
+
+
+def test_review():
+    game = ex06.Game()
+    assert ex06.draw(game) == ""
