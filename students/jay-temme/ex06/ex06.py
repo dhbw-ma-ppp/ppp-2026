@@ -45,20 +45,16 @@ class Computer:
         """
         position = self.current_position
         outputs = []
-
         while position is not None:
             try:
                 position, self.relative_base = step(
                     self.program, position, inputs, outputs, self.relative_base
                 )
-
             except EmptyInputError:
                 self.current_position = position
                 break
-
         if position is None:
             self.halted = True
-
         return outputs
 
 
@@ -66,15 +62,12 @@ def count_tiles(outputs: list, input_tile: int) -> int:
     """How many (x, y, tile) triples in `outputs` have this tile. Score triples don't count."""
     number_of_tiles = 0
 
-    for x, y, tile in [
-        (outputs[i], outputs[i + 1], outputs[i + 2]) for i in range(0, len(outputs), 3)
-    ]:
-        if x == -1:
+    for i in range(0, len(outputs), 3):
+        x, y, tile = outputs[i], outputs[i + 1], outputs[i + 2]
+        if x == -1 and y == 0:
             continue
-
         if tile == input_tile:
             number_of_tiles += 1
-
     return number_of_tiles
 
 
@@ -83,54 +76,45 @@ def count_tiles(outputs: list, input_tile: int) -> int:
 
 @dataclass
 class Game:
-    tiles: dict[tuple[int], int] = field(default_factory=dict)
+    tiles: dict[tuple[int] : int] = field(default_factory=dict)
     score: int = 0
     scores: list[tuple[int]] = field(default_factory=list)
-    ball: tuple[int] = None
-    paddle: tuple[int] = None
+    ball: tuple[int] | None = None
+    paddle: tuple[int] | None = None
 
     def update(self, outputs: list):
-        for x, y, tile in [
-            (outputs[i], outputs[i + 1], outputs[i + 2]) for i in range(0, len(outputs), 3)
-        ]:
+        for i in range(0, len(outputs), 3):
+            x, y, tile = outputs[i], outputs[i + 1], outputs[i + 2]
             if x == -1 and y == 0:
                 self.score = tile
                 continue
-
             if tile == BALL:
                 self.ball = (x, y)
-
             if tile == PADDLE:
                 self.paddle = (x, y)
-
             self.tiles[(x, y)] = tile
-
         self.scores.append(self.score)
 
     def count(self, input_tile: int) -> int:
         """How many (x, y, tile) triples in `outputs` have this tile. Score triples don't count."""
-        number_of_tiles = len(
-            [(x, tile) for (x, y), tile in self.tiles.items() if tile == input_tile and x != -1]
-        )
+        number_of_tiles = 0
+        for (x, y), tile in self.tiles.items():
+            if tile == input_tile and x != -1:
+                number_of_tiles += 1
         return number_of_tiles
 
 
 def screen_rows(game: Game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
     screen = []
-
     for (x, y), tile in game.tiles.items():
         if x < 0 or y < 0:
             raise ValueError(f"negative coordinate for tile {tile} at ({x}, {y}).")
-
         if len(screen) <= y:
             screen.extend([[]] * (y - (len(screen) - 1)))
-
         if len(screen[y]) <= x:
             screen[y].extend([None] * (x - (len(screen[y]) - 1)))
-
         screen[y][x] = tile
-
     return screen
 
 
@@ -140,10 +124,10 @@ def draw(game: Game) -> str:
 
     for screen_row in screen_rows(game):
         for tile in screen_row:
+            if tile not in SYMBOLS:
+                raise ValueError(f"Invalid tile {tile}.")
             screen_string += SYMBOLS[tile]
-
         screen_string += "\n"
-
     return screen_string[:-1]
 
 
@@ -165,6 +149,8 @@ class Autopilot(Controller):
     """Plays the game: keeps the ball in play until every block is gone."""
 
     def choose(self, game: Game) -> int:
+        if game.paddle is None or game.ball is None:
+            raise ValueError("missing ball or paddle position")
         if game.paddle[0] < game.ball[0]:
             return 1
         if game.paddle[0] > game.ball[0]:
@@ -183,7 +169,6 @@ class Keyboard(Controller):
         next_input = input("Enter next input (a: left, d: right, nothing: stay): ")
         while next_input not in ["a", "d", ""]:
             next_input = input("Enter a valid input (a: left, d: right, nothing: stay):")
-
         if next_input == "a":
             return -1
         if next_input == "d":
@@ -192,7 +177,6 @@ class Keyboard(Controller):
 
     def choose(self, game: Game) -> int:
         self.draw_game(game)
-
         return self.get_next_input()
 
 
@@ -204,10 +188,8 @@ def play(program: list[int], controller: Controller) -> Game:
     computer = Computer(program)
     game = Game()
     game.update(computer.run([]))
-
     while not computer.halted:
         game.update(computer.run([controller.choose(game)]))
-
     return game
 
 

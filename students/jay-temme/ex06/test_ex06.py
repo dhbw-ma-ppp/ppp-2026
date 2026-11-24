@@ -191,3 +191,10 @@ def test_screen_rows_negative_coordinate():
     game.update([0, -1, BLOCK])
     with pytest.raises(ValueError):
         ex06.screen_rows(game)
+
+
+def test_autopilot_without_ball():
+    game = ex06.Game()
+    game.update([5, 10, PADDLE])
+    with pytest.raises(ValueError):
+        Autopilot().choose(game)
