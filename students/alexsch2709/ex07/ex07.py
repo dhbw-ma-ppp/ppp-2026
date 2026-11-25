@@ -34,12 +34,7 @@ def load_weather(path):
     Keep only the columns in COLUMNS, with our names; -999 (missing) becomes NaN. Add the
     columns `year` and `month`, as ints, worked out from `date` (an int such as 19470101).
     """
-    weather = pd.read_csv(
-        path,
-        sep=";",
-        skipinitialspace=True,
-        na_values=-999
-    )
+    weather = pd.read_csv(path, sep=";", skipinitialspace=True, na_values=-999)
     weather = weather[list(COLUMNS.keys())]
     weather = weather.rename(columns=COLUMNS)
 
@@ -51,9 +46,7 @@ def load_weather(path):
 
 def missing_per_year(weather, column):
     """For every year in `weather`: on how many days `column` is missing (NaN)."""
-    return weather.groupby("year")[column].apply(
-        lambda s: s.isna().sum()
-    )
+    return weather.groupby("year")[column].apply(lambda s: s.isna().sum())
 
 
 def hot_days(weather, threshold=30.0):
@@ -63,9 +56,7 @@ def hot_days(weather, threshold=30.0):
     """
     known = weather.dropna(subset=["max_temp"])
 
-    return known.groupby("year")["max_temp"].apply(
-        lambda s: (s >= threshold).sum()
-    )
+    return known.groupby("year")["max_temp"].apply(lambda s: (s >= threshold).sum())
 
 
 # ---------------------------------------------------------------- Part 2 (at home)
@@ -73,15 +64,8 @@ def hot_days(weather, threshold=30.0):
 
 def monthly_rain(weather, first_year, last_year):
     """The average total rain of each month (1 to 12), over the years first_year..last_year."""
-    selected = weather[
-        (weather["year"] >= first_year)
-        & (weather["year"] <= last_year)
-    ]
-    monthly_totals = (
-        selected
-        .groupby(["year", "month"])["rain"]
-        .sum()
-    )
+    selected = weather[(weather["year"] >= first_year) & (weather["year"] <= last_year)]
+    monthly_totals = selected.groupby(["year", "month"])["rain"].sum()
 
     return monthly_totals.groupby("month").mean()
 
@@ -135,10 +119,7 @@ def baselines(test):
     never = (actual == 0).mean()
     same = (valid["rainy"] == actual).mean()
 
-    return {
-        "never": never,
-        "same": same
-    }
+    return {"never": never, "same": same}
 
 
 def model_table(weather, features, depths):
@@ -163,10 +144,7 @@ def model_table(weather, features, depths):
     table = []
 
     for depth in depths:
-        model = DecisionTreeClassifier(
-            max_depth=depth,
-            random_state=1
-        )
+        model = DecisionTreeClassifier(max_depth=depth, random_state=1)
         model.fit(x_train, y_train)
         table.append(
             (
@@ -226,21 +204,9 @@ if __name__ == "__main__":
     wettest_month = rain.idxmax()
     driest_month = rain.idxmin()
 
-    print(
-        "Wettest month:",
-        wettest_month,
-        "Average rain:",
-        round(rain.max(), 2),
-        "mm"
-    )
+    print("Wettest month:", wettest_month, "Average rain:", round(rain.max(), 2), "mm")
 
-    print(
-        "Driest month:",
-        driest_month,
-        "Average rain:",
-        round(rain.min(), 2),
-        "mm"
-    )
+    print("Driest month:", driest_month, "Average rain:", round(rain.min(), 2), "mm")
 
     # Create hot_days.png
     plot_hot_days(weather, Path(__file__).parent / "hot_days.png")
@@ -248,11 +214,7 @@ if __name__ == "__main__":
     # Answer 6
     print("\nAnswer 6")
 
-    rows, base = model_table(
-        weather,
-        ["rainy", "humidity"],
-        [1, 2, 3, 5, None]
-    )
+    rows, base = model_table(weather, ["rainy", "humidity"], [1, 2, 3, 5, None])
 
     print("Baselines:")
     print(base)
