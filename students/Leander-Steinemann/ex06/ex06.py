@@ -80,8 +80,6 @@ class Game:
     paddle: tuple = None
 
     def update(self, outputs: list) -> None:
-        # self.tiles = {}
-        # self.score = 0
         for x in range(0, len(outputs), 3):
             y = x + 1
             tile = x + 2
@@ -109,10 +107,13 @@ def screen_rows(game) -> list[list[int]]:
     rows = [[]]
     row = 0
     for (x, y), tile in game.tiles.items():
-        if row != y:
+        if row < y:
             rows.append([])
             row = y
-        rows[y].append(tile)
+        elif row == y:
+            rows[y].append(tile)
+        else:
+            raise ValueError("Output con run nicht in Reihenfolge der Pixel")
     return rows
 
 
