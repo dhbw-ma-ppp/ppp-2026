@@ -101,7 +101,7 @@ class Game:
             y = outputs[i + 1]
             inhalt = outputs[i + 2]
 
-            if x == -1:
+            if x == -1 and y == 0:
                 self.score = inhalt
             else:
                 self.tiles[(x, y)] = inhalt

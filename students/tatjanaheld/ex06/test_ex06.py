@@ -185,3 +185,9 @@ def test_autopilot_moves_left():
 
 def test_count_tiles_empty_list():
     assert count_tiles([], BLOCK) == 0
+
+
+def test_update_minus_one_is_not_always_score():
+    game = ex06.Game()
+    game.update([-1, 10, 2])
+    assert game.scores == [0]
