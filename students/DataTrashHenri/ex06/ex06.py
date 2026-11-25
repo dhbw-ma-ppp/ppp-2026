@@ -84,6 +84,7 @@ def count_tiles(outputs, tile):
 
 
 # 1. Write the dataclass `Game` here (see README.md).
+@dataclass
 class Game:
     tiles = dict()
     score = 0
