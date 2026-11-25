@@ -104,16 +104,17 @@ class Game:
 
 def screen_rows(game) -> list[list[int]]:
     """The screen as a list of rows: screen_rows(game)[y][x] is the tile at (x, y)."""
-    rows = [[]]
-    row = 0
+    if not game.tiles:
+        return []
+
+    max_x = max(x for x, y in game.tiles)
+    max_y = max(y for x, y in game.tiles)
+
+    rows = [[EMPTY] * (max_x + 1) for _ in range(max_y + 1)]
+
     for (x, y), tile in game.tiles.items():
-        if row < y:
-            rows.append([])
-            row = y
-        elif row == y:
-            rows[y].append(tile)
-        else:
-            raise ValueError("Output con run nicht in Reihenfolge der Pixel")
+        rows[y][x] = tile
+
     return rows
 
 
