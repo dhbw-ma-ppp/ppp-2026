@@ -128,6 +128,29 @@ def test_baselines():
     assert baselines(test) == {"never": 0.5, "same": 0.5}
 
 
+def test_split_by_year_boundary():  # self
+    weather = pd.DataFrame({"year": [2015, 2016]})
+
+    train, test = split_by_year(weather, 2015)
+
+    assert list(train["year"]) == [2015]
+    assert list(test["year"]) == [2016]
+
+
+def test_baselines_perfect_same():
+    test = pd.DataFrame(
+        {
+            "rainy": [0, 1, 0, 1],
+            "rainy_tomorrow": [0, 1, 0, 1],
+        }
+    )
+
+    assert baselines(test) == {
+        "never": 0.5,
+        "same": 1.0,
+    }
+
+
 @needs_data
 def test_model_table():
     rows, base = model_table(load_weather(DATA_FILE), ["rainy", "humidity"], [1, None])
