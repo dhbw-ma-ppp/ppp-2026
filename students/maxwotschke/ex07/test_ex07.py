@@ -136,3 +136,18 @@ def test_model_table():
     for _, train_score, test_score in rows:
         assert 0.5 < train_score <= 1
         assert 0.5 < test_score < 0.8
+
+
+def test_split_by_year_before_first_year():
+    weather = pd.DataFrame({"year": [2018, 2019, 2020]})
+    train, test = split_by_year(weather, 2015)
+    assert len(train) == 0
+    assert list(test["year"]) == [2018, 2019, 2020]
+
+
+def test_add_rainy_custom_threshold():
+    weather = pd.DataFrame({"rain": [0.0, 4.9, 5.0, 10.0]})
+    result = add_rainy(weather, threshold=5.0)
+    assert list(result["rainy"]) == [0, 0, 1, 1]
+    assert list(result["rainy_tomorrow"][:3]) == [0, 1, 1]
+    assert math.isnan(result["rainy_tomorrow"][3])
