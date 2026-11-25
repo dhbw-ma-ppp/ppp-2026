@@ -136,3 +136,13 @@ def test_model_table():
     for _, train_score, test_score in rows:
         assert 0.5 < train_score <= 1
         assert 0.5 < test_score < 0.8
+
+
+def test_baselines_ignores_the_last_row():
+    test = pd.DataFrame({"rainy": [1, 0], "rainy_tomorrow": [0.0, float("nan")]})
+    assert baselines(test) == {"never": 1.0, "same": 0.0}
+
+
+def test_add_rainy_other_threshold():
+    weather = pd.DataFrame({"rain": [0.4, 0.2, 0.6]})
+    assert list(add_rainy(weather, threshold=0.2)["rainy"]) == [1, 1, 1]

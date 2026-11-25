@@ -26,7 +26,6 @@ COLUMNS = {
 }
 
 # ---------------------------------------------------------------- Part 1 (in class)
-help(pd.read_csv)
 
 
 def load_weather(path):
@@ -79,12 +78,21 @@ def hot_days(weather, threshold=30.0):
 
 def monthly_rain(weather, first_year, last_year):
     """The average total rain of each month (1 to 12), over the years first_year..last_year."""
-    pass  # replace this line with your code
+    years = weather[(weather["year"] >= first_year) & (weather["year"] <= last_year)]
+    total = years.groupby(["year", "month"])["rain"].sum()
+    return total.groupby("month").mean()
 
 
 def plot_hot_days(weather, path):
     """Save a bar chart of hot days (30 °C or more) per year as a picture at `path`."""
-    pass  # replace this line with your code
+    hot_days_data = hot_days(weather)
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.bar(hot_days_data.index, hot_days_data.values)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Days with max_temp of 30 °C or more")
+    ax.set_title("Hot days per year in Mannheim")
+    fig.savefig(path)
+    plt.close(fig)
 
 
 def add_rainy(weather, threshold=1.0):
@@ -93,12 +101,17 @@ def add_rainy(weather, threshold=1.0):
     `rainy`: 1 if `rain` is at least `threshold` mm that day, else 0.
     `rainy_tomorrow`: the next row's `rainy`; NaN in the last row.
     """
-    pass  # replace this line with your code
+    rainy = weather.copy()
+    rainy["rainy"] = (rainy["rain"] >= threshold).astype(int)
+    rainy["rainy_tomorrow"] = rainy["rainy"].shift(-1)
+    return rainy
 
 
 def split_by_year(weather, last_train_year):
     """Rows up to and including last_train_year, and the rows after it."""
-    pass  # replace this line with your code
+    train = weather[weather["year"] <= last_train_year]
+    test = weather[weather["year"] > last_train_year]
+    return train, test
 
 
 def baselines(test):
@@ -106,7 +119,10 @@ def baselines(test):
 
     Return a dict: "never": it never rains tomorrow; "same": tomorrow is like today.
     """
-    pass  # replace this line with your code
+    test = test[test["rainy_tomorrow"].notna()]
+    never = (test["rainy_tomorrow"] == 0).mean()
+    same = (test["rainy"] == test["rainy_tomorrow"]).mean()
+    return {"never": never, "same": same}
 
 
 def model_table(weather, features, depths):
@@ -116,10 +132,59 @@ def model_table(weather, features, depths):
     train on the years up to 2015 and test on the years after. Return a list of
     (depth, train accuracy, test accuracy), and the baselines on the test years.
     """
-    pass  # replace this line with your code
+    data = weather[weather["year"] >= 1947]
+    data = add_rainy(data)
+    data = data.dropna(subset=features + ["rainy_tomorrow"])
+    train, test = split_by_year(data, 2015)
+
+    data_table = []
+    for depth in depths:
+        model = DecisionTreeClassifier(max_depth=depth, random_state=1)
+        model.fit(train[features], train["rainy_tomorrow"])
+        train_accuracy = model.score(train[features], train["rainy_tomorrow"])
+        test_accuracy = model.score(test[features], test["rainy_tomorrow"])
+        data_table.append((depth, train_accuracy, test_accuracy))
+
+    return data_table, baselines(test)
 
 
 if __name__ == "__main__":
     weather = load_weather(DATA_FILE)
     print(weather)
-    # Print your answers here, e.g. print("1:", ...)
+    plot_hot_days(weather, Path(__file__).parent / "hot_days.png")
+
+    # Answer 1: how many days, from which year to which
+    print("1:", len(weather), "days, from", weather["year"].min(), "to", weather["year"].max())
+    print("\n")
+    # Answer 2: years where max_temp is missing on (almost) every day, and mean_temp for those days
+    missing_max = missing_per_year(weather, "max_temp")
+    missing_mean = missing_per_year(weather, "mean_temp")
+    years = missing_max[missing_max > 300].index
+    print("2: days with max_temp missing, in the years where it is missing on more than 300 days:")
+    print(missing_max.loc[years])
+    print("days with mean_temp missing (same years):")
+    print(missing_mean.loc[years])
+    print("\n")
+    # Answer 3: the years with the most hot days
+    hot = hot_days(weather)
+    print("3: most hot days:")
+    print(hot[hot == hot.max()])
+    print("\n")
+    # Answer 4: average hot days/year
+    print("4: 1951-1980:", hot.loc[1951:1980].mean())
+    print("   1996-2025:", hot.loc[1996:2025].mean())
+    print("\n")
+    # Answer 5: wettest and driest month
+    rain = monthly_rain(weather, 1947, 2025)
+    print("5: wettest month:", rain.idxmax(), round(rain.max(), 1), "mm")
+    print("driest month: ", rain.idxmin(), round(rain.min(), 1), "mm")
+
+    # The chart for hot days
+    plot_hot_days(weather, Path(__file__).parent / "hot_days.png")
+    print("\n")
+    # Answer 6: the baselines and the table for the best features
+    features = ["humidity", "clouds", "pressure", "sunshine", "month", "rainy"]
+    table, base = model_table(weather, features, [1, 2, 3, 5, 10, None])
+    print("6: baselines:", base)
+    for depth, train_accuracy, test_accuracy in table:
+        print(f"depth {str(depth)}   train {train_accuracy}   test {test_accuracy}")
