@@ -192,3 +192,14 @@ def test_play_asks_controller_twice():  # checks if Controller is asked only onc
     controller = CountingStay()
     ex06.play([3, 0, 3, 0, 99], controller)
     assert controller.calls == 2
+
+
+def test_autopilot_working_correct():
+    game = ex06.Game()
+    game.paddle = (3, 10)
+    game.ball = (8, 4)
+    assert Autopilot().choose(game) == 1
+    game.ball = (1, 4)
+    assert Autopilot().choose(game) == -1
+    game.ball = (3, 4)
+    assert Autopilot().choose(game) == 0

@@ -99,7 +99,7 @@ class Game:
                 self.paddle = position
         self.scores.append(self.score)
 
-    def count(self, tile) -> int:
+    def count(self, tile: int) -> int:
         count = 0
         for value in self.tiles.values():
             if value == tile:
