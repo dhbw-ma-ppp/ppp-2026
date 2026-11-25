@@ -44,7 +44,7 @@ class Computer:
 
         Return the numbers output during this call.
         """
-        self.inputs = inputs.copy()
+        self.inputs = self.inputs + inputs
 
         outputs = []
 
@@ -96,9 +96,9 @@ class Game:
             else:
                 self.tiles[(x, y)] = value
 
-                if value == 4:
+                if value == BALL:
                     self.ball = (x, y)
-                elif value == 3:
+                elif value == PADDLE:
                     self.paddle = (x, y)
 
         self.scores.append(self.score)
