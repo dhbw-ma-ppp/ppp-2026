@@ -46,8 +46,7 @@ class Computer:
 
     def run(self, inputs):
         self.outputs = []
-        for input in inputs:
-            self.inputs.append(input)
+        self.inputs.extend(inputs)
         while self.next_pos is not None and not (
             decode(self.program[self.next_pos])[0] == 3 and not self.inputs
         ):
