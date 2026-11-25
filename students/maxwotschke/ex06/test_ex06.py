@@ -188,4 +188,12 @@ def test_draw_empty_game():
     assert ex06.draw(game) == ""
 
 
+def test_update_deletes_ball():
+    game = ex06.Game()
+    game.update([3, 1, BALL])
+    game.update([2, 1, BALL])
+    assert game.count(BALL) == 1
+    assert game.ball == (2, 1)
+
+
 # ---------------------------------------------------------------- your tests (Part 2)
