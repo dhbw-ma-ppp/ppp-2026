@@ -193,3 +193,6 @@ def test_multiple_pauses():
     assert computer.run([3]) == [5]
     assert computer.run([]) == []
     assert computer.run([4]) == [9]
+
+def test_empty_autopilot():
+    assert Autopilot().choose(ex06.Game()) == 0
