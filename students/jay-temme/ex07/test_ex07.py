@@ -128,9 +128,10 @@ def test_baselines():
     assert baselines(test) == {"never": 0.5, "same": 0.5}
 
 
+# originally broken test: ...table(load_weather(... is missing the rainy colum
 @needs_data
 def test_model_table():
-    rows, base = model_table(load_weather(DATA_FILE), ["rainy", "humidity"], [1, None])
+    rows, base = model_table(add_rainy(load_weather(DATA_FILE)), ["rainy", "humidity"], [1, None])
     assert [depth for depth, _, _ in rows] == [1, None]
     assert base["never"] == pytest.approx(0.717, abs=0.001)
     for _, train_score, test_score in rows:
