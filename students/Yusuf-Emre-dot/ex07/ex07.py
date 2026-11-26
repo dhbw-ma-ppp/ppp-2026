@@ -160,6 +160,29 @@ def model_table(weather, features, depths):
     return [ausgabe, base]
 
 
+def feature_select():
+    weather = load_weather(DATA_FILE)
+    data = weather
+    current = data.columns
+    current = current.append(pd.Index(["rainy"]))
+    best = [(), 0]
+    for feature in range(len(data.columns) - 1):
+        geändert = False
+        for others in current:
+            if others != "rainy":
+                label = current.drop([others])
+                a, base = model_table(data, label, np.arange(1, 10))
+                a.sort(key=lambda zwei: zwei[2])
+                if a[-1][2] >= best[1]:
+                    best = [label, a[-1][2]]
+                    geändert = True
+        if geändert:
+            current = best[0]
+        else:
+            return best
+    return best
+
+
 if __name__ == "__main__":
     weather = load_weather(DATA_FILE)
     print(
@@ -180,10 +203,4 @@ if __name__ == "__main__":
     wet = monthly_rain(weather, 1947, 2025)
     k = pd.DataFrame(data={"Wettest": wet.loc[wet == wet.max()], "Dry": wet.loc[wet == wet.min()]})
     print("5", k)
-
-    data = add_rainy(weather)
-    label = data.columns.drop(["rainy_tomorrow", "date"])
-    print(label, data.columns, "lol")
-    a, base = model_table(data, label, np.arange(1, len(label)))
-    a.sort(key=lambda zwei: zwei[2])
-    print("6", a[-1], base)
+    print("6:", feature_select())
