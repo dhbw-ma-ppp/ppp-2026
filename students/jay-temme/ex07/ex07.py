@@ -60,6 +60,8 @@ def load_weather(path: Path) -> pd.DataFrame:
 
 def missing_per_year(weather: pd.DataFrame, column: str) -> pd.Series:
     """For every year in `weather`: on how many days `column` is missing (NaN)."""
+    if column not in weather.keys():
+        raise ValueError(f"unknown column {column}")
     return (
         pd.merge(
             weather["year"].value_counts(),
@@ -68,7 +70,7 @@ def missing_per_year(weather: pd.DataFrame, column: str) -> pd.Series:
             on="year",
         )["count_y"]
         .fillna(0)
-        .convert_dtypes()
+        .astype(int)
     )
 
 
@@ -85,7 +87,7 @@ def hot_days(weather: pd.DataFrame, threshold: int = 30.0) -> pd.Series:
             on="year",
         )["count_y"]
         .fillna(0)
-        .convert_dtypes()  # makes values ints rather than floats
+        .astype(int)
     )
 
 
@@ -118,12 +120,12 @@ def add_rainy(weather: pd.DataFrame, threshold: int = 1.0) -> pd.DataFrame:
     `rainy_tomorrow`: the next row's `rainy`; NaN in the last row.
     """
     output = weather.copy()
-    output["rainy"] = (output["rain"] >= threshold).astype(int)
+    output["rainy"] = (output["rain"] >= threshold).astype(float)
     output["rainy_tomorrow"] = output["rainy"].shift(-1)
     return output
 
 
-def split_by_year(weather: pd.DataFrame, last_train_year: int) -> tuple[pd.DataFrame]:
+def split_by_year(weather: pd.DataFrame, last_train_year: int) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Rows up to and including last_train_year, and the rows after it."""
     return (
         weather.loc[weather["year"] <= last_train_year],
@@ -184,61 +186,63 @@ if __name__ == "__main__":
     weather = load_weather(DATA_FILE)
     print(weather)
 
-    print(
-        f"1:"
-        f"\tThe file has {weather['date'].count()} days and goes from the year {weather['year'].min()} to the year {weather['year'].max()}.\n"
-    )
+    # print(
+    #     f"1:"
+    #     f"\tThe file has {weather['date'].count()} days and goes from the year {weather['year'].min()} to the year {weather['year'].max()}.\n"
+    # )
 
-    missing_max_temp = missing_per_year(weather, "max_temp")
-    missing_max_temp = missing_max_temp.loc[missing_max_temp > 300]
-    missing_mean_temp = missing_per_year(weather, "mean_temp")
-    missing_mean_temp = missing_mean_temp.loc[missing_mean_temp > 300]
-    print(
-        f"2:"
-        f"\t`max_temp` was missing on almost every day of the year{'' if missing_max_temp.size == 1 else 's'} {missing_max_temp.keys().to_numpy()} while `mean_temp` is missing from {missing_mean_temp.keys().to_numpy()}.\n"
-        f"\tThis tells us that the weather station was not recording the maximum temperature until {missing_max_temp.keys().to_numpy().max() + 1}.\n"
-    )
+    # missing_max_temp = missing_per_year(weather, "max_temp")
+    # missing_max_temp = missing_max_temp.loc[missing_max_temp > 300]
+    # missing_mean_temp = missing_per_year(weather, "mean_temp")
+    # missing_mean_temp = missing_mean_temp.loc[missing_mean_temp > 300]
+    # print(
+    #     f"2:"
+    #     f"\t`max_temp` was missing on almost every day of the year{'' if missing_max_temp.size == 1 else 's'} {missing_max_temp.keys().to_numpy()} while `mean_temp` is missing from {missing_mean_temp.keys().to_numpy()}.\n"
+    #     f"\tThis tells us that the weather station was not recording the maximum temperature until {missing_max_temp.keys().to_numpy().max() + 1}.\n"
+    # )
 
-    hot_days_series = hot_days(weather)
-    hot_years = hot_days_series.loc[hot_days_series == hot_days_series.max()].index.to_numpy()
-    print(
-        f"3:"
-        f"\tThe year{'' if hot_years.size == 1 else 's'} {hot_years} had the most hot days with {hot_days_series.max()} hot days.\n"
-    )
+    # hot_days_series = hot_days(weather)
+    # hot_years = hot_days_series.loc[hot_days_series == hot_days_series.max()].index.to_numpy()
+    # print(
+    #     f"3:"
+    #     f"\tThe year{'' if hot_years.size == 1 else 's'} {hot_years} had the most hot days with {hot_days_series.max()} hot days.\n"
+    # )
 
-    hot_days_1951__ = hot_days_series.loc[1951 <= hot_days_series.keys()]
-    avg_hot_days_1951_1980 = hot_days_1951__.loc[hot_days_1951__.keys() <= 1980].mean()
-    hot_days_1990__ = hot_days_series.loc[1996 <= hot_days_series.keys()]
-    avg_hot_days_1996_2025 = hot_days_1990__.loc[hot_days_1990__.keys() <= 2025].mean()
-    print(
-        f"4:"
-        f"\tThere {'was' if avg_hot_days_1951_1980 == 1 else 'were'} {avg_hot_days_1951_1980} hot day{'' if avg_hot_days_1951_1980 == 1 else 's'} between 1951 and 1980.\n"
-        f"\tThere {'was' if avg_hot_days_1996_2025 == 1 else 'were'} {avg_hot_days_1996_2025} hot day{'' if avg_hot_days_1996_2025 == 1 else 's'} between 1996 and 2025.\n"
-    )
+    # hot_days_1951__ = hot_days_series.loc[1951 <= hot_days_series.keys()]
+    # avg_hot_days_1951_1980 = hot_days_1951__.loc[hot_days_1951__.keys() <= 1980].mean()
+    # hot_days_1990__ = hot_days_series.loc[1996 <= hot_days_series.keys()]
+    # avg_hot_days_1996_2025 = hot_days_1990__.loc[hot_days_1990__.keys() <= 2025].mean()
+    # print(
+    #     f"4:"
+    #     f"\tThere {'was' if avg_hot_days_1951_1980 == 1 else 'were'} {avg_hot_days_1951_1980} hot day{'' if avg_hot_days_1951_1980 == 1 else 's'} between 1951 and 1980.\n"
+    #     f"\tThere {'was' if avg_hot_days_1996_2025 == 1 else 'were'} {avg_hot_days_1996_2025} hot day{'' if avg_hot_days_1996_2025 == 1 else 's'} between 1996 and 2025.\n"
+    # )
 
-    monthly_rain_s = monthly_rain(weather, 2000, 2020)
-    wettest_month = monthly_rain_s.loc[monthly_rain_s == monthly_rain_s.max()]
-    driest_month = monthly_rain_s.loc[monthly_rain_s == monthly_rain_s.min()]
-    print(
-        f"5:"
-        f"\tThe wettest month on average from 1947 to 2025 was month {wettest_month.index.item()} with an average total rain of {wettest_month.item()}.\n"
-        f"\tThe driest month on average from 1947 to 2025 was month {driest_month.index.item()} with an average total rain of {driest_month.item()}.\n"
-    )
+    # monthly_rain_s = monthly_rain(weather, 2000, 2020)
+    # wettest_month = monthly_rain_s.loc[monthly_rain_s == monthly_rain_s.max()]
+    # driest_month = monthly_rain_s.loc[monthly_rain_s == monthly_rain_s.min()]
+    # print(
+    #     f"5:"
+    #     f"\tThe wettest month on average from 1947 to 2025 was month {wettest_month.index.item()} with an average total rain of {wettest_month.item()}.\n"
+    #     f"\tThe driest month on average from 1947 to 2025 was month {driest_month.index.item()} with an average total rain of {driest_month.item()}.\n"
+    # )
 
-    plot_hot_days(weather, Path(__file__).parent / "hot_days.png")
+    # plot_hot_days(weather, Path(__file__).parent / "hot_days.png")
 
-    rainy_df = add_rainy(weather)
-    features = ["rain", "clouds", "humidity"]
-    rows, base = model_table(
-        rainy_df,
-        features,
-        [3, 4, 5, 6, 7],
-    )
-    print(
-        f"6:"
-        f"\tBaselines: {base}\n"
-        f"\tModel with features {features}:\n"
-        f"\tdepth\ttrain accuracy\ttest accuracy"
-    )
-    for row in rows:
-        print(f"\t{row[0]}\t{round(row[1], 5)}\t\t{round(row[2], 5)}")
+    # rainy_df = add_rainy(weather)
+    # features = ["rain", "clouds", "humidity"]
+    # rows, base = model_table(
+    #     rainy_df,
+    #     features,
+    #     [3, 4, 5, 6, 7],
+    # )
+    # print(
+    #     f"6:"
+    #     f"\tBaselines: {base}\n"
+    #     f"\tModel with features {features}:\n"
+    #     f"\tdepth\ttrain accuracy\ttest accuracy"
+    # )
+    # for row in rows:
+    #     print(f"\t{row[0]}\t{round(row[1], 5)}\t\t{round(row[2], 5)}")
+    weather = pd.DataFrame({"rain": [0, float("NaN"), 10]})
+    print(add_rainy(weather))

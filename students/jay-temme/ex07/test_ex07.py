@@ -128,7 +128,7 @@ def test_baselines():
     assert baselines(test) == {"never": 0.5, "same": 0.5}
 
 
-# originally broken test: ...table(load_weather(... is missing the rainy colum
+# originally broken test: ...table(load_weather(... does not have the rainy colum
 @needs_data
 def test_model_table():
     rows, base = model_table(add_rainy(load_weather(DATA_FILE)), ["rainy", "humidity"], [1, None])
@@ -137,3 +137,15 @@ def test_model_table():
     for _, train_score, test_score in rows:
         assert 0.5 < train_score <= 1
         assert 0.5 < test_score < 0.8
+
+
+def test_missing_per_year_column_not_in_weather():
+    weather = load_weather(SAMPLE_FILE)
+    with pytest.raises(ValueError):
+        missing_per_year(weather, "column")
+
+
+def test_add_rainy_missing_rain():
+    weather = add_rainy(pd.DataFrame({"rain": [0, float("NaN"), 10]}))
+    assert list(weather["rainy"]) == [0, 0, 1]
+    assert list(weather["rainy_tomorrow"])[:2] == [0, 1]
