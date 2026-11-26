@@ -219,3 +219,7 @@ __marimo__/
 
 # Ex 7: the DWD data file is 4.8 MB; every student copy stays local
 students/*/ex07/mannheim.txt
+
+# Ex 8: the same data file, copied next to the AI's code
+exercises/ex08/weather-service/mannheim.txt
+students/*/ex08/weather-service/mannheim.txt
