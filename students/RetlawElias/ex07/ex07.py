@@ -35,11 +35,11 @@ def load_weather(path):
     Keep only the columns in COLUMNS, with our names; -999 (missing) becomes NaN. Add the
     columns `year` and `month`, as ints, worked out from `date` (an int such as 19470101).
     """
-    data = pd.read_csv(path, usecols=COLUMNS.keys(), sep=';', skipinitialspace=True, na_values=-999)
+    data = pd.read_csv(path, usecols=COLUMNS.keys(), sep=";", skipinitialspace=True, na_values=-999)
     data = data.rename(columns=COLUMNS)
-    data['year'] = (data['date'] // 10000).astype(int)
-    data['month'] = ((data['date'] // 100) % 100).astype(int)
-    data = data[list(COLUMNS.values()) + ['year', 'month']]
+    data["year"] = (data["date"] // 10000).astype(int)
+    data["month"] = ((data["date"] // 100) % 100).astype(int)
+    data = data[list(COLUMNS.values()) + ["year", "month"]]
     return data
 
 
@@ -48,15 +48,14 @@ def missing_per_year(weather, column):
 
     result = {}
 
-    for year in weather['year'].unique():
-        year_data = weather[weather['year'] == year]
+    for year in weather["year"].unique():
+        year_data = weather[weather["year"] == year]
 
         missing = year_data[column].isna().sum()
 
         result[year] = missing
 
     return pd.Series(result)
-
 
 
 def hot_days(weather, threshold=30.0):
@@ -66,9 +65,9 @@ def hot_days(weather, threshold=30.0):
     """
     hotDays = {}
 
-    for year in weather['year'].unique():
-        year_data = weather[weather['year'] == year]
-        known_temps = year_data['max_temp'].dropna()
+    for year in weather["year"].unique():
+        year_data = weather[weather["year"] == year]
+        known_temps = year_data["max_temp"].dropna()
 
         if len(known_temps) > 0:
             hot = (known_temps >= threshold).sum()
@@ -82,11 +81,11 @@ def hot_days(weather, threshold=30.0):
 
 def monthly_rain(weather, first_year, last_year):
     """The average total rain of each month (1 to 12), over the years first_year..last_year."""
-    
-    selected = weather[(weather['year'] >= first_year) &(weather['year'] <= last_year)]
-    monthly_totals = selected.groupby(['year', 'month'])['rain'].sum(min_count=1)
 
-    return monthly_totals.groupby('month').mean()
+    selected = weather[(weather["year"] >= first_year) & (weather["year"] <= last_year)]
+    monthly_totals = selected.groupby(["year", "month"])["rain"].sum(min_count=1)
+
+    return monthly_totals.groupby("month").mean()
 
 
 def plot_hot_days(weather, path):
@@ -95,16 +94,15 @@ def plot_hot_days(weather, path):
 
     plt.figure(figsize=(14, 6))
 
-    hotDays.plot(kind='bar')
+    hotDays.plot(kind="bar")
 
-    plt.xlabel('Year')
-    plt.ylabel('Number of hot days')
-    plt.title('Number of hot days (30 °C or more) per year')
+    plt.xlabel("Year")
+    plt.ylabel("Number of hot days")
+    plt.title("Number of hot days (30 °C or more) per year")
 
     plt.tight_layout()
     plt.savefig(path)
     plt.close()
-
 
 
 def add_rainy(weather, threshold=1.0):
@@ -115,18 +113,18 @@ def add_rainy(weather, threshold=1.0):
     """
     result = weather.copy()
 
-    result['rainy'] = (result['rain'] >= threshold).astype(float)
-    result.loc[result['rain'].isna(), 'rainy'] = float('nan')
-    result['rainy_tomorrow'] = result['rainy'].shift(-1)
+    result["rainy"] = (result["rain"] >= threshold).astype(float)
+    result.loc[result["rain"].isna(), "rainy"] = float("nan")
+    result["rainy_tomorrow"] = result["rainy"].shift(-1)
 
     return result
 
 
 def split_by_year(weather, last_train_year):
     """Rows up to and including last_train_year, and the rows after it."""
-    
-    train = weather[weather['year'] <= last_train_year]
-    test = weather[weather['year'] > last_train_year]
+
+    train = weather[weather["year"] <= last_train_year]
+    test = weather[weather["year"] > last_train_year]
 
     return train, test
 
@@ -136,14 +134,13 @@ def baselines(test):
 
     Return a dict: "never": it never rains tomorrow; "same": tomorrow is like today.
     """
-    test = test.dropna(subset=['rainy', 'rainy_tomorrow'])
+    test = test.dropna(subset=["rainy", "rainy_tomorrow"])
 
-    actual = test['rainy_tomorrow']
+    actual = test["rainy_tomorrow"]
     never = [0] * len(test)
-    same = test['rainy']
+    same = test["rainy"]
 
-    return {'never': accuracy_score(actual, never),'same': accuracy_score(actual, same)}
-
+    return {"never": accuracy_score(actual, never), "same": accuracy_score(actual, same)}
 
 
 def model_table(weather, features, depths):
@@ -158,17 +155,17 @@ def model_table(weather, features, depths):
     train, test = split_by_year(weather, 2015)
     base = baselines(test)
 
-    train = train.dropna(subset=features + ['rainy_tomorrow'])
-    test = test.dropna(subset=features + ['rainy_tomorrow'])
+    train = train.dropna(subset=features + ["rainy_tomorrow"])
+    test = test.dropna(subset=features + ["rainy_tomorrow"])
     X_train = train[features]
-    y_train = train['rainy_tomorrow']
+    y_train = train["rainy_tomorrow"]
     X_test = test[features]
-    y_test = test['rainy_tomorrow']
+    y_test = test["rainy_tomorrow"]
 
     results = []
 
     for depth in depths:
-        model = DecisionTreeClassifier(max_depth=depth,random_state=1)
+        model = DecisionTreeClassifier(max_depth=depth, random_state=1)
 
         model.fit(X_train, y_train)
 
@@ -180,19 +177,13 @@ def model_table(weather, features, depths):
     return results, base
 
 
-
 if __name__ == "__main__":
     weather = load_weather(DATA_FILE)
     print(weather)
     # Print your answers here, e.g. print("1:", ...)
     weather = add_rainy(weather)
 
-    rows, base = model_table(
-        weather,
-        ['rainy', 'humidity'],
-        [1, None]
-    )
+    rows, base = model_table(weather, ["rainy", "humidity"], [1, None])
 
     print("Baselines:", base)
     print("Decision trees:", rows)
-

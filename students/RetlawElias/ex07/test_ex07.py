@@ -139,9 +139,7 @@ def test_model_table():
 
 
 def test_add_rainy_custom_threshold():
-    weather = pd.DataFrame({
-        "rain": [0.5, 2.0, 3.5, 4.0]
-    })
+    weather = pd.DataFrame({"rain": [0.5, 2.0, 3.5, 4.0]})
 
     result = add_rainy(weather, threshold=3.0)
 
@@ -149,9 +147,7 @@ def test_add_rainy_custom_threshold():
 
 
 def test_add_rainy_does_not_modify_original():
-    weather = pd.DataFrame({
-        "rain": [0.0, 2.0, 0.5]
-    })
+    weather = pd.DataFrame({"rain": [0.0, 2.0, 0.5]})
 
     original = weather.copy()
 
