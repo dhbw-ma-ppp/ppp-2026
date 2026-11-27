@@ -67,6 +67,8 @@ def hot_days(weather, threshold=30.0):
 
 def monthly_rain(weather, first_year, last_year):
     """The average total rain of each month (1 to 12), over the years first_year..last_year."""
+    if first_year > last_year:
+        raise ValueError("First year must not be greater than last year!")
     sub = weather[
         (weather["year"] >= first_year) & (weather["year"] <= last_year)
     ]  # select the requested years
@@ -83,10 +85,11 @@ def plot_hot_days(weather, path):
     """Save a bar chart of hot days (30 °C or more) per year as a picture at `path`."""
     counts = hot_days(weather)  # calculate hot days per year
     fig, ax = plt.subplots(figsize=(12, 5))  # create a new figure and chart
-    counts.plot.bar(ax=ax)  # create a bar chart
+    ax.bar(counts.index, counts.values, width=0.9)  # create a bar chart
     ax.set_xlabel("Year")  # set x-axis label
     ax.set_ylabel("Hot days (>= 30 °C)")  # set y-axis label
     ax.set_title("Hot days per year")  # set chart title
+    ax.set_xlim(weather["year"].min() - 0.5, weather["year"].max() + 0.5)
     fig.tight_layout()  # adjust spacing
     fig.savefig(path)  # save chart as an image
     plt.close(fig)

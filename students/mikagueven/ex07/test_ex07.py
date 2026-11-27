@@ -172,3 +172,10 @@ def test_add_rainy_custom_threshold_and_nan():
     weather = pd.DataFrame({"rain": [2.0, 2.5, float("nan")]})
     result = add_rainy(weather, threshold=2.5)
     assert list(result["rainy"]) == list(pd.Series([0, 1, 0]))
+
+
+# Review
+def test_monthly_rain_rejects_swapped_years():
+    weather = pd.DataFrame({"year": [2001], "month": [1], "rain": [1.0]})
+    with pytest.raises(ValueError):
+        monthly_rain(weather, 2002, 2001)
